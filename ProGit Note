@@ -1,0 +1,101 @@
+BASIC:
+  git status to check status of current directory.
+  git init to start
+  git clone to clone something.
+  git add to add things to staged area.
+  git commit to commit a change.
+
+  use .gitignore file to ignore something you don't want.
+      RULES:
+        # to comment.
+        standard glob patterns. (*. etc..)
+        dir/ to specify a directory.
+        negate by !
+  git add a, then modify a. now when you commit, it only commits the previous a.
+  git diff to see what are different. IMPORTANT: only those unstaged. if you staged all the changes, it will show nothing!
+  git diff --cached / git diff -staged to see what i've staged will go into next commmit.
+  git commit -v to verbose the changes.
+  git commit -m "directly add message here."
+  git commit -a allows you automatically stage every file tracked before doing the commit
+
+  to remove file == remove from tracked files -> remove from staged area -> git commit
+  rm just remove it from disk. git rm remove it from git. git commit, then the file is gone. 
+  git rm -f to force remove. for security, eg, sth staged but not commited before.
+
+  mv to rename a file. git will figure out that the file is just being renamed, don't worry
+
+LOG:
+  git log to check history of a project.
+  git log -p shows the patch introduced with every commitement.
+  git log -2 shows recent 2 changes.
+  git log --stat to show general info.
+  git log --pretty to prettyized the output.
+    --pretty=oneline each commit shows in one line only.
+    --pretty=short/full/fuller
+    --pretty=format:"%h - %an, %ar : %s" specify the output formats. 
+      lower-case for abbreviation
+      %H %h hash
+      %T %t tree hash 
+      %P %p Parent hash
+      %an author name
+      %ae author email
+      %ad author date (-date=option)
+      %ar author date (relative)
+      (change %an to %cn then it shows commmitter)
+  git log --relative-date (shows "2 weeks ago" etc)
+  git log --since=2.weeks 2011-11-22 2 years 1 day 3 minutes ago
+  git log --author="Lunba"
+
+UNDO:
+  git commit --amend
+    git commit -m 'first commit'
+    git add forgotten-file
+    git commit --amend
+    this 3 commands only makes 1 snapshot
+
+  git reset HEAD <file> to unstaged a staged file.
+  git checkout --<file> to discard changes #DANGEROUS, it covers whatever you've written. Make sure you want it!
+
+
+REMOTE:
+  #NOTICE!
+  #all the commit stuffs done above take effect LOCALLLY ONLY!!
+  #to make it work with github, here it starts.
+  git remote add [shortname] [url]
+    git remote add origin git@github.com:username/Hello-World.git
+      #Sets the origin for the Hello-World repo
+    git remote add bakkdoor git://github.com/bakkdoor/grit.git
+      #multiple remotes.
+    git remote -v
+      #check all remotes.
+    git remote rename [origin name] [new name]
+    git remote rm [name]
+  git push origin master
+    #Sends your commit to GitHub
+  git fetch [shortname]
+    #fetch data from remote server
+    #NOTICE. just fetch, do not merge. you have to merge them manually.
+  git pull [shorname]
+    #Running git pull generally fetches data from the server you originally
+    #cloned from and automatically tries to merge it into the code you’re
+    #currently working on 
+  git push [server-short] [branch-name]
+    #When you have your project at a point that you want to share, you have to push it upstream. The
+    #command for this is simple: git push [remote-name] [branch-name]. If you want to push your
+    #master branch to your origin server (again, cloning generally sets up both of those names for you
+    #automatically), then you can run this to push your work back up to the server
+    # $: git push origin master
+
+Tagging:
+  $ git tag #checking
+  $ git tag -a v1.4 -m 'my version 1.4' #creating tag
+  $ git tag -s v1.5 -m 'my signed 1.5 tag' #signed tag
+  $ git push origin v1.5 #pushing a specified version
+
+Branch:
+  git branch new # create a new branch (HEAD doesn't change)
+  git checkout new # turn to the new branch (HEAD points new now)
+  git commit -a # now new items commit to new. old doesn't change.
+  git checkout old # turn to old. Now it reverted all the files to that stage.
+  git commit -a # now other stuffs added to old. Here it forms the branches.
+
