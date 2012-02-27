@@ -4,3 +4,5 @@ Father-Focus/bin/*
 */bin/*
 *.apk
 .*.swp
+R.java
+Father-Focus/gen/*
