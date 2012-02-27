@@ -1,0 +1,3 @@
+
+Log.i("onCreate", "Father-Focus");
+
