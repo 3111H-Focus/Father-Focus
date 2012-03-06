@@ -1,4 +1,4 @@
-package hkust.comp3111h.focus.activity;
+package hkust.comp3111h.focus.Activity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -146,22 +146,23 @@ TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
     this.mViewPager.setCurrentItem(pos);
   }
 
-  @Override
-  public void onPageScrolled(
-      int position, 
-      float positionOffset,
-      int positionOffsetPixels) {
-
+  public void onPageScrolled(int position, float positionOffset,
+		int positionOffsetPixels) {
+	// TODO Auto-generated method stub
+	
   }
 
-  @Override
   public void onPageSelected(int position) {
-    this.mTabHost.setCurrentTab(position);
+	// TODO Auto-generated method stub
+	  this.mTabHost.setCurrentTab(position);
+	
   }
 
-  @Override
   public void onPageScrollStateChanged(int state) {
-
+	// TODO Auto-generated method stub
+	
   }
+
+
 }
 

@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello 3111H, This is Father-Focus Project!</string>
-    <string name="app_name">Father Focus</string>
-
+    <string name="app_name">Father-Focus</string>
 </resources>

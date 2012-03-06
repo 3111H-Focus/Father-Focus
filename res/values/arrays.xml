@@ -14,8 +14,14 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/root"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
+<resources>
+	<string-array name="sections">
+		<item>Home</item>
+		<item>SDK</item>
+		<item>Dev Guide</item>
+		<item>Reference</item>
+		<item>Resources</item>
+		<item>Videos</item>
+		<item>Blog</item>
+	</string-array>
+</resources>
