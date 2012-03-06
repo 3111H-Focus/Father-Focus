@@ -1,6 +1,7 @@
 *.jar
 *.class
 Father-Focus/bin/*
+*.d
 */bin/*
 *.apk
 .*.swp
