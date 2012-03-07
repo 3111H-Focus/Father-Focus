@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello 3111H, This is Father-Focus Project!</string>
-    <string name="app_name">Father Focus</string>
-
+    <string name="app_name">Father-Focus</string>
+    <string name="tab1_name">Tasks</string>
+    <string name="tab2_name">Timer</string>
+    <string name="tab3_name">Statistics</string>
 </resources>
