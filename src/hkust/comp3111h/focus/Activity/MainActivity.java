@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Vector;
 
 import hkust.comp3111h.focus.R;
-import hkust.comp3111h.focus.ui.PagerAdapter;
+import hkust.comp3111h.focus.Adapter.PagerAdapter;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
@@ -18,6 +18,7 @@ import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 
 import android.support.v4.app.ActionBar;
 import android.support.v4.app.ActionBar.OnNavigationListener;
@@ -27,6 +28,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.support.v4.view.MenuItem.OnMenuItemClickListener;
 import android.support.v4.view.ViewPager;
 
 import android.view.View;
@@ -59,11 +61,9 @@ public class MainActivity extends FragmentActivity
     setContentView(R.layout.pagerlayout); //Basically a easy linear layout
     final ActionBar ab = getSupportActionBar();
     //Initialise ActionBar
-    //Set defaults for logo and home up
     ab.setDisplayHomeAsUpEnabled(showHomeUp);
     ab.setDisplayUseLogoEnabled(useLogo);
     ab.setDisplayShowTitleEnabled(false);
-
     //Set up tabs navigation
     ab.addTab(ab.newTab().setText(R.string.tab1_name).setTabListener(this));
     ab.addTab(ab.newTab().setText(R.string.tab2_name).setTabListener(this));
@@ -92,9 +92,19 @@ public class MainActivity extends FragmentActivity
    */
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+
+    //Set up listener for items
+    final MenuItem main_menu = menu.findItem(R.id.main_menu);
+    final MenuItem catalog_menu = menu.findItem(R.id.task_lists);
+    //dummy listener
+    main_menu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+      public boolean onMenuItemClick(MenuItem item) {
+        return false;
+      }
+    });
     return super.onCreateOptionsMenu(menu);
   }
-
   @Override 
   public boolean onOptionsItemSelected(MenuItem item) {
     return super.onOptionsItemSelected(item);
@@ -127,7 +137,6 @@ public void onPageSelected(int position) {
 	// TODO Auto-generated method stub
     final ActionBar ab = getSupportActionBar();
     ab.setSelectedNavigationItem(position);
-	
 }
 
 public void onPageScrollStateChanged(int state) {
