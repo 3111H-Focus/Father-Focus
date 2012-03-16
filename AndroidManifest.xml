@@ -33,6 +33,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+          android:name="hkust.comp3111h.focus.Activity.TimerActivity">
+        </activity>
     </application>
 
 </manifest>
