@@ -11,7 +11,7 @@ import android.widget.ListView;
 
 public class MainTestActivity extends ListActivity {
 
-	String classes[] = { "Activity.MainActivity", "test.TestUserTable", "TBA",
+	String classes[] = { "Activity.MainActivity", "test.TestUserTable", "test.TestAllTables",
 			"TBA", "TBA", "TBA", "TBA" };
 
 	@Override

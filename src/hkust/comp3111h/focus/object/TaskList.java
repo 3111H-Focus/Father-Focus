@@ -3,30 +3,30 @@ package hkust.comp3111h.focus.object;
 public class TaskList {
 	private long id;
 	private String taskListName;
-	
-	public TaskList(){
-		id = -1;
-		taskListName = "";
+
+	public TaskList() {
+		this.setId(-1);
+		this.setTaskListName("");
 	}
-	
-	public TaskList(long id, String taskListName){
+
+	public TaskList(long id, String taskListName) {
+		this.setId(id);
+		this.setTaskListName(taskListName);
+	}
+
+	public void setId(long id) {
 		this.id = id;
-		this.taskListName = taskListName;
 	}
-	
-	public void setId(long id){
-		this.id = id;
-	}
-	
-	public long getId(){
+
+	public long getId() {
 		return this.id;
 	}
-	
-	public void setTaskListName(String taskListName){
+
+	public void setTaskListName(String taskListName) {
 		this.taskListName = taskListName;
 	}
-	
-	public String getTaskListName(){
+
+	public String getTaskListName() {
 		return this.taskListName;
 	}
 }
