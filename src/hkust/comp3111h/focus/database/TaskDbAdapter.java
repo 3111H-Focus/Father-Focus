@@ -39,30 +39,25 @@ public class TaskDbAdapter {
 	private static final String TABLE_USER = "userTable";
 	private static final String TABLE_TASKLIST = "taskListTable";
 	private static final String TABLE_TASK = "taskTable";
-	/*
-	 * private static final String DATABASE_TABLE_RECORD = "taskTable";
-	 */
-
-	/*
-	 * TODO private static final String DATABASE_TABLE_TIMER= "timerTable";
-	 */
+	
+	private static final String TAG = "DBCHECK";
 
 	private static final int DATABASE_VERSION = 1;
 
 	// SQL command for creating the tables.
 	private static final String DATABASE_CREATE_USER = "CREATE TABLE "
 			+ TABLE_USER + " (" + KEY_USER_USERID
-			+ " INT PRIMARY KEY AUTOINCREMENT, " + KEY_USER_USERNAME
+			+ " INTEGER PRIMARY KEY, " + KEY_USER_USERNAME
 			+ " TEXT NOT NULL, " + KEY_USER_PASSWORD + " TEXT NOT NULL" + ");";
 
 	private static final String DATABASE_CREATE_TASKLIST = "CREATE TABLE "
 			+ TABLE_TASKLIST + " (" + KEY_TASKLIST_TLID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_TASKLIST_TLNAME
-			+ "TEXT NOT NULL" + ");";
+			+ " INTEGER PRIMARY KEY, " + KEY_TASKLIST_TLNAME
+			+ " TEXT NOT NULL" + ");";
 
 	private static final String DATABASE_CREATE_TASK = "CREATE TABLE "
-			+ TABLE_TASK + " (" + KEY_TASK_TLID + "INTEGER, " + KEY_TASK_TID
-			+ " INTEGER AUTOINCREMENT, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
+			+ TABLE_TASK + " (" + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TID
+			+ " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
 			+ KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
 			+ KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE
 			+ " TEXT NOT NULL, " + "FOREIGN KEY (" + KEY_TASK_TLID
@@ -93,11 +88,11 @@ public class TaskDbAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.i("create user table", DATABASE_CREATE_USER);
+			Log.i(TAG, DATABASE_CREATE_USER);
 			db.execSQL(DATABASE_CREATE_USER);
-			Log.i("create tasklist table", DATABASE_CREATE_TASKLIST);
+			Log.i(TAG, DATABASE_CREATE_TASKLIST);
 			db.execSQL(DATABASE_CREATE_TASKLIST);
-			Log.i("create task table", DATABASE_CREATE_TASK);
+			Log.i(TAG, DATABASE_CREATE_TASK);
 			db.execSQL(DATABASE_CREATE_TASK);
 		}
 
