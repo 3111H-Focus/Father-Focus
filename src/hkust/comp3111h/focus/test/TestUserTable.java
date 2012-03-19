@@ -78,7 +78,6 @@ public class TestUserTable extends Activity implements View.OnClickListener{
 	
 	//add an account to database
 	public void addToDb(){
-		String userId = etUserId.getText().toString();
 		String userName = etUserName.getText().toString();
 		String password = etPassword.getText().toString();
 		
@@ -145,9 +144,9 @@ public class TestUserTable extends Activity implements View.OnClickListener{
 				etPassword.setText("mCursor.getCount() = " + mCursor.getCount());
 			}
 			else{
-				etUserId.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_ACCOUNT_USERID)));
-				etUserName.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_ACCOUNT_USERNAME)));
-				etPassword.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_ACCOUNT_PASSWORD)));
+				etUserId.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_USER_USERID)));
+				etUserName.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_USER_USERNAME)));
+				etPassword.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_USER_PASSWORD)));
 			}
 		}
 		catch(SQLException e){
