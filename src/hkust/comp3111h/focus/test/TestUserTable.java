@@ -86,7 +86,7 @@ public class TestUserTable extends Activity implements View.OnClickListener{
 		//you can use this info to pop up windows to warn the user. 
 		//maybe need more other information from database
 		//tell me your needs and i'll try to implement it. 
-		mTaskDbAdapter.createUser(userId, userName, password);
+		mTaskDbAdapter.createUser(userName, password);
 	}
 	
 	//retrieve info from database.
@@ -134,7 +134,8 @@ public class TestUserTable extends Activity implements View.OnClickListener{
 			 * Thank you for tolerating my long long talk. 
 			 * 
 			 */
-			mCursor = mTaskDbAdapter.fetchUser(userId);
+			long userIdInLong = Integer.parseInt(userId);
+			mCursor = mTaskDbAdapter.fetchUser(userIdInLong);
 			startManagingCursor(mCursor);
 			
 			if(mCursor.getCount() == 0){
@@ -144,13 +145,16 @@ public class TestUserTable extends Activity implements View.OnClickListener{
 				etPassword.setText("mCursor.getCount() = " + mCursor.getCount());
 			}
 			else{
-				etUserId.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_USERID)));
-				etUserName.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_USERNAME)));
-				etPassword.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_PASSWORD)));
+				etUserId.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_ACCOUNT_USERID)));
+				etUserName.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_ACCOUNT_USERNAME)));
+				etPassword.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_ACCOUNT_PASSWORD)));
 			}
 		}
 		catch(SQLException e){
 			e.printStackTrace();
+		}
+		catch(NumberFormatException e){
+			etUserId.setText("UserId not valid (only digit)");
 		}
 	}
 	
