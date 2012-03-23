@@ -10,10 +10,21 @@ package hkust.comp3111h.focus.test;
  * 
  * Also, use adb to see things in the database. 
  * 
- * Known issue:
- * 	Deleting a single task fails. Cause found and
- * 	waiting to be solved. 
+ * Now supported:
+ * 	adding a taskList / task.
+ * 	fetch info of a taskList. 
+ * 	fetch all info of taskLists. 
+ * 	deleting a taskList (on cascade) / task.
+ * 	update a taskList.
  * 
+ * More to test:
+ * 	update a task.
+ * 	fetch info of task.
+ * 	fetch all info of task.
+ * 	fetch all info of a given taskList.
+ * 
+ * cheong @ Mar 24. 
+ * 	
  */
 
 import hkust.comp3111h.focus.R;
