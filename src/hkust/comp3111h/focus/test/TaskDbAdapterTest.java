@@ -1,5 +1,32 @@
 package hkust.comp3111h.focus.test;
 
+/*
+ * A simple test activity for testing TaskDbAdapter.
+ * 
+ * First you should click the Insert Data button then perform
+ * the testcases one by one.
+ * 
+ * Status will be updated into the Text box above. 
+ * 
+ * Also, use adb to see things in the database. 
+ * 
+ * Now supported:
+ * 	adding a taskList / task.
+ * 	fetch info of a taskList. 
+ * 	fetch all info of taskLists. 
+ * 	deleting a taskList (on cascade) / task.
+ * 	update a taskList.
+ * 
+ * More to test:
+ * 	update a task.
+ * 	fetch info of task.
+ * 	fetch all info of task.
+ * 	fetch all info of a given taskList.
+ * 
+ * cheong @ Mar 24. 
+ * 	
+ */
+
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import android.app.Activity;
@@ -86,8 +113,14 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener{
 		}
 	}
 	
+	/**
+	 * 
+	 * the function to add 5 dummy records into tasklists and task.
+	 * 2 tasklists: 3111H and 2031.
+	 * 5 tasks in total. 3 in 3111H and 2 in 2031. 
+	 */
 	public void addData(){
-		etStatus.setText("Insert data into database. ");
+		etStatus.setText("Insert data. ");
 		
 		tl1= mDbAdapter.createTaskList("3111H");
 		tl2= mDbAdapter.createTaskList("2031");
@@ -102,47 +135,72 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener{
 		etStatus.setText(etStatus.getText() + "Data added. use adb to see content.");
 	}
 	
+	/**
+	 * Testcase 1:
+	 * Fetch taskList. 
+	 * Tested function: fetchTaskList
+	 */
 	public void TestCase1(){
-		etStatus.setText("Testcase 1: fetch one taskList from 3111H. ");
+		etStatus.setText("Testcase 1: fetch one taskList from 3111H. \n");
 		
 		Cursor mCursor = mDbAdapter.fetchTaskList(tl1);
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
-		etStatus.setText(etStatus.getText() + "Info of task list with id 1 should be 3111H. Result: " +
+		etStatus.setText(etStatus.getText() + "Expected: 3111H. \nResult: " +
 				"mCursor count: " + mCursor.getCount() + " mCursor value: " + 
 				mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME)));
 	}
 	
+	/**
+	 * Testcase 2:
+	 * Fetch all tasklists.
+	 * Tested function: fetchAllTaskLists
+	 */
 	public void TestCase2(){
-		etStatus.setText("Testcase 2: fetch all tasklists info from 3111H. ");
+		etStatus.setText("Testcase 2: fetch all tasklists info from 3111H. \n");
 		Cursor mCursor = mDbAdapter.fetchAllTaskLists();
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
-		etStatus.setText(etStatus.getText() + "Should be 3111H + 2031. Result: " +
+		etStatus.setText(etStatus.getText() + "Expected:3111H 2031. \nResult: " +
 			mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME)));
 		mCursor.moveToNext();
 		etStatus.setText(etStatus.getText() + " " +
 			mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME)));
 	}
 	
+	/**
+	 * Testcase 3:
+	 * Delete a single task.
+	 * Tested function: deleteTask
+	 */
 	public void TestCase3(){
-		etStatus.setText("Testcase 3: delete a task(id=3) in 3111H taskList(id=1). ");
-		mDbAdapter.deleteTask(tl1, task3);
-		etStatus.setText(etStatus.getText() + "Check task table. Should be only 4 tasks" +
+		etStatus.setText("Testcase 3: delete a task in 3111H taskList. \n");
+		mDbAdapter.deleteTask(task3);
+		etStatus.setText(etStatus.getText() + "Check task table in adb. \nExpected: 4 tasks" +
 				" left, 2 with tlid=1 and 2 with tlid=2. ");
 	}
 	
+	/**
+	 * Testcase 4:
+	 * Delete a tasklists.
+	 * Tested function: deleteTaskList
+	 */
 	public void TestCase4(){
-		etStatus.setText("Testcase 4: delete tasklist 3111H(tlid=1). ");
+		etStatus.setText("Testcase 4: delete tasklist 3111H. \n");
 		
 		mDbAdapter.deleteTaskList(tl1);
 		
-		etStatus.setText(etStatus.getText()+"On cascade deleting, so TaskList3111H" +
+		etStatus.setText(etStatus.getText()+"Check task and tasklist table. \nExpected: On cascade deleting, so TaskList3111H" +
 				"should no longer exists and tasks with id = 1 should be deleted as well. ");
 	}
 	
+	/**
+	 * Testcase 5:
+	 * update a tasklist.
+	 * Tested function: updateTaskList
+	 */
 	public void TestCase5(){
-		etStatus.setText("Testcase 5: update 2031 tasklist. Change name to Analysis. ");
+		etStatus.setText("Testcase 5: update 2031 tasklist. Change name to Analysis. \n");
 		
 		mDbAdapter.updateTaskList(tl2, "Analysis");
 		
@@ -150,12 +208,21 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener{
 		startManagingCursor(mCursor);
 		mCursor.moveToFirst();
 		
-		etStatus.setText(etStatus.getText()+"Result: " +
+		etStatus.setText(etStatus.getText()+"Check task table. \nExpected: Analysis\nResult: " +
 				mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME)));
 		
 	}
 	
+	/**
+	 * Testcase 6:
+	 * Just a dummy function to show the variable values. 
+	 * Waiting to add more test functions. 
+	 */
 	public void TestCase6(){
+		
+		etStatus.setText("tl1=" + tl1 + " tl2=" + tl2 + " task1=" +
+		 task1 + " task2=" + task2 + " task3=" + task3 + " task4=" +
+				task4 + " task5=" + task5);
 		
 	}
 }
