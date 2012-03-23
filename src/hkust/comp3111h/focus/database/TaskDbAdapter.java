@@ -36,9 +36,9 @@ public class TaskDbAdapter {
 
 	// Definition of database and table info.
 	private static final String DATABASE_NAME = "data";
-	private static final String TABLE_USER = "userTable";
-	private static final String TABLE_TASKLIST = "taskListTable";
-	private static final String TABLE_TASK = "taskTable";
+	private static final String TABLE_USER = "user";
+	private static final String TABLE_TASKLIST = "taskList";
+	private static final String TABLE_TASK = "task";
 	
 	private static final String TAG = "DBCHECK";
 
@@ -62,7 +62,7 @@ public class TaskDbAdapter {
 			+ KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE
 			+ " TEXT NOT NULL, " + "FOREIGN KEY (" + KEY_TASK_TLID
 			+ ") REFERENCES " + TABLE_TASKLIST + "(" + KEY_TASKLIST_TLID
-			+ "), " + "PRIMARY KEY (" + KEY_TASK_TLID + ", " + KEY_TASK_TID
+			+ ") ON UPDATE CASCADE ON DELETE CASCADE, " + "PRIMARY KEY (" + KEY_TASK_TLID + ", " + KEY_TASK_TID
 			+ ")" + ");";
 
 	private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
@@ -210,7 +210,7 @@ public class TaskDbAdapter {
 	}
 
 	public Cursor fetchTaskList(long taskListId) throws SQLException {
-		Cursor mCursor = mDb.query(true, TABLE_USER, null, KEY_TASKLIST_TLID
+		Cursor mCursor = mDb.query(true, TABLE_TASKLIST, null, KEY_TASKLIST_TLID
 				+ "=" + taskListId, null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
