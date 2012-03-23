@@ -1,5 +1,21 @@
 package hkust.comp3111h.focus.test;
 
+/*
+ * A simple test activity for testing TaskDbAdapter.
+ * 
+ * First you should click the Insert Data button then perform
+ * the testcases one by one.
+ * 
+ * Status will be updated into the Text box above. 
+ * 
+ * Also, use adb to see things in the database. 
+ * 
+ * Known issue:
+ * 	Deleting a single task fails. Cause found and
+ * 	waiting to be solved. 
+ * 
+ */
+
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import android.app.Activity;
@@ -156,6 +172,10 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener{
 	}
 	
 	public void TestCase6(){
+		
+		etStatus.setText("tl1=" + tl1 + " tl2=" + tl2 + " task1=" +
+		 task1 + " task2=" + task2 + " task3=" + task3 + " task4=" +
+				task4 + " task5=" + task5);
 		
 	}
 }

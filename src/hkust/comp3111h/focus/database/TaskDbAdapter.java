@@ -56,14 +56,13 @@ public class TaskDbAdapter {
 			+ " TEXT NOT NULL" + ");";
 
 	private static final String DATABASE_CREATE_TASK = "CREATE TABLE "
-			+ TABLE_TASK + " (" + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TID
-			+ " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
+			+ TABLE_TASK + " (" + KEY_TASK_TID
+			+ " INTEGER PRIMARY KEY, " + KEY_TASK_TLID + " INTEGER, " +  KEY_TASK_TYPE + " TEXT NOT NULL, "
 			+ KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
 			+ KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE
 			+ " TEXT NOT NULL, " + "FOREIGN KEY (" + KEY_TASK_TLID
 			+ ") REFERENCES " + TABLE_TASKLIST + "(" + KEY_TASKLIST_TLID
-			+ ") ON UPDATE CASCADE ON DELETE CASCADE, " + "PRIMARY KEY (" + KEY_TASK_TLID + ", " + KEY_TASK_TID
-			+ ")" + ");";
+			+ ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
 	private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
 			+ TABLE_USER;
@@ -106,6 +105,17 @@ public class TaskDbAdapter {
 			db.execSQL(DATABASE_DESTROY_TASK);
 			onCreate(db);
 		}
+		
+		@Override
+		public void onOpen(SQLiteDatabase db) {
+		    super.onOpen(db);
+		    if (!db.isReadOnly()) {
+		        // Enable foreign key constraints 
+		    	// so as to perform on cascade delete and update. 
+		        db.execSQL("PRAGMA foreign_keys=ON;");
+		    }
+		}
+
 	}
 
 	// ****************End of setting up members.*********************
