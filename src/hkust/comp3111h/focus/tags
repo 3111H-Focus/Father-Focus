@@ -1,0 +1,252 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AbstractWheelAdapter	Adapter/AbstractWheelAdapter.java	/^public abstract class AbstractWheelAdapter implements WheelViewAdapter {$/;"	c
+AbstractWheelTextAdapter	Adapter/AbstractWheelTextAdapter.java	/^  protected AbstractWheelTextAdapter(Context context) {$/;"	m	class:AbstractWheelTextAdapter
+AbstractWheelTextAdapter	Adapter/AbstractWheelTextAdapter.java	/^  protected AbstractWheelTextAdapter(Context context, int itemResource) {$/;"	m	class:AbstractWheelTextAdapter
+AbstractWheelTextAdapter	Adapter/AbstractWheelTextAdapter.java	/^  protected AbstractWheelTextAdapter(Context context, int itemResource, int itemTextResource) {$/;"	m	class:AbstractWheelTextAdapter
+AbstractWheelTextAdapter	Adapter/AbstractWheelTextAdapter.java	/^public abstract class AbstractWheelTextAdapter extends AbstractWheelAdapter {$/;"	c
+ArrayWheelAdapter	Adapter/ArrayWheelAdapter.java	/^  public ArrayWheelAdapter(Context context, T items[]) {$/;"	m	class:ArrayWheelAdapter
+ArrayWheelAdapter	Adapter/ArrayWheelAdapter.java	/^public class ArrayWheelAdapter<T> extends AbstractWheelTextAdapter {$/;"	c
+DEFAULT_MAX_VALUE	Adapter/NumericWheelAdapter.java	/^  public static final int DEFAULT_MAX_VALUE = 9;$/;"	f	class:NumericWheelAdapter
+DEFAULT_MIN_VALUE	Adapter/NumericWheelAdapter.java	/^  private static final int DEFAULT_MIN_VALUE = 0;$/;"	f	class:NumericWheelAdapter	file:
+DEFAULT_TEXT_COLOR	Adapter/AbstractWheelTextAdapter.java	/^  public static final int DEFAULT_TEXT_COLOR = 0xFF101010;$/;"	f	class:AbstractWheelTextAdapter
+DEFAULT_TEXT_SIZE	Adapter/AbstractWheelTextAdapter.java	/^  public static final int DEFAULT_TEXT_SIZE = 24;$/;"	f	class:AbstractWheelTextAdapter
+DEF_VISIBLE_ITEMS	ui/WheelView.java	/^  private static final int DEF_VISIBLE_ITEMS = 5;$/;"	f	class:WheelView	file:
+IS_HONEYCOMB	Activity/MainActivity.java	/^  static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;$/;"	f	class:MainActivity
+ITEM_OFFSET_PERCENT	ui/WheelView.java	/^  private static final int ITEM_OFFSET_PERCENT = 10;$/;"	f	class:WheelView	file:
+ItemsRange	ui/ItemsRange.java	/^  public ItemsRange() {$/;"	m	class:ItemsRange
+ItemsRange	ui/ItemsRange.java	/^  public ItemsRange(int first, int count) {$/;"	m	class:ItemsRange
+ItemsRange	ui/ItemsRange.java	/^public class ItemsRange {$/;"	c
+LABEL_COLOR	Adapter/AbstractWheelTextAdapter.java	/^  public static final int LABEL_COLOR = 0xFF700070;$/;"	f	class:AbstractWheelTextAdapter
+MESSAGE_JUSTIFY	ui/WheelScroller.java	/^  private final int MESSAGE_JUSTIFY = 1;$/;"	f	class:WheelScroller	file:
+MESSAGE_SCROLL	ui/WheelScroller.java	/^  private final int MESSAGE_SCROLL = 0;$/;"	f	class:WheelScroller	file:
+MIN_DELTA_FOR_SCROLLING	ui/WheelScroller.java	/^  public static final int MIN_DELTA_FOR_SCROLLING = 1;$/;"	f	class:WheelScroller
+MainActivity	Activity/MainActivity.java	/^public class MainActivity extends FragmentActivity $/;"	c
+MainViewPager	ui/MainViewPager.java	/^  public MainViewPager(Context context, AttributeSet attrs) {$/;"	m	class:MainViewPager
+MainViewPager	ui/MainViewPager.java	/^public class MainViewPager extends ViewPager {$/;"	c
+NO_RESOURCE	Adapter/AbstractWheelTextAdapter.java	/^  protected static final int NO_RESOURCE = 0;$/;"	f	class:AbstractWheelTextAdapter
+NumericWheelAdapter	Adapter/NumericWheelAdapter.java	/^  public NumericWheelAdapter(Context context) {$/;"	m	class:NumericWheelAdapter
+NumericWheelAdapter	Adapter/NumericWheelAdapter.java	/^  public NumericWheelAdapter(Context context, int minValue, int maxValue) {$/;"	m	class:NumericWheelAdapter
+NumericWheelAdapter	Adapter/NumericWheelAdapter.java	/^  public NumericWheelAdapter(Context context, int minValue, int maxValue, String format) {$/;"	m	class:NumericWheelAdapter
+NumericWheelAdapter	Adapter/NumericWheelAdapter.java	/^public class NumericWheelAdapter extends AbstractWheelTextAdapter {$/;"	c
+OnWheelChangedListener	ui/OnWheelChangedListener.java	/^public interface OnWheelChangedListener {$/;"	i
+OnWheelClickedListener	ui/OnWheelClickedListener.java	/^public interface OnWheelClickedListener {$/;"	i
+OnWheelScrollListener	ui/OnWheelScrollListener.java	/^public interface OnWheelScrollListener {$/;"	i
+PADDING	ui/WheelView.java	/^  private static final int PADDING = 10;$/;"	f	class:WheelView	file:
+PagerAdapter	Adapter/PagerAdapter.java	/^  public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {$/;"	m	class:PagerAdapter
+PagerAdapter	Adapter/PagerAdapter.java	/^public class PagerAdapter extends FragmentPagerAdapter {$/;"	c
+SCROLLING_DURATION	ui/WheelScroller.java	/^  private static final int SCROLLING_DURATION = 400;$/;"	f	class:WheelScroller	file:
+SHADOWS_COLORS	ui/WheelView.java	/^  private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111,$/;"	f	class:WheelView	file:
+ScrollingListener	ui/WheelScroller.java	/^  public interface ScrollingListener {$/;"	i	class:WheelScroller
+StatisticsFragment	ui/StatisticsFragment.java	/^public class StatisticsFragment extends Fragment {$/;"	c
+TEXT_VIEW_ITEM_RESOURCE	Adapter/AbstractWheelTextAdapter.java	/^  public static final int TEXT_VIEW_ITEM_RESOURCE = -1;$/;"	f	class:AbstractWheelTextAdapter
+TaskManageFragment	ui/TaskManageFragment.java	/^public class TaskManageFragment extends Fragment {$/;"	c
+TimerActivity	Activity/TimerActivity.java	/^public class TimerActivity extends FragmentActivity {$/;"	c
+TimerFragment	ui/TimerFragment.java	/^public class TimerFragment extends Fragment {$/;"	c
+WheelRecycle	ui/WheelRecycle.java	/^  public WheelRecycle(WheelView wheel) {$/;"	m	class:WheelRecycle
+WheelRecycle	ui/WheelRecycle.java	/^public class WheelRecycle {$/;"	c
+WheelScroller	ui/WheelScroller.java	/^  public WheelScroller(Context context, ScrollingListener listener) {$/;"	m	class:WheelScroller
+WheelScroller	ui/WheelScroller.java	/^public class WheelScroller {$/;"	c
+WheelView	ui/WheelView.java	/^	public WheelView(Context context) {$/;"	m	class:WheelView
+WheelView	ui/WheelView.java	/^	public WheelView(Context context, AttributeSet attrs) {$/;"	m	class:WheelView
+WheelView	ui/WheelView.java	/^	public WheelView(Context context, AttributeSet attrs, int defStyle) {$/;"	m	class:WheelView
+WheelView	ui/WheelView.java	/^public class WheelView extends View {$/;"	c
+WheelViewAdapter	Adapter/WheelViewAdapter.java	/^public interface WheelViewAdapter {$/;"	i
+addChangingListener	ui/WheelView.java	/^	public void addChangingListener(OnWheelChangedListener listener) {$/;"	m	class:WheelView
+addClickingListener	ui/WheelView.java	/^    public void addClickingListener(OnWheelClickedListener listener) {$/;"	m	class:WheelView
+addScrollingListener	ui/WheelView.java	/^	public void addScrollingListener(OnWheelScrollListener listener) {$/;"	m	class:WheelView
+addView	ui/WheelRecycle.java	/^  private List<View> addView(View view, List<View> cache) {$/;"	m	class:WheelRecycle	file:
+addViewItem	ui/WheelView.java	/^	private boolean addViewItem(int index, boolean first) {$/;"	m	class:WheelView	file:
+animationHandler	ui/WheelScroller.java	/^  private Handler animationHandler = new Handler() {$/;"	f	class:WheelScroller	file:
+bottomShadow	ui/WheelView.java	/^  private GradientDrawable bottomShadow;$/;"	f	class:WheelView	file:
+buildViewForMeasuring	ui/WheelView.java	/^	private void buildViewForMeasuring() {$/;"	m	class:WheelView	file:
+calculateLayoutWidth	ui/WheelView.java	/^	private int calculateLayoutWidth(int widthSize, int mode) {$/;"	m	class:WheelView	file:
+centerDrawable	ui/WheelView.java	/^  private Drawable centerDrawable;$/;"	f	class:WheelView	file:
+changingListeners	ui/WheelView.java	/^	private List<OnWheelChangedListener> changingListeners = new LinkedList<OnWheelChangedListener>();$/;"	f	class:WheelView	file:
+clearAll	ui/WheelRecycle.java	/^  public void clearAll() {$/;"	m	class:WheelRecycle
+clearMessages	ui/WheelScroller.java	/^  private void clearMessages() {$/;"	m	class:WheelScroller	file:
+clickingListeners	ui/WheelView.java	/^    private List<OnWheelClickedListener> clickingListeners = new LinkedList<OnWheelClickedListener>();$/;"	f	class:WheelView	file:
+configureTextView	Adapter/AbstractWheelTextAdapter.java	/^  protected void configureTextView(TextView view) {$/;"	m	class:AbstractWheelTextAdapter
+contains	ui/ItemsRange.java	/^  public boolean contains(int index) {$/;"	m	class:ItemsRange
+context	Adapter/AbstractWheelTextAdapter.java	/^  protected Context context;$/;"	f	class:AbstractWheelTextAdapter
+context	ui/WheelScroller.java	/^  private Context context;$/;"	f	class:WheelScroller	file:
+count	ui/ItemsRange.java	/^  private int count;$/;"	f	class:ItemsRange	file:
+createItemsLayout	ui/WheelView.java	/^	private void createItemsLayout() {$/;"	m	class:WheelView	file:
+currentItem	ui/WheelView.java	/^  private int currentItem  = 0;$/;"	f	class:WheelView	file:
+dataObserver	ui/WheelView.java	/^    private DataSetObserver dataObserver = new DataSetObserver() {$/;"	f	class:WheelView	file:
+datasetObservers	Adapter/AbstractWheelAdapter.java	/^  private List<DataSetObserver> datasetObservers;$/;"	f	class:AbstractWheelAdapter	file:
+doScroll	ui/WheelView.java	/^	private void doScroll(int delta) {$/;"	m	class:WheelView	file:
+drawCenterRect	ui/WheelView.java	/^	private void drawCenterRect(Canvas canvas) {$/;"	m	class:WheelView	file:
+drawItems	ui/WheelView.java	/^	private void drawItems(Canvas canvas) {$/;"	m	class:WheelView	file:
+drawShadows	ui/WheelView.java	/^	private void drawShadows(Canvas canvas) {$/;"	m	class:WheelView	file:
+emptyItemResourceId	Adapter/AbstractWheelTextAdapter.java	/^  protected int emptyItemResourceId;$/;"	f	class:AbstractWheelTextAdapter
+emptyItems	ui/WheelRecycle.java	/^  private List<View> emptyItems;$/;"	f	class:WheelRecycle	file:
+finishScrolling	ui/WheelScroller.java	/^  void finishScrolling() {$/;"	m	class:WheelScroller
+first	ui/ItemsRange.java	/^  private int first;$/;"	f	class:ItemsRange	file:
+firstItem	ui/WheelView.java	/^  private int firstItem;$/;"	f	class:WheelView	file:
+format	Adapter/NumericWheelAdapter.java	/^  private String format;$/;"	f	class:NumericWheelAdapter	file:
+gestureDetector	ui/WheelScroller.java	/^  private GestureDetector gestureDetector;$/;"	f	class:WheelScroller	file:
+gestureListener	ui/WheelScroller.java	/^  private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {$/;"	f	class:WheelScroller	file:
+getCachedView	ui/WheelRecycle.java	/^  private View getCachedView(List<View> cache) {$/;"	m	class:WheelRecycle	file:
+getCount	Adapter/PagerAdapter.java	/^  public int getCount() {$/;"	m	class:PagerAdapter
+getCount	ui/ItemsRange.java	/^  public int getCount() {$/;"	m	class:ItemsRange
+getCurrentItem	ui/WheelView.java	/^	public int getCurrentItem() {$/;"	m	class:WheelView
+getDesiredHeight	ui/WheelView.java	/^	private int getDesiredHeight(LinearLayout layout) {$/;"	m	class:WheelView	file:
+getEmptyItem	Adapter/AbstractWheelAdapter.java	/^  public View getEmptyItem(View convertView, ViewGroup parent) {$/;"	m	class:AbstractWheelAdapter
+getEmptyItem	Adapter/AbstractWheelTextAdapter.java	/^  public View getEmptyItem(View convertView, ViewGroup parent) {$/;"	m	class:AbstractWheelTextAdapter
+getEmptyItem	Adapter/WheelViewAdapter.java	/^	public View getEmptyItem(View convertView, ViewGroup parent);$/;"	m	interface:WheelViewAdapter
+getEmptyItem	ui/WheelRecycle.java	/^  public View getEmptyItem() {$/;"	m	class:WheelRecycle
+getEmptyItemResource	Adapter/AbstractWheelTextAdapter.java	/^  public int getEmptyItemResource() {$/;"	m	class:AbstractWheelTextAdapter
+getFirst	ui/ItemsRange.java	/^  public int getFirst() {$/;"	m	class:ItemsRange
+getItem	Adapter/AbstractWheelTextAdapter.java	/^  public View getItem(int index, View convertView, ViewGroup parent) {$/;"	m	class:AbstractWheelTextAdapter
+getItem	Adapter/PagerAdapter.java	/^  public Fragment getItem(int position) {$/;"	m	class:PagerAdapter
+getItem	Adapter/WheelViewAdapter.java	/^	public View getItem(int index, View convertView, ViewGroup parent);$/;"	m	interface:WheelViewAdapter
+getItem	ui/WheelRecycle.java	/^  public View getItem() {$/;"	m	class:WheelRecycle
+getItemHeight	ui/WheelView.java	/^	private int getItemHeight() {$/;"	m	class:WheelView	file:
+getItemResource	Adapter/AbstractWheelTextAdapter.java	/^  public int getItemResource() {$/;"	m	class:AbstractWheelTextAdapter
+getItemText	Adapter/AbstractWheelTextAdapter.java	/^  protected abstract CharSequence getItemText(int index);$/;"	m	class:AbstractWheelTextAdapter
+getItemText	Adapter/ArrayWheelAdapter.java	/^  public CharSequence getItemText(int index) {$/;"	m	class:ArrayWheelAdapter
+getItemText	Adapter/NumericWheelAdapter.java	/^  public CharSequence getItemText(int index) {$/;"	m	class:NumericWheelAdapter
+getItemTextResource	Adapter/AbstractWheelTextAdapter.java	/^  public int getItemTextResource() {$/;"	m	class:AbstractWheelTextAdapter
+getItemView	ui/WheelView.java	/^    private View getItemView(int index) {$/;"	m	class:WheelView	file:
+getItemsCount	Adapter/ArrayWheelAdapter.java	/^  public int getItemsCount() {$/;"	m	class:ArrayWheelAdapter
+getItemsCount	Adapter/NumericWheelAdapter.java	/^  public int getItemsCount() {$/;"	m	class:NumericWheelAdapter
+getItemsCount	Adapter/WheelViewAdapter.java	/^	public int getItemsCount();$/;"	m	interface:WheelViewAdapter
+getItemsRange	ui/WheelView.java	/^	private ItemsRange getItemsRange() {$/;"	m	class:WheelView	file:
+getLast	ui/ItemsRange.java	/^  public int getLast() {$/;"	m	class:ItemsRange
+getTextColor	Adapter/AbstractWheelTextAdapter.java	/^  public int getTextColor() {$/;"	m	class:AbstractWheelTextAdapter
+getTextSize	Adapter/AbstractWheelTextAdapter.java	/^  public int getTextSize() {$/;"	m	class:AbstractWheelTextAdapter
+getTextView	Adapter/AbstractWheelTextAdapter.java	/^  private TextView getTextView(View view, int textResource) {$/;"	m	class:AbstractWheelTextAdapter	file:
+getView	Adapter/AbstractWheelTextAdapter.java	/^  private View getView(int resource, ViewGroup parent) {$/;"	m	class:AbstractWheelTextAdapter	file:
+getViewAdapter	ui/WheelView.java	/^	public WheelViewAdapter getViewAdapter() {$/;"	m	class:WheelView
+getVisibleItems	ui/WheelView.java	/^	public int getVisibleItems() {$/;"	m	class:WheelView
+handler	Activity/MainActivity.java	/^  private final Handler handler = new Handler();$/;"	f	class:MainActivity	file:
+hkust.comp3111h.focus.Activity	Activity/MainActivity.java	/^package hkust.comp3111h.focus.Activity;$/;"	p
+hkust.comp3111h.focus.Activity	Activity/TimerActivity.java	/^package hkust.comp3111h.focus.Activity;$/;"	p
+hkust.comp3111h.focus.Adapter	Adapter/AbstractWheelAdapter.java	/^package hkust.comp3111h.focus.Adapter;$/;"	p
+hkust.comp3111h.focus.Adapter	Adapter/AbstractWheelTextAdapter.java	/^package hkust.comp3111h.focus.Adapter;$/;"	p
+hkust.comp3111h.focus.Adapter	Adapter/ArrayWheelAdapter.java	/^package hkust.comp3111h.focus.Adapter;$/;"	p
+hkust.comp3111h.focus.Adapter	Adapter/NumericWheelAdapter.java	/^package hkust.comp3111h.focus.Adapter;$/;"	p
+hkust.comp3111h.focus.Adapter	Adapter/PagerAdapter.java	/^package hkust.comp3111h.focus.Adapter;$/;"	p
+hkust.comp3111h.focus.Adapter	Adapter/WheelViewAdapter.java	/^package hkust.comp3111h.focus.Adapter;$/;"	p
+hkust.comp3111h.focus.ui	ui/ItemsRange.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/MainViewPager.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/OnWheelChangedListener.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/OnWheelClickedListener.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/OnWheelScrollListener.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/StatisticsFragment.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/TaskManageFragment.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/TimerFragment.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/WheelRecycle.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/WheelScroller.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+hkust.comp3111h.focus.ui	ui/WheelView.java	/^package hkust.comp3111h.focus.ui;$/;"	p
+inflater	Adapter/AbstractWheelTextAdapter.java	/^  protected LayoutInflater inflater;$/;"	f	class:AbstractWheelTextAdapter
+initData	ui/WheelView.java	/^	private void initData(Context context) {$/;"	m	class:WheelView	file:
+initResourcesIfNecessary	ui/WheelView.java	/^	private void initResourcesIfNecessary() {$/;"	m	class:WheelView	file:
+initialiseViewPager	Activity/MainActivity.java	/^  private void initialiseViewPager() {$/;"	m	class:MainActivity	file:
+invalidateWheel	ui/WheelView.java	/^    public void invalidateWheel(boolean clearCaches) {$/;"	m	class:WheelView
+isCyclic	ui/WheelView.java	/^	public boolean isCyclic() {$/;"	m	class:WheelView
+isCyclic	ui/WheelView.java	/^  boolean isCyclic = true;$/;"	f	class:WheelView
+isScrollingPerformed	ui/WheelScroller.java	/^  private boolean isScrollingPerformed;$/;"	f	class:WheelScroller	file:
+isScrollingPerformed	ui/WheelView.java	/^  private boolean isScrollingPerformed;$/;"	f	class:WheelView	file:
+isValidItemIndex	ui/WheelView.java	/^	private boolean isValidItemIndex(int index) {$/;"	m	class:WheelView	file:
+itemHeight	ui/WheelView.java	/^  private int itemHeight = 0;$/;"	f	class:WheelView	file:
+itemResourceId	Adapter/AbstractWheelTextAdapter.java	/^  protected int itemResourceId;$/;"	f	class:AbstractWheelTextAdapter
+itemTextResourceId	Adapter/AbstractWheelTextAdapter.java	/^  protected int itemTextResourceId;$/;"	f	class:AbstractWheelTextAdapter
+items	Adapter/ArrayWheelAdapter.java	/^  private T items[];$/;"	f	class:ArrayWheelAdapter	file:
+items	ui/WheelRecycle.java	/^  private List<View> items;$/;"	f	class:WheelRecycle	file:
+itemsLayout	ui/WheelView.java	/^  private LinearLayout itemsLayout;$/;"	f	class:WheelView	file:
+justify	ui/WheelScroller.java	/^  private void justify() {$/;"	m	class:WheelScroller	file:
+lastScrollY	ui/WheelScroller.java	/^  private int lastScrollY;$/;"	f	class:WheelScroller	file:
+lastTouchedY	ui/WheelScroller.java	/^  private float lastTouchedY;$/;"	f	class:WheelScroller	file:
+layout	ui/WheelView.java	/^    private void layout(int width, int height) {$/;"	m	class:WheelView	file:
+listener	ui/WheelScroller.java	/^  private ScrollingListener listener;$/;"	f	class:WheelScroller	file:
+mFragments	Adapter/PagerAdapter.java	/^  private List<Fragment> mFragments;$/;"	f	class:PagerAdapter	file:
+mPagerAdapter	Activity/MainActivity.java	/^  private PagerAdapter mPagerAdapter;$/;"	f	class:MainActivity	file:
+mViewPager	Activity/MainActivity.java	/^  private ViewPager mViewPager;$/;"	f	class:MainActivity	file:
+maxValue	Adapter/NumericWheelAdapter.java	/^  private int maxValue;$/;"	f	class:NumericWheelAdapter	file:
+minValue	Adapter/NumericWheelAdapter.java	/^  private int minValue;$/;"	f	class:NumericWheelAdapter	file:
+notifyChangingListeners	ui/WheelView.java	/^	protected void notifyChangingListeners(int oldValue, int newValue) {$/;"	m	class:WheelView
+notifyClickListenersAboutClick	ui/WheelView.java	/^    protected void notifyClickListenersAboutClick(int item) {$/;"	m	class:WheelView
+notifyDataChangedEvent	Adapter/AbstractWheelAdapter.java	/^  protected void notifyDataChangedEvent() {$/;"	m	class:AbstractWheelAdapter
+notifyDataInvalidatedEvent	Adapter/AbstractWheelAdapter.java	/^  protected void notifyDataInvalidatedEvent() {$/;"	m	class:AbstractWheelAdapter
+notifyScrollingListenersAboutEnd	ui/WheelView.java	/^	protected void notifyScrollingListenersAboutEnd() {$/;"	m	class:WheelView
+notifyScrollingListenersAboutStart	ui/WheelView.java	/^	protected void notifyScrollingListenersAboutStart() {$/;"	m	class:WheelView
+onChanged	ui/OnWheelChangedListener.java	/^  void onChanged(WheelView wheel, int oldValue, int newValue);$/;"	m	interface:OnWheelChangedListener
+onCreate	Activity/MainActivity.java	/^  public void onCreate(Bundle savedInstanceState) {$/;"	m	class:MainActivity
+onCreate	Activity/TimerActivity.java	/^  public void onCreate(Bundle savedInstanceState) {$/;"	m	class:TimerActivity
+onCreate	ui/TimerFragment.java	/^  public void onCreate(Bundle savedInstanceState) {$/;"	m	class:TimerFragment
+onCreateOptionsMenu	Activity/MainActivity.java	/^  public boolean onCreateOptionsMenu(Menu menu) {$/;"	m	class:MainActivity
+onCreateView	ui/StatisticsFragment.java	/^  public View onCreateView($/;"	m	class:StatisticsFragment
+onCreateView	ui/TaskManageFragment.java	/^  public View onCreateView($/;"	m	class:TaskManageFragment
+onCreateView	ui/TimerFragment.java	/^  public View onCreateView($/;"	m	class:TimerFragment
+onDraw	ui/WheelView.java	/^	protected void onDraw(Canvas canvas) {$/;"	m	class:WheelView
+onFinished	ui/WheelScroller.java	/^    void onFinished();$/;"	m	interface:WheelScroller.ScrollingListener
+onItemClicked	ui/OnWheelClickedListener.java	/^  public void onItemClicked(WheelView wheel, int itemIndex);$/;"	m	interface:OnWheelClickedListener
+onJustify	ui/WheelScroller.java	/^    void onJustify();$/;"	m	interface:WheelScroller.ScrollingListener
+onLayout	ui/WheelView.java	/^    protected void onLayout(boolean changed, int l, int t, int r, int b) {$/;"	m	class:WheelView
+onMeasure	ui/WheelView.java	/^	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {$/;"	m	class:WheelView
+onOptionsItemSelected	Activity/MainActivity.java	/^  public boolean onOptionsItemSelected(MenuItem item) {$/;"	m	class:MainActivity
+onPageScrollStateChanged	Activity/MainActivity.java	/^  public void onPageScrollStateChanged(int state) {$/;"	m	class:MainActivity
+onPageScrolled	Activity/MainActivity.java	/^  public void onPageScrolled(int position, float positionOffset,$/;"	m	class:MainActivity
+onPageSelected	Activity/MainActivity.java	/^  public void onPageSelected(int position) {$/;"	m	class:MainActivity
+onScroll	ui/WheelScroller.java	/^    void onScroll(int distance);$/;"	m	interface:WheelScroller.ScrollingListener
+onScrollingFinished	ui/OnWheelScrollListener.java	/^  void onScrollingFinished(WheelView wheel);$/;"	m	interface:OnWheelScrollListener
+onScrollingStarted	ui/OnWheelScrollListener.java	/^  void onScrollingStarted(WheelView wheel);$/;"	m	interface:OnWheelScrollListener
+onStarted	ui/WheelScroller.java	/^    void onStarted();$/;"	m	interface:WheelScroller.ScrollingListener
+onTabReselected	Activity/MainActivity.java	/^  public void onTabReselected(Tab tab, FragmentTransaction ft) {$/;"	m	class:MainActivity
+onTabSelected	Activity/MainActivity.java	/^  public void onTabSelected(Tab tab, FragmentTransaction ft) {$/;"	m	class:MainActivity
+onTabUnselected	Activity/MainActivity.java	/^  public void onTabUnselected(Tab tab, FragmentTransaction ft) {$/;"	m	class:MainActivity
+onTouchEvent	ui/WheelScroller.java	/^  public boolean onTouchEvent(MotionEvent event) {$/;"	m	class:WheelScroller
+onTouchEvent	ui/WheelView.java	/^	public boolean onTouchEvent(MotionEvent event) {$/;"	m	class:WheelView
+rebuildItems	ui/WheelView.java	/^	private boolean rebuildItems() {$/;"	m	class:WheelView	file:
+recycle	ui/WheelView.java	/^  private WheelRecycle recycle = new WheelRecycle(this);$/;"	f	class:WheelView	file:
+recycleItems	ui/WheelRecycle.java	/^  public int recycleItems($/;"	m	class:WheelRecycle
+recycleView	ui/WheelRecycle.java	/^  private void recycleView(View view, int index) {$/;"	m	class:WheelRecycle	file:
+registerDataSetObserver	Adapter/AbstractWheelAdapter.java	/^  public void registerDataSetObserver(DataSetObserver observer) {$/;"	m	class:AbstractWheelAdapter
+registerDataSetObserver	Adapter/WheelViewAdapter.java	/^	public void registerDataSetObserver(DataSetObserver observer);$/;"	m	interface:WheelViewAdapter
+removeChangingListener	ui/WheelView.java	/^	public void removeChangingListener(OnWheelChangedListener listener) {$/;"	m	class:WheelView
+removeClickingListener	ui/WheelView.java	/^    public void removeClickingListener(OnWheelClickedListener listener) {$/;"	m	class:WheelView
+removeScrollingListener	ui/WheelView.java	/^	public void removeScrollingListener(OnWheelScrollListener listener) {$/;"	m	class:WheelView
+scroll	ui/WheelScroller.java	/^  public void scroll(int distance, int time) {$/;"	m	class:WheelScroller
+scroll	ui/WheelView.java	/^	public void scroll(int itemsToScroll, int time) {$/;"	m	class:WheelView
+scroller	ui/WheelScroller.java	/^  private Scroller scroller;$/;"	f	class:WheelScroller	file:
+scroller	ui/WheelView.java	/^  private WheelScroller scroller;$/;"	f	class:WheelView	file:
+scrolling	ui/TimerFragment.java	/^  private boolean scrolling = false;$/;"	f	class:TimerFragment	file:
+scrollingListener	ui/WheelView.java	/^	WheelScroller.ScrollingListener scrollingListener = new WheelScroller.ScrollingListener() {$/;"	f	class:WheelView
+scrollingListeners	ui/WheelView.java	/^	private List<OnWheelScrollListener> scrollingListeners = new LinkedList<OnWheelScrollListener>();$/;"	f	class:WheelView	file:
+scrollingOffset	ui/WheelView.java	/^  private int scrollingOffset;$/;"	f	class:WheelView	file:
+setAdapter	ui/MainViewPager.java	/^  public void setAdapter(PagerAdapter adapter) {$/;"	m	class:MainViewPager
+setCurrentItem	ui/WheelView.java	/^	public void setCurrentItem(int index) {$/;"	m	class:WheelView
+setCurrentItem	ui/WheelView.java	/^	public void setCurrentItem(int index, boolean animated) {$/;"	m	class:WheelView
+setCyclic	ui/WheelView.java	/^	public void setCyclic(boolean isCyclic) {$/;"	m	class:WheelView
+setEmptyItemResource	Adapter/AbstractWheelTextAdapter.java	/^  public void setEmptyItemResource(int emptyItemResourceId) {$/;"	m	class:AbstractWheelTextAdapter
+setInterpolator	ui/WheelScroller.java	/^  public void setInterpolator(Interpolator interpolator) {$/;"	m	class:WheelScroller
+setInterpolator	ui/WheelView.java	/^	public void setInterpolator(Interpolator interpolator) {$/;"	m	class:WheelView
+setItemResource	Adapter/AbstractWheelTextAdapter.java	/^  public void setItemResource(int itemResourceId) {$/;"	m	class:AbstractWheelTextAdapter
+setItemTextResource	Adapter/AbstractWheelTextAdapter.java	/^  public void setItemTextResource(int itemTextResourceId) {$/;"	m	class:AbstractWheelTextAdapter
+setNextMessage	ui/WheelScroller.java	/^  private void setNextMessage(int message) {$/;"	m	class:WheelScroller	file:
+setTextColor	Adapter/AbstractWheelTextAdapter.java	/^  public void setTextColor(int textColor) {$/;"	m	class:AbstractWheelTextAdapter
+setTextSize	Adapter/AbstractWheelTextAdapter.java	/^  public void setTextSize(int textSize) {$/;"	m	class:AbstractWheelTextAdapter
+setViewAdapter	ui/WheelView.java	/^	public void setViewAdapter(WheelViewAdapter viewAdapter) {$/;"	m	class:WheelView
+setVisibleItems	ui/WheelView.java	/^	public void setVisibleItems(int count) {$/;"	m	class:WheelView
+showHomeUp	Activity/MainActivity.java	/^  private boolean showHomeUp = false;$/;"	f	class:MainActivity	file:
+startScrolling	ui/WheelScroller.java	/^  private void startScrolling() {$/;"	m	class:WheelScroller	file:
+stopScrolling	ui/WheelScroller.java	/^  public void stopScrolling() {$/;"	m	class:WheelScroller
+stopScrolling	ui/WheelView.java	/^	public void stopScrolling() {$/;"	m	class:WheelView
+textColor	Adapter/AbstractWheelTextAdapter.java	/^  private int textColor = DEFAULT_TEXT_COLOR;$/;"	f	class:AbstractWheelTextAdapter	file:
+textSize	Adapter/AbstractWheelTextAdapter.java	/^  private int textSize = DEFAULT_TEXT_SIZE;$/;"	f	class:AbstractWheelTextAdapter	file:
+timerView	ui/TimerFragment.java	/^  View timerView;$/;"	f	class:TimerFragment
+topShadow	ui/WheelView.java	/^  private GradientDrawable topShadow;$/;"	f	class:WheelView	file:
+unregisterDataSetObserver	Adapter/AbstractWheelAdapter.java	/^  public void unregisterDataSetObserver(DataSetObserver observer) {$/;"	m	class:AbstractWheelAdapter
+unregisterDataSetObserver	Adapter/WheelViewAdapter.java	/^	void unregisterDataSetObserver (DataSetObserver observer);$/;"	m	interface:WheelViewAdapter
+updateTasks	ui/TimerFragment.java	/^  private void updateTasks(WheelView tWheel, String Tasks[][], int index) {$/;"	m	class:TimerFragment	file:
+updateView	ui/WheelView.java	/^	private void updateView() {$/;"	m	class:WheelView	file:
+useLogo	Activity/MainActivity.java	/^  private boolean useLogo = false;$/;"	f	class:MainActivity	file:
+viewAdapter	ui/WheelView.java	/^  private WheelViewAdapter viewAdapter;$/;"	f	class:WheelView	file:
+visibleItems	ui/WheelView.java	/^  private int visibleItems = DEF_VISIBLE_ITEMS;$/;"	f	class:WheelView	file:
+wheel	ui/WheelRecycle.java	/^  private WheelView wheel;$/;"	f	class:WheelRecycle	file:
