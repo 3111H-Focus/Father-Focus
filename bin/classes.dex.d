@@ -11,6 +11,8 @@
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/Activity/TimerActivity.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/Activity/MainActivity$1.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/BuildConfig.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/database/TaskDbAdapter.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/database/TaskDbAdapter$DatabaseHelper.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/R$bool.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/R$layout.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/R$color.class \
@@ -22,9 +24,16 @@
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/Adapter/WheelViewAdapter.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/Adapter/AbstractWheelAdapter.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/Adapter/NumericWheelAdapter.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/test/TestUserTable.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/test/TaskDbAdapterTest.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/test/MainTestActivity$1.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/test/MainTestActivity.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/R$array.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/R$anim.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/R$menu.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/object/Task.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/object/TaskList.class \
+/home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/object/User.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/ui/StatisticsFragment.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/ui/FragmentPopover.class \
 /home/gary_li/Dropbox/Android/focus_local/bin/classes/hkust/comp3111h/focus/ui/WheelRecycle.class \

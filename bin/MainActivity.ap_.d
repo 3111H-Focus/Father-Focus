@@ -502,11 +502,13 @@
 /home/gary_li/Dropbox/Android/focus_local/res/drawable-xhdpi/icon.png \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/main_menu_row_layout.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/main.xml \
+/home/gary_li/Dropbox/Android/focus_local/res/layout/testalltables.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/task_manage_layout.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/timerfrag.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/timer_layout.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/statisfrag.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/taskmanagefrag.xml \
+/home/gary_li/Dropbox/Android/focus_local/res/layout/testuser.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/pagerlayout.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/indeterminate_progress_action.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/menu_separator.xml \
