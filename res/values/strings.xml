@@ -5,4 +5,8 @@
     <string name="tab2_name">Timer</string>
     <string name="tab3_name">Statistics</string>
     <string name="task_lists">Task lists</string>
+    <string name="PlsSelectTask">Please Select A Task</string>
+    <string name="main_menu_setting">Setting</string>
+    <string name="main_menu_sort">Sort</string>
+    <string name="main_menu_about">About</string>
 </resources>

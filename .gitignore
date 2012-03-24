@@ -41,6 +41,8 @@ Thumbs.db
 
 # Android specific files #
 R.java
+Father-Focus/gen/*
+local.properties
 *.apk
 *.dex
 *.ap_
