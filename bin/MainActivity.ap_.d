@@ -512,6 +512,7 @@
 /home/gary_li/Dropbox/Android/focus_local/res/layout/pagerlayout.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/indeterminate_progress_action.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/menu_separator.xml \
+/home/gary_li/Dropbox/Android/focus_local/res/layout/task_item.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/layout/main_menu_popover.xml \
 /home/gary_li/Dropbox/Android/focus_local/res/drawable-hdpi/ic_launcher.png \
 /home/gary_li/Dropbox/Android/focus_local/res/menu/action_bar_menu.xml \
