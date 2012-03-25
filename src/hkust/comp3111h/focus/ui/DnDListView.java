@@ -11,6 +11,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.util.Log;
+import android.view.Display;
+import android.graphics.Point;
+import android.app.Activity;
 
 public class DnDListView extends ListView {
 
@@ -48,6 +52,7 @@ public class DnDListView extends ListView {
 		final int action = ev.getAction();
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();	
+
 		
 		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth()/4) {
 			mDragMode = true;
@@ -76,8 +81,16 @@ public class DnDListView extends ListView {
 				mDragMode = false;
 				mEndPosition = pointToPosition(x,y);
 				stopDrag(mStartPosition - getFirstVisiblePosition());
-				if (mDropListener != null && mStartPosition != INVALID_POSITION && mEndPosition != INVALID_POSITION) 
+
+        Log.v("Info","y is"+y);
+        Log.v("Info","win height is" + getHeight());
+        if(y > getHeight() - 15) {
+          Log.v("Info", "Remove!");
+          mRemoveListener.onRemove(mStartPosition);
+        }else if (mDropListener != null && mStartPosition != INVALID_POSITION && mEndPosition != INVALID_POSITION) {
 	    		 mDropListener.onDrop(mStartPosition, mEndPosition);
+        }
+
 				break;
 		}
 		return true;
@@ -162,9 +175,7 @@ public class DnDListView extends ListView {
         	if (deltaX > mDragView.getWidth()/2 && deltaY < mDragView.getHeight()) {
         		mRemoveListener.onRemove(mStartPosition);
         	}
-        	
         	stopDrag(mStartPosition - getFirstVisiblePosition());
-
           return true;
         }
         return false;

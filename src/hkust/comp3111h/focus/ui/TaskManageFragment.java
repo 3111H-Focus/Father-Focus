@@ -16,6 +16,10 @@ import android.widget.ListAdapter;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import android.graphics.Point;
+import android.view.Display;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 import hkust.comp3111h.focus.R;
 
