@@ -9,6 +9,7 @@ package hkust.comp3111h.focus.Activity;
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.PagerAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
 import hkust.comp3111h.focus.ui.MainMenuPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
@@ -35,6 +36,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ListView;
 
 
 public class MainActivity extends FragmentActivity 
@@ -48,7 +50,7 @@ public class MainActivity extends FragmentActivity
   private ViewPager mViewPager;
   private PagerAdapter mPagerAdapter;
   private ImageButton mainMenu;
-  private MenuItem taskLists;
+  private MenuItem addTaskMenuItem;
   
   private MainMenuPopover mainMenuPopover;
 
@@ -105,19 +107,19 @@ public class MainActivity extends FragmentActivity
     //find the buttons
     mainMenu = (ImageButton) menu.findItem(R.id.main_menu).getActionView();
     mainMenu.setImageResource(R.drawable.menu_button_icon);
-    taskLists = menu.findItem(R.id.task_lists);
+    addTaskMenuItem = menu.findItem(R.id.add_task);
     mainMenu.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         mainMenuPopover.show(v);
       }
     });
-    //Do nothing currently
-    taskLists.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+    addTaskMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
       //TODO: propriate listener
       @Override
       public boolean onMenuItemClick(MenuItem item) {
-        //TODO: propriate listener
+        Intent i = new Intent(MainActivity.this, AddTaskActivity.class);
+        startActivityForResult(i, 0); // 0 just a random requestCode.
         return false;
       }
     });
