@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width = "fill_parent"
-  android:layout_height = "fill_parent"
-  android:background="#FFF000"
-  >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_height="fill_parent"
+  android:layout_width="fill_parent">
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="24dp"
+    android:layout_gravity="center_horizontal"
+    android:textSize="20sp"
+    android:text="@string/PlsSelectTask"/>
+  <LinearLayout xmlns="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="fill_parent"
+    android:paddingLeft="12dp"
+    android:paddingRight="4dp"
+    android:paddingTop="4dp"
+    android:layout_marginTop="4dp"
+    android:orientation="horizontal">
+    <hkust.comp3111h.focus.ui.WheelView
+      android:id="@+id/TaskLists"
+      android:layout_height="110dp"
+      android:layout_width="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_weight="1"/>
+    <hkust.comp3111h.focus.ui.WheelView
+      android:id="@+id/Tasks"
+      android:layout_height="110dp"
+      android:layout_width = "wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_marginLeft="10dp"
+      android:layout_weight="1.5"/>
+  </LinearLayout>
 </LinearLayout>

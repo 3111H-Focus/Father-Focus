@@ -34,13 +34,17 @@ Father-Focus/bin/*
 ehthumbs.db
 Icon?
 Thumbs.db
+project.properties
 
 # Text Editing Generated files #
 .*.swp
 *.d
+tags
 
 # Android specific files #
 R.java
+Father-Focus/gen/*
+local.properties
 *.apk
 *.dex
 *.ap_

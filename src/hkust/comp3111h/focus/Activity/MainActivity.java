@@ -6,44 +6,51 @@
  */
 package hkust.comp3111h.focus.Activity;
 
-import java.util.List;
-import java.util.Vector;
-
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.PagerAdapter;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.ui.MainMenuPopover;
+import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
-import android.animation.ObjectAnimator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
+import android.support.v4.view.MenuItem.OnMenuItemClickListener;
 import android.support.v4.view.ViewPager;
-
 import android.view.View;
-
-import android.view.animation.AlphaAnimation;
-import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 
 
 public class MainActivity extends FragmentActivity 
-  implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
+  implements ActionBar.TabListener, 
+             ViewPager.OnPageChangeListener, 
+             MainMenuListener {
   //determine honecome or not
   static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
   private final Handler handler = new Handler();
   private ViewPager mViewPager;
   private PagerAdapter mPagerAdapter;
+  private ImageButton mainMenu;
+  private MenuItem taskLists;
+  
+  private MainMenuPopover mainMenuPopover;
 
   //Actionbar set up
   private boolean useLogo = false;
@@ -71,9 +78,10 @@ public class MainActivity extends FragmentActivity
     ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     //Initialise ViewPager
     this.initialiseViewPager();
+    createMainMenuPopover();
   }
 
-  /**
+/**
    * Initialize ViewPager
    */
   
@@ -88,16 +96,48 @@ public class MainActivity extends FragmentActivity
     this.mViewPager.setOnPageChangeListener(this);
   }
   /**
-   * Creating the action bar menu, redundent currently
+   * Creating the action bar menu
+   * @param menu
    */
-  @Override
+  @Override 
   public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+    //find the buttons
+    mainMenu = (ImageButton) menu.findItem(R.id.main_menu).getActionView();
+    mainMenu.setImageResource(R.drawable.menu_button_icon);
+    taskLists = menu.findItem(R.id.task_lists);
+    mainMenu.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mainMenuPopover.show(v);
+      }
+    });
+    //Do nothing currently
+    taskLists.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+      //TODO: propriate listener
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        //TODO: propriate listener
+        return false;
+      }
+    });
     return super.onCreateOptionsMenu(menu);
+  }
+
+private void createMainMenuPopover() {
+    int layout = R.layout.main_menu_popover;
+    mainMenuPopover = new MainMenuPopover(this,layout);
+    mainMenuPopover.setMenuListener(this);
   }
 
   @Override 
   public boolean onOptionsItemSelected(MenuItem item) {
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void mainMenuItemSelected(int item, Intent customIntent) {
+    //TODO implmenent the main menu
   }
 
 
