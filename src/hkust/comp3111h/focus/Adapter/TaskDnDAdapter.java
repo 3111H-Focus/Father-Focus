@@ -1,8 +1,10 @@
 package hkust.comp3111h.focus.Adapter;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.ui.*;
 
 import java.util.ArrayList;
 import android.content.Context;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,27 +14,66 @@ import android.widget.TextView;
 //Current for testing
 public final class TaskDnDAdapter extends BaseAdapter implements RemoveListener, DropListener{
 
+	private Context mCtx;
 	private int[] mIds;
   private int[] mLayouts;
   private LayoutInflater mInflater;
+  private TaskDbAdapter mDbAdapter;
   private ArrayList<String> mContent;
 
-  public TaskDnDAdapter(Context context, ArrayList<String> content) {
-    init(context,new int[]{android.R.layout.simple_list_item_1},new int[]{android.R.id.text1}, content);
+  public TaskDnDAdapter(Context context) {
+    init(context,new int[]{android.R.layout.simple_list_item_1},new int[]{android.R.id.text1});
   }
   
-  public TaskDnDAdapter(Context context, int[] itemLayouts, int[] itemIDs, ArrayList<String> content) {
-  	init(context,itemLayouts,itemIDs, content);
+  public TaskDnDAdapter(Context context, int[] itemLayouts, int[] itemIDs) {
+  	init(context,itemLayouts,itemIDs);
   }
 
-  private void init(Context context, int[] layouts, int[] ids, ArrayList<String> content) {
+  private void init(Context context, int[] layouts, int[] ids) {
   	// Cache the LayoutInflate to avoid asking for a new one each time.
+	mCtx = context;
   	mInflater = LayoutInflater.from(context);
   	mIds = ids;
   	mLayouts = layouts;
-  	mContent = content;
+  	mContent = new ArrayList<String>();
+  	
+	mDbAdapter = new TaskDbAdapter(mCtx);
+	mDbAdapter.open();
+
+	long tl1= mDbAdapter.createTaskList("3111H");
+	long tl2= mDbAdapter.createTaskList("2031");
+	
+	mDbAdapter.createTask(tl1, "Project", "Database checking", "Next week", "Today", "Tomorrow");
+	mDbAdapter.createTask(tl1, "Assignment", "UML Diagram", "Next Monday", "Tomorrow", "TBD");
+	mDbAdapter.createTask(tl1, "Coding", "Part-time job", "Today", "TBD", "TBD");
+
+	mDbAdapter.createTask(tl2, "Presentation", "Exercise11", "Tuesday", "Thursday", "");
+	mDbAdapter.createTask(tl2, "Writing", "Homework", "Wednesday", "", "");
+  	}
+  
+  /**
+   * Fetch all tasks from database and refresh the tasks. 
+   */
+  public void update(){
+	mContent.clear();
+	//Insertion of dummy records. 
+	
+	Cursor mCursor = mDbAdapter.fetchAllTasks();
+	for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()){
+		mContent.add(mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME)));
+	}
+	
+	mCursor.close();
   }
   
+  /**
+   * return Content saved inside the Adapter.
+   * @return
+   */
+  
+  public ArrayList<String> getContent(){
+	  return mContent;
+  }
   /**
    * The number of items in the list
    */
