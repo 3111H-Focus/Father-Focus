@@ -230,9 +230,9 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if(resultCode == RESULT_CANCELED){
-			long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
+			Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
 			Log.d("In result, mRowid = ", String.valueOf(rowId));
-			if(rowId != 0){
+			if(!rowId.equals(new Long(0))){
 				mDbAdapter.deleteTask(rowId);
 			}
 		}

@@ -2,9 +2,13 @@ package hkust.comp3111h.focus.Activity;
 
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
+
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,8 +46,9 @@ public class AddTaskActivity extends Activity implements OnClickListener{
 		
 		bConfirm.setOnClickListener(this);
 		bCancel.setOnClickListener(this);
-
-		populateFields();
+		
+		//mRowId will be initialized in here. 
+		saveState();
 	}
 	
 	@Override
@@ -71,16 +76,25 @@ public class AddTaskActivity extends Activity implements OnClickListener{
 	/**
 	 * Fetch the task and fill the editText with the content. 
 	 */
-	private void populateFields() {
-		if (mRowId != null) {
-			Cursor mCursor = mDbHelper.fetchTask(mRowId);
-			startManagingCursor(mCursor);
-			etTaskName.setText(mCursor.getString(mCursor
-					.getColumnIndexOrThrow(TaskDbAdapter.KEY_TASK_NAME)));
-			etTaskType.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_TASK_TYPE)));
-			//TODO:DELETE THIS!! JUST FOR TEST!!!
+	private void populateFields() throws CursorIndexOutOfBoundsException{
+		try{
+			if (mRowId != null) {
+				Cursor mCursor = mDbHelper.fetchTask(mRowId);
+				startManagingCursor(mCursor);
+				mCursor.moveToFirst();
+				etTaskName.setText(mCursor.getString(mCursor
+						.getColumnIndexOrThrow(TaskDbAdapter.KEY_TASK_NAME)));
+				etTaskType.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TaskDbAdapter.KEY_TASK_TYPE)));
+				//TODO:DELETE THIS!! JUST FOR TEST!!!
+				etTaskList.setText("3111H");
+				//TODO:DATE SET FROM A STRING. 
+			}
+		}catch(CursorIndexOutOfBoundsException e){
+			//Definitely not right to do this. 
+			//This happens when you go in and immediately click cancel. 
+			etTaskName.setText("");
+			etTaskType.setText("");
 			etTaskList.setText("3111H");
-			//TODO:DATE SET FROM A STRING. 
 		}
 	}
 	
@@ -92,7 +106,8 @@ public class AddTaskActivity extends Activity implements OnClickListener{
 		String taskType = etTaskType.getText().toString();
 		//TODO:HARDCODED TASKLIST 
 		//String taskList = etTaskList.getText().toString();
-		String dueDate = this.dpDueDate.toString();
+		Date dpDate = new Date(dpDueDate.getYear()-1900, dpDueDate.getMonth(), dpDueDate.getDayOfMonth());
+		String dueDate = dpDate.toGMTString();
 		
 		if (mRowId == null){
 			//TODO:DELETE the 1!! DEFAULT FOR 3111H. JUST FOR TEST. 
@@ -103,6 +118,9 @@ public class AddTaskActivity extends Activity implements OnClickListener{
 			} else {
 				mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
 			}
+		}
+		else{
+				mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
 		}
 	}
 
@@ -115,14 +133,20 @@ public class AddTaskActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch(v.getId()){
 		case R.id.bConfirm:
-			setResult(RESULT_OK);
-			finish();
-			break;
+			if(etTaskName.getText().toString().length()==0){
+				etTaskName.setHint("Please specify Task Name.");
+				break;
+			}
+			else{
+				setResult(RESULT_OK);
+				finish();
+				break;
+			}
 		case R.id.bCancel:
 			//Create an intent and pass the result back to caller.
 			//If the user click cancel, the caller should delete this row. 
-			saveState(); //saveState to initialize mRowId
 			Intent i = new Intent();
+			Log.d("In cancel, mRowId=", String.valueOf(mRowId));
 			i.putExtra(TaskDbAdapter.KEY_TASK_TID, mRowId);
 			setResult(RESULT_CANCELED, i);
 			finish();
