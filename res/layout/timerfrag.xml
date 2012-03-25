@@ -20,17 +20,31 @@
     android:layout_marginTop="4dp"
     android:orientation="horizontal">
     <hkust.comp3111h.focus.ui.WheelView
-      android:id="@+id/TaskLists"
+      android:id="@+id/wheel_one"
       android:layout_height="110dp"
       android:layout_width="wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_weight="1"/>
     <hkust.comp3111h.focus.ui.WheelView
-      android:id="@+id/Tasks"
+      android:id="@+id/wheel_two"
       android:layout_height="110dp"
       android:layout_width = "wrap_content"
       android:layout_gravity="center_vertical"
       android:layout_marginLeft="10dp"
       android:layout_weight="1.5"/>
+    <hkust.comp3111h.focus.ui.WheelView
+      android:id="@+id/wheel_three"
+      android:layout_height="110dp"
+      android:layout_width = "wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_marginLeft="10dp"
+      android:layout_weight="1"
+      android:visibility="gone"/>
   </LinearLayout>
+  <Button
+    android:id="@+id/start_or_stop_button"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:text="@string/button_text_start"/>
 </LinearLayout>
