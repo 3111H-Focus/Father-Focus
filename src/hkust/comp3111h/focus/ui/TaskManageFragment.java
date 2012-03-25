@@ -18,19 +18,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import android.graphics.Point;
 import android.view.Display;
 import android.util.DisplayMetrics;
 import android.util.Log;
-
 import hkust.comp3111h.focus.R;
-=======
+
 public class TaskManageFragment extends Fragment {
 	private TaskDnDAdapter mAdapter;
 	private DnDListView mListView;
->>>>>>> c4e13789dd610f772e3febf7ac1e207bf90731af
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

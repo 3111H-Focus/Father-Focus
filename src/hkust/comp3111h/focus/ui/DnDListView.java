@@ -17,8 +17,7 @@ import android.graphics.Point;
 import android.app.Activity;
 
 public class DnDListView extends ListView {
-
-	boolean mDragMode;
+boolean mDragMode;
 
 	int mStartPosition;
 	int mEndPosition;

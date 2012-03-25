@@ -34,6 +34,7 @@ Father-Focus/bin/*
 ehthumbs.db
 Icon?
 Thumbs.db
+project.properties
 
 # Text Editing Generated files #
 .*.swp
