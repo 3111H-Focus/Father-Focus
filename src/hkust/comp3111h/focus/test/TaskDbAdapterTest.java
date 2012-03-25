@@ -28,10 +28,13 @@ package hkust.comp3111h.focus.test;
  */
 
 import hkust.comp3111h.focus.R;
+import hkust.comp3111h.focus.Activity.AddTaskActivity;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -210,19 +213,29 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener{
 		
 		etStatus.setText(etStatus.getText()+"Check task table. \nExpected: Analysis\nResult: " +
 				mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME)));
-		
 	}
-	
+
 	/**
 	 * Testcase 6:
-	 * Just a dummy function to show the variable values. 
-	 * Waiting to add more test functions. 
+	 * Test the Add Test Activity.
+	 * 
 	 */
 	public void TestCase6(){
-		
-		etStatus.setText("tl1=" + tl1 + " tl2=" + tl2 + " task1=" +
-		 task1 + " task2=" + task2 + " task3=" + task3 + " task4=" +
-				task4 + " task5=" + task5);
-		
+        Intent i = new Intent(this, AddTaskActivity.class);
+        startActivityForResult(i, 0); // 0 just a random requestCode.
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == RESULT_CANCELED){
+			long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
+			Log.d("In result, mRowid = ", String.valueOf(rowId));
+			if(rowId != 0){
+				mDbAdapter.deleteTask(rowId);
+			}
+		}
+	}
+	
 }
