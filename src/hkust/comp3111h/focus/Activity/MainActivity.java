@@ -6,24 +6,24 @@
  */
 package hkust.comp3111h.focus.Activity;
 
-import java.util.List;
-import java.util.Vector;
-import android.util.Log;
-
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.PagerAdapter;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.ui.MainMenuPopover;
+import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
-import hkust.comp3111h.focus.ui.MainMenuPopover;
-import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
-import android.animation.ObjectAnimator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.OnNavigationListener;
 import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -32,14 +32,8 @@ import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.MenuItem.OnMenuItemClickListener;
 import android.support.v4.view.ViewPager;
-import android.content.Intent;
-
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import android.view.animation.AlphaAnimation;
-import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
 
@@ -56,14 +50,11 @@ public class MainActivity extends FragmentActivity
   private ImageButton mainMenu;
   private MenuItem taskLists;
   
-
   private MainMenuPopover mainMenuPopover;
 
   //Actionbar set up
   private boolean useLogo = false;
   private boolean showHomeUp = false;
-
-
 
   /** 
    * Called when the activity is first created 
@@ -90,7 +81,7 @@ public class MainActivity extends FragmentActivity
     createMainMenuPopover();
   }
 
-  /**
+/**
    * Initialize ViewPager
    */
   
@@ -132,7 +123,8 @@ public class MainActivity extends FragmentActivity
     });
     return super.onCreateOptionsMenu(menu);
   }
-  private void createMainMenuPopover() {
+
+private void createMainMenuPopover() {
     int layout = R.layout.main_menu_popover;
     mainMenuPopover = new MainMenuPopover(this,layout);
     mainMenuPopover.setMenuListener(this);

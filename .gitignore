@@ -38,6 +38,7 @@ Thumbs.db
 # Text Editing Generated files #
 .*.swp
 *.d
+tags
 
 # Android specific files #
 R.java
