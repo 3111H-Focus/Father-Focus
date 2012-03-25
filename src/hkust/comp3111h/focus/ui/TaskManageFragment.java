@@ -37,6 +37,11 @@ public class TaskManageFragment extends Fragment {
 				new int[] { R.layout.task_item }, new int[] { R.id.task_name });
 		mAdapter.update();
 	}
+  @Override
+  public void onResume() {
+    super.onResume();
+    mAdapter.update();
+  }
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
