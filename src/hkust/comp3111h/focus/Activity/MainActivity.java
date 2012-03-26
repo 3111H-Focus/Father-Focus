@@ -19,6 +19,7 @@ import hkust.comp3111h.focus.ui.TimerFragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import android.util.Log;
 
 import android.content.Intent;
 import android.os.Build;
@@ -57,6 +58,8 @@ public class MainActivity extends FragmentActivity
   //Actionbar set up
   private boolean useLogo = false;
   private boolean showHomeUp = false;
+
+  Intent addTaskIntent;
 
   /** 
    * Called when the activity is first created 
@@ -118,15 +121,22 @@ public class MainActivity extends FragmentActivity
       //TODO: propriate listener
       @Override
       public boolean onMenuItemClick(MenuItem item) {
-        Intent i = new Intent(MainActivity.this, AddTaskActivity.class);
-        startActivityForResult(i, 0); // 0 just a random requestCode.
+        addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+        startActivityForResult(addTaskIntent, 0); // 0 just a random requestCode.
         return false;
       }
     });
     return super.onCreateOptionsMenu(menu);
   }
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent Data) {
+    Log.v("Activity result","requestCode is"+requestCode);
+    if(requestCode == 0) {
+      ((TaskManageFragment)mPagerAdapter.getItem(0)).updateList();
+    }
+  }
 
-private void createMainMenuPopover() {
+  private void createMainMenuPopover() {
     int layout = R.layout.main_menu_popover;
     mainMenuPopover = new MainMenuPopover(this,layout);
     mainMenuPopover.setMenuListener(this);
