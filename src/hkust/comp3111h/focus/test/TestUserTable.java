@@ -27,8 +27,7 @@ import android.widget.EditText;
  * **********************************************************************************
  */
 
-public class TestUserTable extends Activity implements
-    View.OnClickListener {
+public class TestUserTable extends Activity implements View.OnClickListener {
 
   // Declaration of UIs.
   private Button bAdd;
@@ -139,10 +138,8 @@ public class TestUserTable extends Activity implements
         // exist
         clearInfo();
         etUserId.setText("UserID not exist!");
-        etPassword.setText("mCursor.getCount() = "
-            + mCursor.getCount());
-      }
-      else {
+        etPassword.setText("mCursor.getCount() = " + mCursor.getCount());
+      } else {
         etUserId.setText(mCursor.getString(mCursor
             .getColumnIndexOrThrow(TaskDbAdapter.KEY_USER_USERID)));
         etUserName.setText(mCursor.getString(mCursor

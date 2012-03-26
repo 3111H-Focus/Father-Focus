@@ -121,8 +121,7 @@ public class WheelView extends View {
       if (scrollingOffset > height) {
         scrollingOffset = height;
         scroller.stopScrolling();
-      }
-      else if (scrollingOffset < -height) {
+      } else if (scrollingOffset < -height) {
         scrollingOffset = -height;
         scroller.stopScrolling();
       }
@@ -347,8 +346,7 @@ public class WheelView extends View {
           index += itemCount;
         }
         index %= itemCount;
-      }
-      else {
+      } else {
         return;
       }
     }
@@ -363,8 +361,7 @@ public class WheelView extends View {
           }
         }
         scroll(itemsToScroll, 0);
-      }
-      else {
+      } else {
         scrollingOffset = 0;
 
         int old = currentItem;
@@ -421,8 +418,7 @@ public class WheelView extends View {
         itemsLayout.removeAllViews();
       }
       scrollingOffset = 0;
-    }
-    else if (itemsLayout != null) {
+    } else if (itemsLayout != null) {
       // cache all items
       recycle.recycleItems(itemsLayout, firstItem, new ItemsRange());
     }
@@ -440,8 +436,7 @@ public class WheelView extends View {
     }
 
     if (topShadow == null) {
-      topShadow = new GradientDrawable(Orientation.TOP_BOTTOM,
-          SHADOWS_COLORS);
+      topShadow = new GradientDrawable(Orientation.TOP_BOTTOM, SHADOWS_COLORS);
     }
 
     if (bottomShadow == null) {
@@ -464,8 +459,8 @@ public class WheelView extends View {
       itemHeight = layout.getChildAt(0).getMeasuredHeight();
     }
 
-    int desired = itemHeight * visibleItems - itemHeight
-        * ITEM_OFFSET_PERCENT / 50;
+    int desired = itemHeight * visibleItems - itemHeight * ITEM_OFFSET_PERCENT
+        / 50;
 
     return Math.max(desired, getSuggestedMinimumHeight());
   }
@@ -499,17 +494,16 @@ public class WheelView extends View {
    */
   private int calculateLayoutWidth(int widthSize, int mode) {
     initResourcesIfNecessary();
-    itemsLayout.setLayoutParams(new LayoutParams(
-        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-    itemsLayout.measure(MeasureSpec.makeMeasureSpec(widthSize,
-        MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0,
-        MeasureSpec.UNSPECIFIED));
+    itemsLayout.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+        LayoutParams.WRAP_CONTENT));
+    itemsLayout.measure(
+        MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.UNSPECIFIED),
+        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
     int width = itemsLayout.getMeasuredWidth();
 
     if (mode == MeasureSpec.EXACTLY) {
       width = widthSize;
-    }
-    else {
+    } else {
       width += 2 * PADDING;
 
       // Check against our minimum width
@@ -520,9 +514,9 @@ public class WheelView extends View {
       }
     }
 
-    itemsLayout.measure(MeasureSpec.makeMeasureSpec(width - 2
-        * PADDING, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
-        0, MeasureSpec.UNSPECIFIED));
+    itemsLayout.measure(
+        MeasureSpec.makeMeasureSpec(width - 2 * PADDING, MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 
     return width;
   }
@@ -558,8 +552,7 @@ public class WheelView extends View {
     int height;
     if (heightMode == MeasureSpec.EXACTLY) {
       height = heightSize;
-    }
-    else {
+    } else {
       height = getDesiredHeight(itemsLayout);
 
       if (heightMode == MeasureSpec.AT_MOST) {
@@ -617,8 +610,7 @@ public class WheelView extends View {
     topShadow.setBounds(0, 0, getWidth(), height);
     topShadow.draw(canvas);
 
-    bottomShadow.setBounds(0, getHeight() - height, getWidth(),
-        getHeight());
+    bottomShadow.setBounds(0, getHeight() - height, getWidth(), getHeight());
     bottomShadow.draw(canvas);
   }
 
@@ -653,8 +645,7 @@ public class WheelView extends View {
     // Calculate position
     int center = getHeight() / 2;
     int offset = (int) (getItemHeight() / 2 * 1.2);
-    centerDrawable.setBounds(0, center - offset, getWidth(), center
-        + offset);
+    centerDrawable.setBounds(0, center - offset, getWidth(), center + offset);
     centerDrawable.draw(canvas);
   }
 
@@ -676,8 +667,7 @@ public class WheelView extends View {
           int distance = (int) event.getY() - getHeight() / 2;
           if (distance > 0) {
             distance += getItemHeight() / 2;
-          }
-          else {
+          } else {
             distance -= getItemHeight() / 2;
           }
           int items = distance / getItemHeight();
@@ -714,8 +704,7 @@ public class WheelView extends View {
       if (fixPos > 0) {
         pos--;
         count++;
-      }
-      else if (fixPos < 0) {
+      } else if (fixPos < 0) {
         pos++;
         count--;
       }
@@ -724,22 +713,18 @@ public class WheelView extends View {
         pos += itemCount;
       }
       pos %= itemCount;
-    }
-    else {
+    } else {
       //
       if (pos < 0) {
         count = currentItem;
         pos = 0;
-      }
-      else if (pos >= itemCount) {
+      } else if (pos >= itemCount) {
         count = currentItem - itemCount + 1;
         pos = itemCount - 1;
-      }
-      else if (pos > 0 && fixPos > 0) {
+      } else if (pos > 0 && fixPos > 0) {
         pos--;
         count++;
-      }
-      else if (pos < itemCount - 1 && fixPos < 0) {
+      } else if (pos < itemCount - 1 && fixPos < 0) {
         pos++;
         count--;
       }
@@ -748,8 +733,7 @@ public class WheelView extends View {
     int offset = scrollingOffset;
     if (pos != currentItem) {
       setCurrentItem(pos, false);
-    }
-    else {
+    } else {
       invalidate();
     }
 
@@ -821,8 +805,7 @@ public class WheelView extends View {
       int first = recycle.recycleItems(itemsLayout, firstItem, range);
       updated = firstItem != first;
       firstItem = first;
-    }
-    else {
+    } else {
       createItemsLayout();
       updated = true;
     }
@@ -839,8 +822,7 @@ public class WheelView extends View {
         }
         firstItem = i;
       }
-    }
-    else {
+    } else {
       firstItem = range.getFirst();
     }
 
@@ -883,8 +865,7 @@ public class WheelView extends View {
     // clear all items
     if (itemsLayout != null) {
       recycle.recycleItems(itemsLayout, firstItem, new ItemsRange());
-    }
-    else {
+    } else {
       createItemsLayout();
     }
 
@@ -911,8 +892,7 @@ public class WheelView extends View {
     if (view != null) {
       if (first) {
         itemsLayout.addView(view, 0);
-      }
-      else {
+      } else {
         itemsLayout.addView(view);
       }
       return true;
@@ -929,10 +909,8 @@ public class WheelView extends View {
    * @return true if item index is not out of bounds or the wheel is cyclic
    */
   private boolean isValidItemIndex(int index) {
-    return viewAdapter != null
-        && viewAdapter.getItemsCount() > 0
-        && (isCyclic || index >= 0
-            && index < viewAdapter.getItemsCount());
+    return viewAdapter != null && viewAdapter.getItemsCount() > 0
+        && (isCyclic || index >= 0 && index < viewAdapter.getItemsCount());
   }
 
   /**
@@ -948,10 +926,8 @@ public class WheelView extends View {
     }
     int count = viewAdapter.getItemsCount();
     if (!isValidItemIndex(index)) {
-      return viewAdapter.getEmptyItem(recycle.getEmptyItem(),
-          itemsLayout);
-    }
-    else {
+      return viewAdapter.getEmptyItem(recycle.getEmptyItem(), itemsLayout);
+    } else {
       while (index < 0) {
         index = count + index;
       }

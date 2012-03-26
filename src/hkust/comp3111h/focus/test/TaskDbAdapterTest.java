@@ -40,8 +40,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class TaskDbAdapterTest extends Activity implements
-    OnClickListener {
+public class TaskDbAdapterTest extends Activity implements OnClickListener {
 
   EditText etStatus;
   Button bAddData;
@@ -127,20 +126,20 @@ public class TaskDbAdapterTest extends Activity implements
     tl1 = mDbAdapter.createTaskList("3111H");
     tl2 = mDbAdapter.createTaskList("2031");
 
-    task1 = mDbAdapter.createTask(tl1, "Project",
-        "Database checking", "Next week", "Today", "Tomorrow");
+    task1 = mDbAdapter.createTask(tl1, "Project", "Database checking",
+        "Next week", "Today", "Tomorrow");
     task2 = mDbAdapter.createTask(tl1, "Assignment", "UML Diagram",
         "Next Monday", "Tomorrow", "TBD");
-    task3 = mDbAdapter.createTask(tl1, "Coding", "Part-time job",
-        "Today", "TBD", "TBD");
+    task3 = mDbAdapter.createTask(tl1, "Coding", "Part-time job", "Today",
+        "TBD", "TBD");
 
-    task4 = mDbAdapter.createTask(tl2, "Presentation", "Exercise11",
-        "Tuesday", "Thursday", "");
-    task5 = mDbAdapter.createTask(tl2, "Writing", "Homework",
-        "Wednesday", "", "");
+    task4 = mDbAdapter.createTask(tl2, "Presentation", "Exercise11", "Tuesday",
+        "Thursday", "");
+    task5 = mDbAdapter.createTask(tl2, "Writing", "Homework", "Wednesday", "",
+        "");
 
-    etStatus.setText(etStatus.getText()
-        + "Data added. use adb to see content.");
+    etStatus
+        .setText(etStatus.getText() + "Data added. use adb to see content.");
   }
 
   /**
@@ -165,8 +164,7 @@ public class TaskDbAdapterTest extends Activity implements
    * Testcase 2: Fetch all tasklists. Tested function: fetchAllTaskLists
    */
   public void TestCase2() {
-    etStatus
-        .setText("Testcase 2: fetch all tasklists info from 3111H. \n");
+    etStatus.setText("Testcase 2: fetch all tasklists info from 3111H. \n");
     Cursor mCursor = mDbAdapter.fetchAllTaskLists();
     startManagingCursor(mCursor);
     mCursor.moveToFirst();
@@ -185,8 +183,7 @@ public class TaskDbAdapterTest extends Activity implements
    * Testcase 3: Delete a single task. Tested function: deleteTask
    */
   public void TestCase3() {
-    etStatus
-        .setText("Testcase 3: delete a task in 3111H taskList. \n");
+    etStatus.setText("Testcase 3: delete a task in 3111H taskList. \n");
     mDbAdapter.deleteTask(task3);
     etStatus.setText(etStatus.getText()
         + "Check task table in adb. \nExpected: 4 tasks"
@@ -236,8 +233,7 @@ public class TaskDbAdapterTest extends Activity implements
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode,
-      Intent data) {
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     // TODO Auto-generated method stub
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == RESULT_CANCELED) {

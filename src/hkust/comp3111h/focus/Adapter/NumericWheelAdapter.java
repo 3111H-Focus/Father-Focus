@@ -40,8 +40,7 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
    * @param maxValue
    *          the wheel max value
    */
-  public NumericWheelAdapter(Context context, int minValue,
-      int maxValue) {
+  public NumericWheelAdapter(Context context, int minValue, int maxValue) {
     this(context, minValue, maxValue, null);
   }
 
@@ -57,8 +56,8 @@ public class NumericWheelAdapter extends AbstractWheelTextAdapter {
    * @param format
    *          the format string
    */
-  public NumericWheelAdapter(Context context, int minValue,
-      int maxValue, String format) {
+  public NumericWheelAdapter(Context context, int minValue, int maxValue,
+      String format) {
     super(context);
 
     this.minValue = minValue;

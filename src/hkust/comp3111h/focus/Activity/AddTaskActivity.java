@@ -17,8 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-public class AddTaskActivity extends Activity implements
-    OnClickListener {
+public class AddTaskActivity extends Activity implements OnClickListener {
 
   private EditText etTaskName;
   private EditText etTaskType;
@@ -77,8 +76,7 @@ public class AddTaskActivity extends Activity implements
   /**
    * Fetch the task and fill the editText with the content.
    */
-  private void populateFields()
-      throws CursorIndexOutOfBoundsException {
+  private void populateFields() throws CursorIndexOutOfBoundsException {
     try {
       if (mRowId != null) {
         Cursor mCursor = mDbHelper.fetchTask(mRowId);
@@ -110,26 +108,21 @@ public class AddTaskActivity extends Activity implements
     String taskType = etTaskType.getText().toString();
     // TODO:HARDCODED TASKLIST
     // String taskList = etTaskList.getText().toString();
-    Date dpDate = new Date(dpDueDate.getYear() - 1900,
-        dpDueDate.getMonth(), dpDueDate.getDayOfMonth());
+    Date dpDate = new Date(dpDueDate.getYear() - 1900, dpDueDate.getMonth(),
+        dpDueDate.getDayOfMonth());
     String dueDate = dpDate.toGMTString();
 
     if (mRowId == null) {
       // TODO:DELETE the 1!! DEFAULT FOR 3111H. JUST FOR TEST.
-      long id = mDbHelper.createTask(1, taskType, taskName, dueDate,
-          "", "");
+      long id = mDbHelper.createTask(1, taskType, taskName, dueDate, "", "");
       Log.d("id=", String.valueOf(id));
       if (id > 0) {
         mRowId = id;
+      } else {
+        mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
       }
-      else {
-        mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "",
-            "");
-      }
-    }
-    else {
-      mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "",
-          "");
+    } else {
+      mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
     }
   }
 
@@ -145,8 +138,7 @@ public class AddTaskActivity extends Activity implements
         if (etTaskName.getText().toString().length() == 0) {
           etTaskName.setHint("Please specify Task Name.");
           break;
-        }
-        else {
+        } else {
           setResult(RESULT_OK);
           finish();
           break;

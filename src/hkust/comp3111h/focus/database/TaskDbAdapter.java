@@ -66,27 +66,21 @@ public class TaskDbAdapter {
 
   // SQL commands for creating the tables.
   private static final String DATABASE_CREATE_USER = "CREATE TABLE "
-      + TABLE_USER + " (" + KEY_USER_USERID
-      + " INTEGER PRIMARY KEY, " + KEY_USER_USERNAME
-      + " TEXT NOT NULL, " + KEY_USER_PASSWORD + " TEXT NOT NULL"
-      + ");";
+      + TABLE_USER + " (" + KEY_USER_USERID + " INTEGER PRIMARY KEY, "
+      + KEY_USER_USERNAME + " TEXT NOT NULL, " + KEY_USER_PASSWORD
+      + " TEXT NOT NULL" + ");";
 
   private static final String DATABASE_CREATE_TASKLIST = "CREATE TABLE "
-      + TABLE_TASKLIST
-      + " ("
-      + KEY_TASKLIST_TLID
-      + " INTEGER PRIMARY KEY, "
-      + KEY_TASKLIST_TLNAME
-      + " TEXT NOT NULL" + ");";
+      + TABLE_TASKLIST + " (" + KEY_TASKLIST_TLID + " INTEGER PRIMARY KEY, "
+      + KEY_TASKLIST_TLNAME + " TEXT NOT NULL" + ");";
 
   private static final String DATABASE_CREATE_TASK = "CREATE TABLE "
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
-      + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE
-      + " TEXT NOT NULL, " + KEY_TASK_NAME + " TEXT NOT NULL, "
-      + KEY_TASK_DUEDATE + " TEXT," + KEY_TASK_STARTDATE + " TEXT, "
-      + KEY_TASK_ENDDATE + " TEXT NOT NULL, " + "FOREIGN KEY ("
-      + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST + "("
-      + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE "
+      + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
+      + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
+      + KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE + " TEXT NOT NULL, "
+      + "FOREIGN KEY (" + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST
+      + "(" + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE "
       + ");";
 
   // SQL commands to destroy the tables.
@@ -127,11 +121,9 @@ public class TaskDbAdapter {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion,
-        int newVersion) {
-      Log.w("TaskDbAdapter", "Upgrading database from version "
-          + oldVersion + " to " + newVersion
-          + ", destroying all data.");
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+      Log.w("TaskDbAdapter", "Upgrading database from version " + oldVersion
+          + " to " + newVersion + ", destroying all data.");
       db.execSQL(DATABASE_DESTROY_USER);
       db.execSQL(DATABASE_DESTROY_TASKLIST);
       db.execSQL(DATABASE_DESTROY_TASK);
@@ -206,8 +198,8 @@ public class TaskDbAdapter {
    * @throws SQLException
    */
   public Cursor fetchUser(long userId) throws SQLException {
-    Cursor mCursor = mDb.query(true, TABLE_USER, null,
-        KEY_USER_USERID + "=" + userId, null, null, null, null, null);
+    Cursor mCursor = mDb.query(true, TABLE_USER, null, KEY_USER_USERID + "="
+        + userId, null, null, null, null, null);
     if (mCursor != null) {
       mCursor.moveToFirst();
     }
@@ -230,8 +222,7 @@ public class TaskDbAdapter {
    * @return successfully deleted or not.
    */
   public boolean deleteUser(long userId) {
-    return mDb.delete(TABLE_USER, KEY_USER_USERID + "=" + userId,
-        null) > 0;
+    return mDb.delete(TABLE_USER, KEY_USER_USERID + "=" + userId, null) > 0;
   }
 
   /**
@@ -242,14 +233,13 @@ public class TaskDbAdapter {
    * @param password
    * @return successfully updated or not.
    */
-  public boolean updateUser(long userId, String username,
-      String password) {
+  public boolean updateUser(long userId, String username, String password) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_USER_USERNAME, username);
     updatedInfo.put(KEY_USER_PASSWORD, password);
 
-    return mDb.update(TABLE_USER, updatedInfo, KEY_USER_USERID + "="
-        + userId, null) > 0;
+    return mDb.update(TABLE_USER, updatedInfo, KEY_USER_USERID + "=" + userId,
+        null) > 0;
   }
 
   /**
@@ -258,8 +248,7 @@ public class TaskDbAdapter {
    * @return array of string containing all the attributes in the user table.
    */
   public String[] getUserSchema() {
-    return new String[] { KEY_USER_USERID, KEY_USER_USERNAME,
-        KEY_USER_PASSWORD };
+    return new String[] { KEY_USER_USERID, KEY_USER_USERNAME, KEY_USER_PASSWORD };
   }
 
   // *******************END METHODS FOR USER********************
@@ -287,9 +276,8 @@ public class TaskDbAdapter {
    * @throws SQLException
    */
   public Cursor fetchTaskList(long taskListId) throws SQLException {
-    Cursor mCursor = mDb.query(true, TABLE_TASKLIST, null,
-        KEY_TASKLIST_TLID + "=" + taskListId, null, null, null, null,
-        null);
+    Cursor mCursor = mDb.query(true, TABLE_TASKLIST, null, KEY_TASKLIST_TLID
+        + "=" + taskListId, null, null, null, null, null);
     if (mCursor != null) {
       mCursor.moveToFirst();
     }
@@ -302,8 +290,7 @@ public class TaskDbAdapter {
    * @return a Cursor pointing to all the records.
    */
   public Cursor fetchAllTaskLists() {
-    return mDb.query(TABLE_TASKLIST, null, null, null, null, null,
-        null);
+    return mDb.query(TABLE_TASKLIST, null, null, null, null, null, null);
   }
 
   /**
@@ -313,8 +300,8 @@ public class TaskDbAdapter {
    * @return successfully deleted or not.
    */
   public boolean deleteTaskList(long taskListId) {
-    return mDb.delete(TABLE_TASKLIST, KEY_TASKLIST_TLID + "="
-        + taskListId, null) > 0;
+    return mDb.delete(TABLE_TASKLIST, KEY_TASKLIST_TLID + "=" + taskListId,
+        null) > 0;
   }
 
   /**
@@ -328,8 +315,8 @@ public class TaskDbAdapter {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASKLIST_TLNAME, taskListName);
 
-    return mDb.update(TABLE_TASKLIST, updatedInfo, KEY_TASKLIST_TLID
-        + "=" + taskListId, null) > 0;
+    return mDb.update(TABLE_TASKLIST, updatedInfo, KEY_TASKLIST_TLID + "="
+        + taskListId, null) > 0;
   }
 
   /**
@@ -355,9 +342,8 @@ public class TaskDbAdapter {
    * @param endDate
    * @return the ID of the newly inserted item, or -1 if an error occurred.
    */
-  public long createTask(long taskListId, String taskType,
-      String taskName, String dueDate, String startDate,
-      String endDate) {
+  public long createTask(long taskListId, String taskType, String taskName,
+      String dueDate, String startDate, String endDate) {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TASK_TLID, taskListId);
     initialValues.put(KEY_TASK_TYPE, taskType);
@@ -377,8 +363,8 @@ public class TaskDbAdapter {
    * @throws SQLException
    */
   public Cursor fetchTask(long taskId) throws SQLException {
-    return mDb.query(true, TABLE_TASK, null, KEY_TASK_TID + "="
-        + taskId, null, null, null, null, null);
+    return mDb.query(true, TABLE_TASK, null, KEY_TASK_TID + "=" + taskId, null,
+        null, null, null, null);
   }
 
   /**
@@ -397,8 +383,8 @@ public class TaskDbAdapter {
    * @return the Cursor pointing to all the records in the specified taskList.
    */
   public Cursor fetchAllTasksInList(long taskListId) {
-    return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "="
-        + taskListId, null, null, null, null);
+    return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
+        null, null, null);
   }
 
   /**
@@ -422,9 +408,8 @@ public class TaskDbAdapter {
    * @param endDate
    * @return successfully updated or not.
    */
-  public boolean updateTask(long taskId, String taskType,
-      String taskName, String dueDate, String startDate,
-      String endDate) {
+  public boolean updateTask(long taskId, String taskType, String taskName,
+      String dueDate, String startDate, String endDate) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASK_TYPE, taskType);
     updatedInfo.put(KEY_TASK_NAME, taskName);
@@ -432,8 +417,8 @@ public class TaskDbAdapter {
     updatedInfo.put(KEY_TASK_STARTDATE, startDate);
     updatedInfo.put(KEY_TASK_ENDDATE, endDate);
 
-    return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "="
-        + taskId, null) > 0;
+    return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "=" + taskId,
+        null) > 0;
   }
 
   /**
@@ -443,7 +428,6 @@ public class TaskDbAdapter {
    */
   public String[] getTaskSchema() {
     return new String[] { KEY_TASK_TLID, KEY_TASK_TID, KEY_TASK_TYPE,
-        KEY_TASK_NAME, KEY_TASK_DUEDATE, KEY_TASK_STARTDATE,
-        KEY_TASK_ENDDATE };
+        KEY_TASK_NAME, KEY_TASK_DUEDATE, KEY_TASK_STARTDATE, KEY_TASK_ENDDATE };
   }
 }

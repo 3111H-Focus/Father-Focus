@@ -66,10 +66,9 @@ public class MainMenuPopover extends FragmentPopover implements
     rowLayout = R.layout.main_menu_row_layout;
     inflater = (LayoutInflater) context
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    content = (LinearLayout) getContentView().findViewById(
-        android.R.id.content);
-    topFixed = (LinearLayout) getContentView().findViewById(
-        R.id.topFixedItems);
+    content = (LinearLayout) getContentView()
+        .findViewById(android.R.id.content);
+    topFixed = (LinearLayout) getContentView().findViewById(R.id.topFixedItems);
     bottomFixed = (LinearLayout) getContentView().findViewById(
         R.id.bottomFixedItems);
     addFixedItems();
@@ -114,8 +113,7 @@ public class MainMenuPopover extends FragmentPopover implements
     addMenuItem(title, imageRes, id, null, content);
   }
 
-  public void addMenuItem(int title, int imageRes,
-      Intent customIntent, int id) {
+  public void addMenuItem(int title, int imageRes, Intent customIntent, int id) {
     addMenuItem(title, imageRes, id, customIntent, content);
   }
 
@@ -139,8 +137,8 @@ public class MainMenuPopover extends FragmentPopover implements
     addViewWithListener(item, container, id, customIntent);
   }
 
-  private void addMenuItem(CharSequence title, Drawable image,
-      int id, Intent customIntent, ViewGroup container) {
+  private void addMenuItem(CharSequence title, Drawable image, int id,
+      Intent customIntent, ViewGroup container) {
     View item = setupItemWithParams(title, image);
     addViewWithListener(item, container, id, customIntent);
   }
@@ -176,8 +174,7 @@ public class MainMenuPopover extends FragmentPopover implements
     return itemRow;
   }
 
-  private View setupItemWithParams(CharSequence title,
-      Drawable imageDrawable) {
+  private View setupItemWithParams(CharSequence title, Drawable imageDrawable) {
     View itemRow = inflater.inflate(rowLayout, null);
 
     ImageView image = (ImageView) itemRow.findViewById(R.id.icon);
@@ -190,10 +187,10 @@ public class MainMenuPopover extends FragmentPopover implements
   }
 
   private void addFixedItems() {
-    addMenuItem(MAIN_MENU_SORT, R.drawable.setting_icon,
-        MAIN_MENU_SORT, null, topFixed);
-    addMenuItem(MAIN_MENU_ABOUT, R.drawable.setting_icon,
-        MAIN_MENU_ABOUT, null, bottomFixed);
+    addMenuItem(MAIN_MENU_SORT, R.drawable.setting_icon, MAIN_MENU_SORT, null,
+        topFixed);
+    addMenuItem(MAIN_MENU_ABOUT, R.drawable.setting_icon, MAIN_MENU_ABOUT,
+        null, bottomFixed);
   }
 
 }

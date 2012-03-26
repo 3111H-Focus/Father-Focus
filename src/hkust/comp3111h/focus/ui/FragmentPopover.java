@@ -36,14 +36,14 @@ public class FragmentPopover extends QuickActionWidget {
 
   public void setContent(View content) {
     // set the contianer to the root
-    FrameLayout contentContainer = (FrameLayout) getContentView()
-        .findViewById(android.R.id.content);
+    FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
+        android.R.id.content);
     contentContainer.addView(content);
   }
 
   public void setContent(View content, LayoutParams params) {
-    FrameLayout contentContainer = (FrameLayout) getContentView()
-        .findViewById(android.R.id.content);
+    FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
+        android.R.id.content);
     contentContainer.addView(content, params);
 
   }
@@ -64,8 +64,9 @@ public class FragmentPopover extends QuickActionWidget {
     contentView.setLayoutParams(new FrameLayout.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT,
         ViewGroup.LayoutParams.WRAP_CONTENT));
-    contentView.measure(MeasureSpec.makeMeasureSpec(getScreenWidth(),
-        MeasureSpec.EXACTLY), ViewGroup.LayoutParams.WRAP_CONTENT);
+    contentView.measure(
+        MeasureSpec.makeMeasureSpec(getScreenWidth(), MeasureSpec.EXACTLY),
+        ViewGroup.LayoutParams.WRAP_CONTENT);
     int rootHeight = contentView.getMeasuredHeight();
     int offsetY = getArrowOffsetY();
     int dyTop = anchorRect.top;

@@ -23,8 +23,7 @@ public class MainTestActivity extends ListActivity {
   }
 
   @Override
-  protected void onListItemClick(ListView l, View v, int position,
-      long id) {
+  protected void onListItemClick(ListView l, View v, int position, long id) {
     // TODO Auto-generated method stub
     String choice = classes[position];
     super.onListItemClick(l, v, position, id);

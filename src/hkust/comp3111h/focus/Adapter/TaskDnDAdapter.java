@@ -28,8 +28,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
         new int[] { android.R.id.text1 });
   }
 
-  public TaskDnDAdapter(Context context, int[] itemLayouts,
-      int[] itemIDs) {
+  public TaskDnDAdapter(Context context, int[] itemLayouts, int[] itemIDs) {
     init(context, itemLayouts, itemIDs);
   }
 
@@ -67,8 +66,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
     // Insertion of dummy records.
 
     Cursor mCursor = mDbAdapter.fetchAllTasks();
-    for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor
-        .moveToNext()) {
+    for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
       mContent.add(mCursor.getString(mCursor
           .getColumnIndex(TaskDbAdapter.KEY_TASK_NAME)));
     }
@@ -137,8 +135,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
       holder.text = (TextView) convertView.findViewById(mIds[0]);
 
       convertView.setTag(holder);
-    }
-    else {
+    } else {
       // Get the ViewHolder back to get fast access to the TextView
       // and the ImageView.
       holder = (ViewHolder) convertView.getTag();

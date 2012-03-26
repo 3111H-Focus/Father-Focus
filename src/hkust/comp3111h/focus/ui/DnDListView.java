@@ -64,8 +64,7 @@ public class DnDListView extends ListView {
       case MotionEvent.ACTION_DOWN:
         mStartPosition = pointToPosition(x, y);
         if (mStartPosition != INVALID_POSITION) {
-          int mItemPosition = mStartPosition
-              - getFirstVisiblePosition();
+          int mItemPosition = mStartPosition - getFirstVisiblePosition();
           mDragPointOffset = y - getChildAt(mItemPosition).getTop();
           mDragPointOffset -= ((int) ev.getRawY()) - y;
           startDrag(mItemPosition, y);
@@ -87,9 +86,7 @@ public class DnDListView extends ListView {
         if (y > getHeight() - 15) {
           Log.v("Info", "Remove!");
           mRemoveListener.onRemove(mStartPosition);
-        }
-        else if (mDropListener != null
-            && mStartPosition != INVALID_POSITION
+        } else if (mDropListener != null && mStartPosition != INVALID_POSITION
             && mEndPosition != INVALID_POSITION) {
           mDropListener.onDrop(mStartPosition, mEndPosition);
         }
@@ -162,8 +159,8 @@ public class DnDListView extends ListView {
       if (mDragListener != null)
         mDragListener.onStopDrag(getChildAt(itemIndex));
       mDragView.setVisibility(GONE);
-      WindowManager wm = (WindowManager) getContext()
-          .getSystemService(Context.WINDOW_SERVICE);
+      WindowManager wm = (WindowManager) getContext().getSystemService(
+          Context.WINDOW_SERVICE);
       wm.removeView(mDragView);
       mDragView.setImageDrawable(null);
       mDragView = null;
@@ -172,24 +169,23 @@ public class DnDListView extends ListView {
 
   // Slide to the two side to remove the item
   private GestureDetector createFlingDetector() {
-    return new GestureDetector(getContext(),
-        new SimpleOnGestureListener() {
-          @Override
-          public boolean onFling(MotionEvent e1, MotionEvent e2,
-              float velocityX, float velocityY) {
-            if (mDragView != null) {
-              int deltaX = (int) Math.abs(e1.getX() - e2.getX());
-              int deltaY = (int) Math.abs(e1.getY() - e2.getY());
+    return new GestureDetector(getContext(), new SimpleOnGestureListener() {
+      @Override
+      public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+          float velocityY) {
+        if (mDragView != null) {
+          int deltaX = (int) Math.abs(e1.getX() - e2.getX());
+          int deltaY = (int) Math.abs(e1.getY() - e2.getY());
 
-              if (deltaX > mDragView.getWidth() / 2
-                  && deltaY < mDragView.getHeight()) {
-                mRemoveListener.onRemove(mStartPosition);
-              }
-              stopDrag(mStartPosition - getFirstVisiblePosition());
-              return true;
-            }
-            return false;
+          if (deltaX > mDragView.getWidth() / 2
+              && deltaY < mDragView.getHeight()) {
+            mRemoveListener.onRemove(mStartPosition);
           }
-        });
+          stopDrag(mStartPosition - getFirstVisiblePosition());
+          return true;
+        }
+        return false;
+      }
+    });
   }
 }

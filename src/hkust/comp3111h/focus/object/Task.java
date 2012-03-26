@@ -30,9 +30,8 @@ public class Task {
    * @param startDate
    * @param endDate
    */
-  public Task(long taskListId, long taskId, String taskType,
-      String taskName, String dueDate, String startDate,
-      String endDate) {
+  public Task(long taskListId, long taskId, String taskType, String taskName,
+      String dueDate, String startDate, String endDate) {
     this.setTaskListId(taskListId);
     this.setTaskId(taskId);
     this.setTaskType(taskType);

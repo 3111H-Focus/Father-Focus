@@ -38,10 +38,8 @@ public class TimerFragment extends Fragment {
   final String TaskLists[] = { "List 1", "List 2", "List 3" };
   final String Tasks[][] = new String[][] {
       new String[] { "Task 1", "Task 2", "Task 3", "Task 4", "Task 5" },
-      new String[] { "Task 6", "Task 7", "Task 8", "Task 9",
-          "Task 10" },
-      new String[] { "Task 11", "Task 12", "Task 13", "Task 14",
-          "Task 15" } };
+      new String[] { "Task 6", "Task 7", "Task 8", "Task 9", "Task 10" },
+      new String[] { "Task 11", "Task 12", "Task 13", "Task 14", "Task 15" } };
 
   private void startTimer() {
     isTimerStart = true;
@@ -66,10 +64,8 @@ public class TimerFragment extends Fragment {
       seconds[i] = "" + i;
       minutes[i] = "" + i;
     }
-    secondWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
-        seconds);
-    minuteWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
-        minutes);
+    secondWheelAdapter = new ArrayWheelAdapter<String>(getActivity(), seconds);
+    minuteWheelAdapter = new ArrayWheelAdapter<String>(getActivity(), minutes);
     String[] hrs = new String[100];
     for (int i = 0; i < 100; i++) {
       hrs[i] = "" + i;
@@ -102,8 +98,7 @@ public class TimerFragment extends Fragment {
   /**
    * Update the task wheel
    */
-  private void updateTasks(WheelView tWheel, String Tasks[][],
-      int index) {
+  private void updateTasks(WheelView tWheel, String Tasks[][], int index) {
     if (!isTimerStart) {
       ArrayWheelAdapter<String> adapter = new ArrayWheelAdapter<String>(
           getActivity(), Tasks[index]);
@@ -114,13 +109,13 @@ public class TimerFragment extends Fragment {
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater,
-      ViewGroup container, Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     if (container == null) {
       return null;
     }
-    timerView = (LinearLayout) inflater.inflate(R.layout.timerfrag,
-        container, false);
+    timerView = (LinearLayout) inflater.inflate(R.layout.timerfrag, container,
+        false);
     // For test purpose
     initWheelTwo(timerView);
     initWheelOne(timerView);
@@ -133,12 +128,11 @@ public class TimerFragment extends Fragment {
   private void initWheelOne(View timberView) {
     WheelOne = (WheelView) timerView.findViewById(R.id.wheel_one);
     WheelOne.setVisibleItems(3);
-    taskListWheelAdapter = new ArrayWheelAdapter<String>(
-        getActivity(), TaskLists);
+    taskListWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
+        TaskLists);
     WheelOne.setViewAdapter(taskListWheelAdapter);
     WheelOne.addChangingListener(new OnWheelChangedListener() {
-      public void onChanged(WheelView wheel, int oldValue,
-          int newValue) {
+      public void onChanged(WheelView wheel, int oldValue, int newValue) {
         if (!scrolling) {
           updateTasks(WheelTwo, Tasks, newValue);
         }
@@ -164,8 +158,8 @@ public class TimerFragment extends Fragment {
 
   private void initWheelThree(View timerView) {
     WheelThree = (WheelView) timerView.findViewById(R.id.wheel_three);
-    WheelThree.setViewAdapter(new ArrayWheelAdapter<String>(
-        getActivity(), new String[] { "haha", "hehe" }));
+    WheelThree.setViewAdapter(new ArrayWheelAdapter<String>(getActivity(),
+        new String[] { "haha", "hehe" }));
   }
 
   private void initButton(View timerView) {
@@ -177,17 +171,14 @@ public class TimerFragment extends Fragment {
         if (!isTimerStart) {
           WheelThree.setVisibility(View.VISIBLE);
           isTimerStart = true;
-          stopOrStartButton.setText("Stop",
-              TextView.BufferType.NORMAL);
+          stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
           setWheelForTimer();
           startTimer();
-        }
-        else {
+        } else {
           WheelThree.setVisibility(View.GONE);
           isTimerStart = false;
           stopTimer();
-          stopOrStartButton.setText("Start Timer",
-              TextView.BufferType.NORMAL);
+          stopOrStartButton.setText("Start Timer", TextView.BufferType.NORMAL);
           setWheelForTask();
 
         }

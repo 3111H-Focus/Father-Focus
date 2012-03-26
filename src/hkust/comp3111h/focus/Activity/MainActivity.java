@@ -40,8 +40,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity implements
-    ActionBar.TabListener, ViewPager.OnPageChangeListener,
-    MainMenuListener {
+    ActionBar.TabListener, ViewPager.OnPageChangeListener, MainMenuListener {
   // determine honecome or not
   static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
@@ -77,12 +76,9 @@ public class MainActivity extends FragmentActivity implements
     ab.setDisplayShowTitleEnabled(false);
 
     // Set up tabs navigation
-    ab.addTab(ab.newTab().setText(R.string.tab1_name)
-        .setTabListener(this));
-    ab.addTab(ab.newTab().setText(R.string.tab2_name)
-        .setTabListener(this));
-    ab.addTab(ab.newTab().setText(R.string.tab3_name)
-        .setTabListener(this));
+    ab.addTab(ab.newTab().setText(R.string.tab1_name).setTabListener(this));
+    ab.addTab(ab.newTab().setText(R.string.tab2_name).setTabListener(this));
+    ab.addTab(ab.newTab().setText(R.string.tab3_name).setTabListener(this));
     ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     // Initialise ViewPager
     this.initialiseViewPager();
@@ -95,14 +91,13 @@ public class MainActivity extends FragmentActivity implements
 
   private void initialiseViewPager() {
     List<Fragment> fragments = new Vector<Fragment>();
-    fragments.add(Fragment.instantiate(this,
-        TaskManageFragment.class.getName()));
-    fragments.add(Fragment.instantiate(this,
-        TimerFragment.class.getName()));
-    fragments.add(Fragment.instantiate(this,
-        StatisticsFragment.class.getName()));
-    this.mPagerAdapter = new PagerAdapter(
-        super.getSupportFragmentManager(), fragments);
+    fragments
+        .add(Fragment.instantiate(this, TaskManageFragment.class.getName()));
+    fragments.add(Fragment.instantiate(this, TimerFragment.class.getName()));
+    fragments
+        .add(Fragment.instantiate(this, StatisticsFragment.class.getName()));
+    this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(),
+        fragments);
     this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
     this.mViewPager.setAdapter(this.mPagerAdapter);
     this.mViewPager.setOnPageChangeListener(this);
@@ -117,8 +112,7 @@ public class MainActivity extends FragmentActivity implements
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.action_bar_menu, menu);
     // find the buttons
-    mainMenu = (ImageButton) menu.findItem(R.id.main_menu)
-        .getActionView();
+    mainMenu = (ImageButton) menu.findItem(R.id.main_menu).getActionView();
     mainMenu.setImageResource(R.drawable.menu_button_icon);
     addTaskMenuItem = menu.findItem(R.id.add_task);
     mainMenu.setOnClickListener(new OnClickListener() {
@@ -127,24 +121,21 @@ public class MainActivity extends FragmentActivity implements
         mainMenuPopover.show(v);
       }
     });
-    addTaskMenuItem
-        .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-          // TODO: propriate listener
-          @Override
-          public boolean onMenuItemClick(MenuItem item) {
-            addTaskIntent = new Intent(MainActivity.this,
-                AddTaskActivity.class);
-            startActivityForResult(addTaskIntent, 0); // 0 just a random
-                                                      // requestCode.
-            return false;
-          }
-        });
+    addTaskMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+      // TODO: propriate listener
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+        startActivityForResult(addTaskIntent, 0); // 0 just a random
+                                                  // requestCode.
+        return false;
+      }
+    });
     return super.onCreateOptionsMenu(menu);
   }
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode,
-      Intent data) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
     Log.v("Activity result", "requestCode is" + requestCode);
     if (resultCode == RESULT_CANCELED) {
       Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);

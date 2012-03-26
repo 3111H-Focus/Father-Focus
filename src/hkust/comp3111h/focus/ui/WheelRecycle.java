@@ -44,8 +44,7 @@ public class WheelRecycle {
    * @param teh
    *          new value of the first item number
    */
-  public int recycleItems(LinearLayout layout, int firstItem,
-      ItemsRange range) {
+  public int recycleItems(LinearLayout layout, int firstItem, ItemsRange range) {
     int index = firstItem;
     for (int i = 0; i < layout.getChildCount();) {
       if (!range.contains(index)) {
@@ -54,8 +53,7 @@ public class WheelRecycle {
         if (i == 0) {
           firstItem++;
         }
-      }
-      else {
+      } else {
         i++;
       }
       index++;
@@ -125,8 +123,7 @@ public class WheelRecycle {
     if ((index < 0 || index >= count) && !wheel.isCyclic()) {
       // empty view
       emptyItems = addView(view, emptyItems);
-    }
-    else {
+    } else {
       while (index < 0) {
         index = count + index;
       }

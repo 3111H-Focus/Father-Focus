@@ -40,8 +40,7 @@ public class TaskManageFragment extends Fragment {
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
     mAdapter = new TaskDnDAdapter(getActivity(),
-        new int[] { R.layout.task_item },
-        new int[] { R.id.task_name });
+        new int[] { R.layout.task_item }, new int[] { R.id.task_name });
     mAdapter.update();
   }
 
@@ -51,8 +50,8 @@ public class TaskManageFragment extends Fragment {
     mAdapter.update();
   }
 
-  public View onCreateView(LayoutInflater inflater,
-      ViewGroup container, Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     if (container == null) {
       return null;
     }
@@ -94,8 +93,7 @@ public class TaskManageFragment extends Fragment {
 
     public void onStartDrag(View itemView) {
       itemView.setVisibility(View.INVISIBLE);
-      defaultBackgroundColor = itemView
-          .getDrawingCacheBackgroundColor();
+      defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
       itemView.setBackgroundColor(backgroundColor);
     }
 

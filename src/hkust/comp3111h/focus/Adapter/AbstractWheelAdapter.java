@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 /**
  * Abastract Wheel adapter
  */
-public abstract class AbstractWheelAdapter implements
-    WheelViewAdapter {
+public abstract class AbstractWheelAdapter implements WheelViewAdapter {
   // Observers
   private List<DataSetObserver> datasetObservers;
 
