@@ -11,8 +11,10 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class PagerAdapter extends FragmentPagerAdapter {
   private List<Fragment> mFragments;
+
   /**
    * constructor
+   * 
    * @param fm
    * @param fragments
    */

@@ -35,6 +35,6 @@ public class TimerActivity extends FragmentActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.timer_layout); //Basically a easy linear layout
+    setContentView(R.layout.timer_layout); // Basically a easy linear layout
   }
 }

@@ -1,4 +1,5 @@
 package hkust.comp3111h.focus.ui;
+
 /**
  * Range for visible items
  */
@@ -6,54 +7,64 @@ public class ItemsRange {
   // First item number
   private int first;
 
-  //Items count
+  // Items count
   private int count;
+
   /**
    * Default constructor. Creates an empty range
    */
   public ItemsRange() {
-    this(0,0);
+    this(0, 0);
   }
 
   /**
    * Constructor
-   * @param first the number of the first item
-   * @param count the count of items
+   * 
+   * @param first
+   *          the number of the first item
+   * @param count
+   *          the count of items
    */
   public ItemsRange(int first, int count) {
     this.first = first;
     this.count = count;
   }
+
   /**
    * Gets number of the first item
+   * 
    * @return the number of the first item
    */
   public int getFirst() {
     return first;
   }
 
-
   /**
    * Gets number of last item
+   * 
    * @return the number of last item
    */
   public int getLast() {
-    return getFirst() + getCount() -1;
+    return getFirst() + getCount() - 1;
   }
 
   /**
    * Get items count
+   * 
    * @return the count of items
    */
   public int getCount() {
     return count;
   }
+
   /**
    * Tests whether item is contianed by range
-   * @param index the item number
+   * 
+   * @param index
+   *          the item number
    * @return true if item is contained
    */
   public boolean contains(int index) {
-    return index >= getFirst() && index <=getLast();
+    return index >= getFirst() && index <= getLast();
   }
 }

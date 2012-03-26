@@ -15,15 +15,16 @@ import android.widget.FrameLayout;
 import android.view.View.MeasureSpec;
 
 import hkust.comp3111h.focus.R;
+
 /**
- * Subclass QuickActionWidget
- * A QuckActionWidget is displayed on top of the user interface (it overlaps all
- * UI elements but the notification bar)
+ * Subclass QuickActionWidget A QuckActionWidget is displayed on top of the user
+ * interface (it overlaps all UI elements but the notification bar)
  */
 
 public class FragmentPopover extends QuickActionWidget {
-  //for graphical translation
+  // for graphical translation
   protected DisplayMetrics matrics;
+
   public FragmentPopover(Context context, int layout) {
     super(context);
     setContentView(layout);
@@ -32,35 +33,39 @@ public class FragmentPopover extends QuickActionWidget {
     setFocusable(true);
     setTouchable(true);
   }
-  
+
   public void setContent(View content) {
-    //set the contianer to the root 
-    FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(android.R.id.content);
+    // set the contianer to the root
+    FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
+        android.R.id.content);
     contentContainer.addView(content);
   }
 
   public void setContent(View content, LayoutParams params) {
-    FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(android.R.id.content);
+    FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
+        android.R.id.content);
     contentContainer.addView(content, params);
-    
+
   }
+
   @Override
   protected void populateQuickActions(List<QuickAction> quickActins) {
-    //Nothing
+    // Nothing
   }
 
   /**
-   * Measure  the layout, see document of the greendroid
+   * Measure the layout, see document of the greendroid
+   * 
    * @param anchorRect
    * @param contentView
    */
   @Override
   protected void onMeasureAndLayout(Rect anchorRect, View contentView) {
-    contentView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    contentView.setLayoutParams(new FrameLayout.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT));
     contentView.measure(
-        MeasureSpec.makeMeasureSpec(
-          getScreenWidth(),
-          MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(getScreenWidth(), MeasureSpec.EXACTLY),
         ViewGroup.LayoutParams.WRAP_CONTENT);
     int rootHeight = contentView.getMeasuredHeight();
     int offsetY = getArrowOffsetY();
@@ -68,19 +73,14 @@ public class FragmentPopover extends QuickActionWidget {
     int dyBottom = getScreenHeight() - anchorRect.bottom;
 
     boolean onTop = (dyTop > dyBottom);
-    int popupY = (onTop) ? 
-      anchorRect.top - rootHeight + offsetY:
-      anchorRect.bottom - offsetY;
+    int popupY = (onTop) ? anchorRect.top - rootHeight + offsetY
+        : anchorRect.bottom - offsetY;
     setWidgetSpecs(popupY, onTop);
 
   }
   /*
-  @Override
-  protected int getArrowLeftMargin(View arrow) {
-    return mRect.left + arrow.getMeasureWidth() /2 -
-      (int) (10 * merics.density);
-  }
-  */
+   * @Override protected int getArrowLeftMargin(View arrow) { return mRect.left
+   * + arrow.getMeasureWidth() /2 - (int) (10 * merics.density); }
+   */
 
 }
-
