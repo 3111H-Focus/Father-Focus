@@ -28,6 +28,11 @@ import hkust.comp3111h.focus.R;
 public class TaskManageFragment extends Fragment {
 	private TaskDnDAdapter mAdapter;
 	private DnDListView mListView;
+  public void updateList() {
+    Log.v("Fragment","updating");
+    mAdapter.update();
+    mAdapter.notifyDataSetChanged();
+  }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,7 @@ public class TaskManageFragment extends Fragment {
 			mListView.invalidateViews();
 		}
 	};
+
 	private RemoveListener mRemoveListener = new RemoveListener() {
 		@Override
 		public void onRemove(int which) {
