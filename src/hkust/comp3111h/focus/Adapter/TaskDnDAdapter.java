@@ -36,34 +36,35 @@ public final class TaskDnDAdapter extends BaseAdapter implements RemoveListener,
   	mIds = ids;
   	mLayouts = layouts;
   	mContent = new ArrayList<String>();
-  	
 	mDbAdapter = new TaskDbAdapter(mCtx);
 	mDbAdapter.open();
 
 	long tl1= mDbAdapter.createTaskList("3111H");
 	long tl2= mDbAdapter.createTaskList("2031");
 	
+  /*
 	mDbAdapter.createTask(tl1, "Project", "Database checking", "Next week", "Today", "Tomorrow");
 	mDbAdapter.createTask(tl1, "Assignment", "UML Diagram", "Next Monday", "Tomorrow", "TBD");
 	mDbAdapter.createTask(tl1, "Coding", "Part-time job", "Today", "TBD", "TBD");
 
 	mDbAdapter.createTask(tl2, "Presentation", "Exercise11", "Tuesday", "Thursday", "");
 	mDbAdapter.createTask(tl2, "Writing", "Homework", "Wednesday", "", "");
+  */
   	}
   
   /**
    * Fetch all tasks from database and refresh the tasks. 
    */
   public void update(){
-	mContent.clear();
-	//Insertion of dummy records. 
-	
-	Cursor mCursor = mDbAdapter.fetchAllTasks();
-	for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()){
-		mContent.add(mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME)));
-	}
-	
-	mCursor.close();
+    mContent.clear();
+    //Insertion of dummy records. 
+    
+    Cursor mCursor = mDbAdapter.fetchAllTasks();
+    for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()){
+      mContent.add(mCursor.getString(mCursor.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME)));
+    }
+    
+    mCursor.close();
   }
   
   /**

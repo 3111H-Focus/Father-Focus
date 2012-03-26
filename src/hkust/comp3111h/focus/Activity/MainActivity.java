@@ -58,6 +58,7 @@ public class MainActivity extends FragmentActivity
   //Actionbar set up
   private boolean useLogo = false;
   private boolean showHomeUp = false;
+  private TaskDbAdapter mDbAdapter;
 
   Intent addTaskIntent;
 
@@ -70,6 +71,7 @@ public class MainActivity extends FragmentActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.pagerlayout); //Basically a easy linear layout
     final ActionBar ab = getSupportActionBar();
+    mDbAdapter = new TaskDbAdapter(this);
     //Initialise ActionBar
     //Set defaults for logo and home up
     ab.setDisplayHomeAsUpEnabled(showHomeUp);
@@ -129,8 +131,14 @@ public class MainActivity extends FragmentActivity
     return super.onCreateOptionsMenu(menu);
   }
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent Data) {
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
     Log.v("Activity result","requestCode is"+requestCode);
+    if(resultCode == RESULT_CANCELED) {
+      Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
+      if(!rowId.equals(new Long(0))) {
+        mDbAdapter.deleteTask(rowId);
+      }
+    }
     if(requestCode == 0) {
       ((TaskManageFragment)mPagerAdapter.getItem(0)).updateList();
     }
