@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <!--custom items of action bar-->
-  <item android:id="@+id/task_lists" android:showAsAction="always"
-    android:icon="@drawable/task_list_icon"/>
+  <item android:id="@+id/add_task" android:showAsAction="always"
+    android:icon="@drawable/plus_button"/>
   <item android:id="@+id/main_menu" android:showAsAction="always"
     android:icon="@drawable/menu_button_icon"
     android:actionViewClass="android.widget.ImageButton"/>
