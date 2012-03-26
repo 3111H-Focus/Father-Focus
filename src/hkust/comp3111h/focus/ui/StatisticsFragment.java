@@ -14,19 +14,12 @@ import android.widget.LinearLayout;
 import hkust.comp3111h.focus.R;
 
 public class StatisticsFragment extends Fragment {
-  public View onCreateView(
-      LayoutInflater inflater, 
-      ViewGroup container,
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    if(container == null) {
+    if (container == null) {
       return null;
     }
-    return (LinearLayout)inflater.inflate(
-        R.layout.statisfrag,
-        container,
+    return (LinearLayout) inflater.inflate(R.layout.statisfrag, container,
         false);
   }
 }
-
-
-

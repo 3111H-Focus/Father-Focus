@@ -1,4 +1,5 @@
 package hkust.comp3111h.focus.ui;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -17,113 +18,116 @@ import android.graphics.Point;
 import android.app.Activity;
 
 public class DnDListView extends ListView {
-boolean mDragMode;
+  boolean mDragMode;
 
-	int mStartPosition;
-	int mEndPosition;
-	int mDragPointOffset;		//Used to adjust drag view location
-	
-	ImageView mDragView;
-	GestureDetector mGestureDetector;
-	
-	DropListener mDropListener;
-	RemoveListener mRemoveListener;
-	DragListener mDragListener;
-	
-	public DnDListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
-	
-	public void setDropListener(DropListener l) {
-		mDropListener = l;
-	}
+  int mStartPosition;
+  int mEndPosition;
+  int mDragPointOffset; // Used to adjust drag view location
 
-	public void setRemoveListener(RemoveListener l) {
-		mRemoveListener = l;
-	}
-	
-	public void setDragListener(DragListener l) {
-		mDragListener = l;
-	}
+  ImageView mDragView;
+  GestureDetector mGestureDetector;
 
-	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		final int action = ev.getAction();
-		final int x = (int) ev.getX();
-		final int y = (int) ev.getY();	
+  DropListener mDropListener;
+  RemoveListener mRemoveListener;
+  DragListener mDragListener;
 
-		
-		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth()/4) {
-			mDragMode = true;
-		}
+  public DnDListView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 
-		if (!mDragMode) 
-			return super.onTouchEvent(ev);
+  public void setDropListener(DropListener l) {
+    mDropListener = l;
+  }
 
-		switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				mStartPosition = pointToPosition(x,y);
-				if (mStartPosition != INVALID_POSITION) {
-					int mItemPosition = mStartPosition - getFirstVisiblePosition();
+  public void setRemoveListener(RemoveListener l) {
+    mRemoveListener = l;
+  }
+
+  public void setDragListener(DragListener l) {
+    mDragListener = l;
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent ev) {
+    final int action = ev.getAction();
+    final int x = (int) ev.getX();
+    final int y = (int) ev.getY();
+
+    if (action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) {
+      mDragMode = true;
+    }
+
+    if (!mDragMode)
+      return super.onTouchEvent(ev);
+
+    switch (action) {
+      case MotionEvent.ACTION_DOWN:
+        mStartPosition = pointToPosition(x, y);
+        if (mStartPosition != INVALID_POSITION) {
+          int mItemPosition = mStartPosition - getFirstVisiblePosition();
           mDragPointOffset = y - getChildAt(mItemPosition).getTop();
-          mDragPointOffset -= ((int)ev.getRawY()) - y;
-					startDrag(mItemPosition,y);
-					drag(0,y);// replace 0 with x if desired
-				}	
-				break;
-			case MotionEvent.ACTION_MOVE:
-				drag(0,y);// replace 0 with x if desired
-				break;
-			case MotionEvent.ACTION_CANCEL:
-			case MotionEvent.ACTION_UP:
-			default:
-				mDragMode = false;
-				mEndPosition = pointToPosition(x,y);
-				stopDrag(mStartPosition - getFirstVisiblePosition());
+          mDragPointOffset -= ((int) ev.getRawY()) - y;
+          startDrag(mItemPosition, y);
+          drag(0, y);// replace 0 with x if desired
+        }
+        break;
+      case MotionEvent.ACTION_MOVE:
+        drag(0, y);// replace 0 with x if desired
+        break;
+      case MotionEvent.ACTION_CANCEL:
+      case MotionEvent.ACTION_UP:
+      default:
+        mDragMode = false;
+        mEndPosition = pointToPosition(x, y);
+        stopDrag(mStartPosition - getFirstVisiblePosition());
 
-        Log.v("Info","y is"+y);
-        Log.v("Info","win height is" + getHeight());
-        if(y > getHeight() - 15) {
+        Log.v("Info", "y is" + y);
+        Log.v("Info", "win height is" + getHeight());
+        if (y > getHeight() - 15) {
           Log.v("Info", "Remove!");
           mRemoveListener.onRemove(mStartPosition);
-        }else if (mDropListener != null && mStartPosition != INVALID_POSITION && mEndPosition != INVALID_POSITION) {
-	    		 mDropListener.onDrop(mStartPosition, mEndPosition);
+        } else if (mDropListener != null && mStartPosition != INVALID_POSITION
+            && mEndPosition != INVALID_POSITION) {
+          mDropListener.onDrop(mStartPosition, mEndPosition);
         }
 
-				break;
-		}
-		return true;
-	}	
-	
-	// move the drag view
-	private void drag(int x, int y) {
-		if (mDragView != null) {
-			WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView.getLayoutParams();
-			layoutParams.x = x;
-			layoutParams.y = y - mDragPointOffset;
-			WindowManager mWindowManager = (WindowManager) getContext()
-					.getSystemService(Context.WINDOW_SERVICE);
-			mWindowManager.updateViewLayout(mDragView, layoutParams);
+        break;
+    }
+    return true;
+  }
 
-			if (mDragListener != null)
-				mDragListener.onDrag(x, y, null);// change null to "this" when ready to use
-		}
-	}
+  // move the drag view
+  private void drag(int x, int y) {
+    if (mDragView != null) {
+      WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView
+          .getLayoutParams();
+      layoutParams.x = x;
+      layoutParams.y = y - mDragPointOffset;
+      WindowManager mWindowManager = (WindowManager) getContext()
+          .getSystemService(Context.WINDOW_SERVICE);
+      mWindowManager.updateViewLayout(mDragView, layoutParams);
 
-	// enable the drag view for dragging
-	private void startDrag(int itemIndex, int y) {
-		stopDrag(itemIndex);
+      if (mDragListener != null)
+        mDragListener.onDrag(x, y, null);// change null to "this" when ready to
+                                         // use
+    }
+  }
 
-		View item = getChildAt(itemIndex);
-		if (item == null) return;
-		item.setDrawingCacheEnabled(true);
-		if (mDragListener != null)
-			mDragListener.onStartDrag(item);
-		
+  // enable the drag view for dragging
+  private void startDrag(int itemIndex, int y) {
+    stopDrag(itemIndex);
+
+    View item = getChildAt(itemIndex);
+    if (item == null)
+      return;
+    item.setDrawingCacheEnabled(true);
+    if (mDragListener != null)
+      mDragListener.onStartDrag(item);
+
     // Create a copy of the drawing cache so that it does not get recycled
     // by the framework when the list tries to clean up memory
     Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
-    
+
     WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
     mWindowParams.gravity = Gravity.TOP;
     mWindowParams.x = 0;
@@ -138,47 +142,50 @@ boolean mDragMode;
         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
     mWindowParams.format = PixelFormat.TRANSLUCENT;
     mWindowParams.windowAnimations = 0;
-    
+
     Context context = getContext();
     ImageView v = new ImageView(context);
-    v.setImageBitmap(bitmap);   
+    v.setImageBitmap(bitmap);
 
-    WindowManager mWindowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+    WindowManager mWindowManager = (WindowManager) context
+        .getSystemService(Context.WINDOW_SERVICE);
     mWindowManager.addView(v, mWindowParams);
     mDragView = v;
-	}
+  }
 
-	// destroy drag view
-	private void stopDrag(int itemIndex) {
-		if (mDragView != null) {
-			if (mDragListener != null)
-				mDragListener.onStopDrag(getChildAt(itemIndex));
+  // destroy drag view
+  private void stopDrag(int itemIndex) {
+    if (mDragView != null) {
+      if (mDragListener != null)
+        mDragListener.onStopDrag(getChildAt(itemIndex));
       mDragView.setVisibility(GONE);
-      WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
+      WindowManager wm = (WindowManager) getContext().getSystemService(
+          Context.WINDOW_SERVICE);
       wm.removeView(mDragView);
       mDragView.setImageDrawable(null);
       mDragView = null;
     }
-	}
+  }
 
-  //Slide to the two side to remove the item
-	private GestureDetector createFlingDetector() {
-		return new GestureDetector(getContext(), new SimpleOnGestureListener() {
+  // Slide to the two side to remove the item
+  private GestureDetector createFlingDetector() {
+    return new GestureDetector(getContext(), new SimpleOnGestureListener() {
       @Override
       public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-          float velocityY) {     	
-        if (mDragView != null) {       	
-        	int deltaX = (int)Math.abs(e1.getX()-e2.getX());
-        	int deltaY = (int)Math.abs(e1.getY() - e2.getY());
-        
-        	if (deltaX > mDragView.getWidth()/2 && deltaY < mDragView.getHeight()) {
-        		mRemoveListener.onRemove(mStartPosition);
-        	}
-        	stopDrag(mStartPosition - getFirstVisiblePosition());
+          float velocityY) {
+        if (mDragView != null) {
+          int deltaX = (int) Math.abs(e1.getX() - e2.getX());
+          int deltaY = (int) Math.abs(e1.getY() - e2.getY());
+
+          if (deltaX > mDragView.getWidth() / 2
+              && deltaY < mDragView.getHeight()) {
+            mRemoveListener.onRemove(mStartPosition);
+          }
+          stopDrag(mStartPosition - getFirstVisiblePosition());
           return true;
         }
         return false;
       }
     });
-	}
+  }
 }
