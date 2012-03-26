@@ -19,6 +19,7 @@ import hkust.comp3111h.focus.ui.TimerFragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import android.util.Log;
 
 import android.content.Intent;
 import android.os.Build;
@@ -56,6 +57,9 @@ public class MainActivity extends FragmentActivity implements
   // Actionbar set up
   private boolean useLogo = false;
   private boolean showHomeUp = false;
+  private TaskDbAdapter mDbAdapter;
+
+  Intent addTaskIntent;
 
   /**
    * Called when the activity is first created Initialize Environment
@@ -65,8 +69,9 @@ public class MainActivity extends FragmentActivity implements
     super.onCreate(savedInstanceState);
     setContentView(R.layout.pagerlayout); // Basically a easy linear layout
     final ActionBar ab = getSupportActionBar();
-    // Initialise ActionBar
-    // Set defaults for logo and home up
+    mDbAdapter = new TaskDbAdapter(this);
+    //Initialise ActionBar
+    //Set defaults for logo and home up
     ab.setDisplayHomeAsUpEnabled(showHomeUp);
     ab.setDisplayUseLogoEnabled(useLogo);
     ab.setDisplayShowTitleEnabled(false);
@@ -126,12 +131,25 @@ public class MainActivity extends FragmentActivity implements
       //TODO: propriate listener
       @Override
       public boolean onMenuItemClick(MenuItem item) {
-        Intent i = new Intent(MainActivity.this, AddTaskActivity.class);
-        startActivityForResult(i, 0); // 0 just a random requestCode.
+        addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+        startActivityForResult(addTaskIntent, 0); // 0 just a random requestCode.
         return false;
       }
     });
     return super.onCreateOptionsMenu(menu);
+  }
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    Log.v("Activity result","requestCode is"+requestCode);
+    if(resultCode == RESULT_CANCELED) {
+      Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
+      if(!rowId.equals(new Long(0))) {
+        mDbAdapter.deleteTask(rowId);
+      }
+    }
+    if(requestCode == 0) {
+      ((TaskManageFragment)mPagerAdapter.getItem(0)).updateList();
+    }
   }
 
   private void createMainMenuPopover() {
