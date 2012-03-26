@@ -51,7 +51,7 @@ public class MainActivity extends FragmentActivity implements
   private ImageButton mainMenu;
 
   private MenuItem addTaskMenuItem;
-  
+
   private MainMenuPopover mainMenuPopover;
 
   // Actionbar set up
@@ -70,8 +70,8 @@ public class MainActivity extends FragmentActivity implements
     setContentView(R.layout.pagerlayout); // Basically a easy linear layout
     final ActionBar ab = getSupportActionBar();
     mDbAdapter = new TaskDbAdapter(this);
-    //Initialise ActionBar
-    //Set defaults for logo and home up
+    // Initialise ActionBar
+    // Set defaults for logo and home up
     ab.setDisplayHomeAsUpEnabled(showHomeUp);
     ab.setDisplayUseLogoEnabled(useLogo);
     ab.setDisplayShowTitleEnabled(false);
@@ -127,28 +127,33 @@ public class MainActivity extends FragmentActivity implements
         mainMenuPopover.show(v);
       }
     });
-    addTaskMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-      //TODO: propriate listener
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
-        startActivityForResult(addTaskIntent, 0); // 0 just a random requestCode.
-        return false;
-      }
-    });
+    addTaskMenuItem
+        .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+          // TODO: propriate listener
+          @Override
+          public boolean onMenuItemClick(MenuItem item) {
+            addTaskIntent = new Intent(MainActivity.this,
+                AddTaskActivity.class);
+            startActivityForResult(addTaskIntent, 0); // 0 just a random
+                                                      // requestCode.
+            return false;
+          }
+        });
     return super.onCreateOptionsMenu(menu);
   }
+
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    Log.v("Activity result","requestCode is"+requestCode);
-    if(resultCode == RESULT_CANCELED) {
+  public void onActivityResult(int requestCode, int resultCode,
+      Intent data) {
+    Log.v("Activity result", "requestCode is" + requestCode);
+    if (resultCode == RESULT_CANCELED) {
       Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
-      if(!rowId.equals(new Long(0))) {
+      if (!rowId.equals(new Long(0))) {
         mDbAdapter.deleteTask(rowId);
       }
     }
-    if(requestCode == 0) {
-      ((TaskManageFragment)mPagerAdapter.getItem(0)).updateList();
+    if (requestCode == 0) {
+      ((TaskManageFragment) mPagerAdapter.getItem(0)).updateList();
     }
   }
 
