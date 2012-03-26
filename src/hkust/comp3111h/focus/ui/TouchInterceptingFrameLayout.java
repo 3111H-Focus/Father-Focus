@@ -13,21 +13,26 @@ public class TouchInterceptingFrameLayout extends FrameLayout {
 
   private InterceptTouchListener mListener;
 
-  public TouchInterceptingFrameLayout(Context context, AttributeSet attrs) {
+  public TouchInterceptingFrameLayout(Context context,
+      AttributeSet attrs) {
     super(context, attrs);
     setBackgroundColor(Color.TRANSPARENT);
   }
+
   @Override
   public boolean dispatchKeyEvent(KeyEvent event) {
-    if(mListener != null && mListener.doInterceptTouch(event)) {
+    if (mListener != null && mListener.doInterceptTouch(event)) {
       return true;
     }
     return super.dispatchKeyEvent(event);
   }
+
   public InterceptTouchListener getInterceptTouchListener() {
     return mListener;
   }
-  public void setInterceptTouchListener(InterceptTouchListener mListener) {
+
+  public void setInterceptTouchListener(
+      InterceptTouchListener mListener) {
     this.mListener = mListener;
   }
 }
