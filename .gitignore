@@ -48,3 +48,4 @@ local.properties
 *.apk
 *.dex
 *.ap_
+project.properties
