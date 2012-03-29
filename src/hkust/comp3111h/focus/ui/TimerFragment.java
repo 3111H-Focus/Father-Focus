@@ -29,18 +29,21 @@ public class TimerFragment extends Fragment {
   WheelView WheelOne;
   WheelView WheelTwo;
   WheelView WheelThree;
+
   ArrayWheelAdapter<String> hrWheelAdapter;
   ArrayWheelAdapter<String> minuteWheelAdapter;
   ArrayWheelAdapter<String> secondWheelAdapter;
   ArrayWheelAdapter<String> taskListWheelAdapter;
   Button stopOrStartButton;
   boolean isTimerStart = false;
+  //Dummy data for testing propose
   final String TaskLists[] = { "List 1", "List 2", "List 3" };
   final String Tasks[][] = new String[][] {
       new String[] { "Task 1", "Task 2", "Task 3", "Task 4", "Task 5" },
       new String[] { "Task 6", "Task 7", "Task 8", "Task 9", "Task 10" },
       new String[] { "Task 11", "Task 12", "Task 13", "Task 14", "Task 15" } };
 
+  //Start the timer
   private void startTimer() {
     isTimerStart = true;
     WheelThree.setCurrentItem(0, false);
@@ -53,10 +56,12 @@ public class TimerFragment extends Fragment {
     }, 0, 1000);
   }
 
+  //Stop the timer
   private void stopTimer() {
     mTimer.cancel();
   }
 
+  //Initialize the adapter for the timer
   private void initializeTimeAdapters() {
     String[] seconds = new String[60];
     String[] minutes = new String[60];
@@ -162,6 +167,9 @@ public class TimerFragment extends Fragment {
         new String[] { "haha", "hehe" }));
   }
 
+  /**
+   * Set up the button
+   */
   private void initButton(View timerView) {
     stopOrStartButton = (Button) timerView
         .findViewById(R.id.start_or_stop_button);

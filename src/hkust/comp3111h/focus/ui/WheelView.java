@@ -19,8 +19,8 @@ import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
 /**
- * @class WheelView The custom widget subclass View, with completely rerendered
- *        drawing, using grapics library Dedicately handle the scrolling
+ * @class WheelView The custom widget subclassing View, with completely rerendered
+ *        drawing, using grapics library. Dedicately handle the scrolling
  *        guesture
  */
 public class WheelView extends View {
@@ -38,40 +38,54 @@ public class WheelView extends View {
   /** Default count of visible items */
   private static final int DEF_VISIBLE_ITEMS = 5;
 
-  // Wheel Values
+  /** The current focusing item */
   private int currentItem = 0;
 
-  // Count of visible itmes
+  /** Default number of visible items, user can redefine this number */
   private int visibleItems = DEF_VISIBLE_ITEMS;
 
-  // Item height
+  /** The height of each item */
   private int itemHeight = 0;
 
-  // Center Line
+  /**
+   * Drawables for the interface rerendering, to implment the 3D like interface
+   */
   private Drawable centerDrawable;
-
-  // Shadows drawables
   private GradientDrawable topShadow;
   private GradientDrawable bottomShadow;
 
-  // Scrolling
+  /**
+   * The variables handling the scroling
+   */
   private WheelScroller scroller;
   private boolean isScrollingPerformed;
   private int scrollingOffset;
 
-  // Cyclic
+  /**
+   * Determine whether the wheel should be cyclic
+   */
   boolean isCyclic = true;
 
-  // Items layout
+  /**
+   * Layout of each item, usr defined
+   */
   private LinearLayout itemsLayout;
 
-  // The number of first item in layout
+  /** The number of the first item */
   private int firstItem;
 
-  // View adapter
+  /** 
+   * Adapter, providing view for each item, an adaper acts as
+   * a bridge between an AdapterView and the underlying data 
+   * for the view
+   */
   private WheelViewAdapter viewAdapter;
 
-  // Recycle
+  /**
+   * To recycle the view, provide to the adapter as the covertView, 
+   * to avoid redundant inflaction, which is very expensive.
+   * Mainly for performance purpose.
+   */
   private WheelRecycle recycle = new WheelRecycle(this);
 
   // Listeners
@@ -99,7 +113,6 @@ public class WheelView extends View {
 
   /**
    * Initiallize data, only create new scroller currently
-   * 
    * @param context
    *          the context
    */
@@ -107,13 +120,18 @@ public class WheelView extends View {
     scroller = new WheelScroller(getContext(), scrollingListener);
   }
 
-  // Scrolling listener
+  /**
+   * Define the callback to be invoked when the list has been scrolled
+   * Please look at the WheelScroller for detail information
+   */
   WheelScroller.ScrollingListener scrollingListener = new WheelScroller.ScrollingListener() {
+    @Override
     public void onStarted() {
       isScrollingPerformed = true;
       notifyScrollingListenersAboutStart();
     }
-
+    
+    @Override
     public void onScroll(int distance) {
       doScroll(distance);
 
@@ -127,6 +145,7 @@ public class WheelView extends View {
       }
     }
 
+    @Override
     public void onFinished() {
       if (isScrollingPerformed) {
         notifyScrollingListenersAboutEnd();
@@ -137,6 +156,7 @@ public class WheelView extends View {
       invalidate();
     }
 
+    @Override
     public void onJustify() {
       if (Math.abs(scrollingOffset) > WheelScroller.MIN_DELTA_FOR_SCROLLING) {
         scroller.scroll(scrollingOffset, 0);
@@ -146,7 +166,10 @@ public class WheelView extends View {
 
   /**
    * Set the the specified scrolling interpolator
-   * 
+   * An interpolator defines the rate of change of an animation
+   *
+   * This allows the basic animation effiects (alpha translate, rtate)
+   * to be accelerated decelerated, repeated, etc 
    * @param interpolator
    *          the interpolator
    */
@@ -155,7 +178,7 @@ public class WheelView extends View {
   }
 
   /**
-   * Gets count of visible items
+   * Gets count of visible items of the wheelView
    * 
    * @return the count of visible items
    */
@@ -178,19 +201,29 @@ public class WheelView extends View {
   /**
    * Gets view adapter
    * 
-   * @return the view adapter
+   * @return WheelViewAdapter
    */
   public WheelViewAdapter getViewAdapter() {
     return viewAdapter;
   }
 
-  // Receives call backs when a data set has been changed, or made invalid
+  /**
+   * Receives call backs when a data set has been changed, or made invalid.
+   */
   private DataSetObserver dataObserver = new DataSetObserver() {
+    /**
+     * This method is called when the entire data set has changed
+     * most like through a call to requery on a Cursor
+     */
     @Override
     public void onChanged() {
       invalidateWheel(false);
     }
-
+    /**
+     * This method is called when the entire data becomes invalid
+     * most likely through a call to deactiviate() or close() on a 
+     * Cursor
+     */
     @Override
     public void onInvalidated() {
       invalidateWheel(true);
@@ -217,7 +250,8 @@ public class WheelView extends View {
   }
 
   /**
-   * Adds wheel changing listener
+   * Adds wheel changing listener, callback to invoke when the current 
+   * Item is changed
    * 
    * @param listener
    *          the listener
@@ -237,7 +271,8 @@ public class WheelView extends View {
   }
 
   /**
-   * Notifies changing listeners
+   * Notifies changing listeners, it's basically a loop to go through each
+   * changingListeners (user can resiger more than one listeners
    * 
    * @param oldValue
    *          the old wheel value
@@ -251,7 +286,7 @@ public class WheelView extends View {
   }
 
   /**
-   * Adds wheel scrolling listener
+   * Adds wheel scrolling listener, basically push the listener to a list
    * 
    * @param listener
    *          the listener
@@ -261,7 +296,8 @@ public class WheelView extends View {
   }
 
   /**
-   * Removes wheel scrolling listener
+   * Removes wheel scrolling listener, remove the given listener from the
+   * listener lister
    * 
    * @param listener
    *          the listener
@@ -340,6 +376,8 @@ public class WheelView extends View {
     }
 
     int itemCount = viewAdapter.getItemsCount();
+    //Normalize it if in cyclic mode, and do nothing if not cyclic and the index
+    //is invalid
     if (index < 0 || index >= itemCount) {
       if (isCyclic) {
         while (index < 0) {
@@ -350,32 +388,37 @@ public class WheelView extends View {
         return;
       }
     }
+    //If the currentItem is not the given index, do setting
     if (index != currentItem) {
       if (animated) {
         int itemsToScroll = index - currentItem;
+        //When it is cyclic, the number of item to scroll needed some
+        //calcualtion, depending on whether the item is before the current item
+        //or after.
         if (isCyclic) {
           int scroll = itemCount + Math.min(index, currentItem)
               - Math.max(index, currentItem);
+          //Determine whether before or after the current item
           if (scroll < Math.abs(itemsToScroll)) {
             itemsToScroll = itemsToScroll < 0 ? scroll : -scroll;
           }
         }
+        //The scroll funciton will call notifyChangingListeners and invalidate, no need here
         scroll(itemsToScroll, 0);
       } else {
+        //Set the item directly if no animation is needed
         scrollingOffset = 0;
-
         int old = currentItem;
         currentItem = index;
-
         notifyChangingListeners(old, currentItem);
-
         invalidate();
       }
     }
   }
 
   /**
-   * Sets the current item w/o animation. Does nothing when index is wrong.
+   * Sets the current item without animation. Does nothing when index is wrong.
+   * Call the general function, nothing special
    * 
    * @param index
    *          the item index
@@ -422,12 +465,14 @@ public class WheelView extends View {
       // cache all items
       recycle.recycleItems(itemsLayout, firstItem, new ItemsRange());
     }
-
     invalidate();
   }
 
   /**
    * Initializes resources, set up the wheel view user interface
+   * centerDrawable: the drawable for the center bar indicating focusing item
+   * topShadow and bottomShadow: the shadow at the top and bottom to make it 
+   * more 3D like
    */
   private void initResourcesIfNecessary() {
     if (centerDrawable == null) {
@@ -485,6 +530,8 @@ public class WheelView extends View {
 
   /**
    * Calculates control width and creates text layouts
+   * Tedious geometry calcualtion, nothing special
+   * Draw some triangles if you really want to understand
    * 
    * @param widthSize
    *          the input layout width
@@ -562,7 +609,20 @@ public class WheelView extends View {
 
     setMeasuredDimension(width, height);
   }
-
+  /**
+   * Called when this view should assign a size and postion to all of its
+   * children
+   * @param changed
+   *          This is a new size or position of this view
+   * @param left
+   *          Left position, relative to parent
+   * @param top
+   *          Top position, relative to parent
+   * @param right
+   *          Right position, relative to parent
+   * @param bottom
+   *          Bottom position, relative to parent
+   */
   @Override
   protected void onLayout(boolean changed, int l, int t, int r, int b) {
     layout(r - l, b - t);
@@ -578,7 +638,6 @@ public class WheelView extends View {
    */
   private void layout(int width, int height) {
     int itemsWidth = width - 2 * PADDING;
-
     itemsLayout.layout(0, 0, itemsWidth, height);
   }
 
@@ -591,16 +650,16 @@ public class WheelView extends View {
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
     if (viewAdapter != null && viewAdapter.getItemsCount() > 0) {
+      //Rebuild view if necessary
       updateView();
-
-      drawItems(canvas);
-      drawCenterRect(canvas);
+      drawItems(canvas);//Draw visible items
+      drawCenterRect(canvas); //Draw the focusing bar
     }
     drawShadows(canvas);
   }
 
   /**
-   * Draws shadows on top and bottom of control
+   * Draws shadows on top and bottom of control 
    * 
    * @param canvas
    *          the canvas for drawing
@@ -609,7 +668,6 @@ public class WheelView extends View {
     int height = (int) (1.5 * getItemHeight());
     topShadow.setBounds(0, 0, getWidth(), height);
     topShadow.draw(canvas);
-
     bottomShadow.setBounds(0, getHeight() - height, getWidth(), getHeight());
     bottomShadow.draw(canvas);
   }
@@ -621,17 +679,19 @@ public class WheelView extends View {
    *          the canvas for drawing
    */
   private void drawItems(Canvas canvas) {
+    //push a new transformation matrix 
+    //To understand this, take comp4411
     canvas.save();
 
     // Calculate position
     int top = (currentItem - firstItem) * getItemHeight()
         + (getItemHeight() - getHeight()) / 2;
-    // Translation
+    // Translation to proper position
     canvas.translate(PADDING, -top + scrollingOffset);
     // draw the layout
     itemsLayout.draw(canvas);
 
-    // Restore matrix to identity
+    // Restore transformation matrix
     canvas.restore();
   }
 
@@ -648,7 +708,12 @@ public class WheelView extends View {
     centerDrawable.setBounds(0, center - offset, getWidth(), center + offset);
     centerDrawable.draw(canvas);
   }
-
+  /**
+   * Handle touch screen motion events
+   * Normally you don't need this funciton to use this WheelView
+   * Pls change the scroll listener if you really want to change 
+   * the behavior
+   */
   @Override
   public boolean onTouchEvent(MotionEvent event) {
     if (!isEnabled() || getViewAdapter() == null) {
@@ -656,14 +721,17 @@ public class WheelView extends View {
     }
 
     switch (event.getAction()) {
+      //Nothing to do, let the parent to handle
       case MotionEvent.ACTION_MOVE:
         if (getParent() != null) {
           getParent().requestDisallowInterceptTouchEvent(true);
         }
         break;
 
+      //Click only, no scrolling
       case MotionEvent.ACTION_UP:
         if (!isScrollingPerformed) {
+          //calculate the click item position
           int distance = (int) event.getY() - getHeight() / 2;
           if (distance > 0) {
             distance += getItemHeight() / 2;
@@ -671,6 +739,10 @@ public class WheelView extends View {
             distance -= getItemHeight() / 2;
           }
           int items = distance / getItemHeight();
+          //notify handlers to handle click
+          //Normally set the clicked item focus
+          //Change the ClickListener if you really want to change the
+          //default behavior
           if (items != 0 && isValidItemIndex(currentItem + items)) {
             notifyClickListenersAboutClick(currentItem + items);
           }
@@ -678,7 +750,9 @@ public class WheelView extends View {
         break;
     }
 
-    return scroller.onTouchEvent(event);
+    //Register the event to the scroller
+    //The scroller will handle the scrolling
+    return scroller.onTouchEvent(event); 
   }
 
   /**
@@ -714,7 +788,6 @@ public class WheelView extends View {
       }
       pos %= itemCount;
     } else {
-      //
       if (pos < 0) {
         count = currentItem;
         pos = 0;
