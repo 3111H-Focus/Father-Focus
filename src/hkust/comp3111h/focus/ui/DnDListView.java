@@ -16,6 +16,10 @@ import android.util.Log;
 import android.view.Display;
 import android.graphics.Point;
 import android.app.Activity;
+/**
+ * @class DnDListView
+ *       The very basic drag and drop list view implementation
+ */
 
 public class DnDListView extends ListView {
   boolean mDragMode;
@@ -24,43 +28,67 @@ public class DnDListView extends ListView {
   int mEndPosition;
   int mDragPointOffset; // Used to adjust drag view location
 
-  ImageView mDragView;
-  GestureDetector mGestureDetector;
+  ImageView mDragView; //The image to be draged, it's the generated view image basically
+  GestureDetector mGestureDetector; //detect gueture, not working currently
 
   DropListener mDropListener;
   RemoveListener mRemoveListener;
   DragListener mDragListener;
 
+  /**
+   * Constructor, setting up context, nothing sepcial
+   */
   public DnDListView(Context context, AttributeSet attrs) {
     super(context, attrs);
   }
 
+  /**
+   * Drop listener
+   */
   public void setDropListener(DropListener l) {
     mDropListener = l;
   }
 
+  /**
+   * RemoveListener
+   */
   public void setRemoveListener(RemoveListener l) {
     mRemoveListener = l;
   }
 
+  /**
+   * DragListener
+   */
   public void setDragListener(DragListener l) {
     mDragListener = l;
   }
 
+/**
+ * Handle the touching event
+ */
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
     final int action = ev.getAction();
     final int x = (int) ev.getX();
     final int y = (int) ev.getY();
 
+    //the drag begins when we touch the first quater of the item
     if (action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) {
       mDragMode = true;
     }
 
+    //propagate the event to the parent if not drag event
     if (!mDragMode)
       return super.onTouchEvent(ev);
 
+    //Start handling drag and drop here, basic procedure
+    //1. get the current position when touched
+    //2. Move it as user drag
+    //3. handle the drop, first check whether it's done position, yes, mark done
+    //   If not, check whether it is invalid position, if yes, nothing happen
+    //   If the position is valid, do swapping
     switch (action) {
+      //Detect the beginning of the drag
       case MotionEvent.ACTION_DOWN:
         mStartPosition = pointToPosition(x, y);
         if (mStartPosition != INVALID_POSITION) {
@@ -71,18 +99,18 @@ public class DnDListView extends ListView {
           drag(0, y);// replace 0 with x if desired
         }
         break;
+        //Drag
       case MotionEvent.ACTION_MOVE:
         drag(0, y);// replace 0 with x if desired
         break;
       case MotionEvent.ACTION_CANCEL:
       case MotionEvent.ACTION_UP:
+        //Drop
       default:
         mDragMode = false;
         mEndPosition = pointToPosition(x, y);
         stopDrag(mStartPosition - getFirstVisiblePosition());
 
-        Log.v("Info", "y is" + y);
-        Log.v("Info", "win height is" + getHeight());
         if (y > getHeight() - 15) {
           Log.v("Info", "Remove!");
           mRemoveListener.onRemove(mStartPosition);
@@ -96,7 +124,14 @@ public class DnDListView extends ListView {
     return true;
   }
 
-  // move the drag view
+  
+  /**
+   * Do the drag, basically do two things:
+   * 1. Calculate the new position based on the touched position 
+   * 2. Calculate the relative position to the parent
+   * 3. Set the position
+   * 4. Call the handler(s)
+   */
   private void drag(int x, int y) {
     if (mDragView != null) {
       WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView
@@ -106,14 +141,13 @@ public class DnDListView extends ListView {
       WindowManager mWindowManager = (WindowManager) getContext()
           .getSystemService(Context.WINDOW_SERVICE);
       mWindowManager.updateViewLayout(mDragView, layoutParams);
-
       if (mDragListener != null)
         mDragListener.onDrag(x, y, null);// change null to "this" when ready to
-                                         // use
     }
   }
 
   // enable the drag view for dragging
+  // Initialize parameters basically
   private void startDrag(int itemIndex, int y) {
     stopDrag(itemIndex);
 
@@ -168,6 +202,7 @@ public class DnDListView extends ListView {
   }
 
   // Slide to the two side to remove the item
+  // Not working currently
   private GestureDetector createFlingDetector() {
     return new GestureDetector(getContext(), new SimpleOnGestureListener() {
       @Override

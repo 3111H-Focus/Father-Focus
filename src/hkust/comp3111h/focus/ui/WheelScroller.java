@@ -11,7 +11,8 @@ import android.widget.Scroller;
 
 public class WheelScroller {
   /**
-   * Scroller listener interface
+   * Scroller listener interface, definition of the callback functions
+   * Dealing with the scrolling of customized the wheel view
    */
   public interface ScrollingListener {
     /**
@@ -33,7 +34,7 @@ public class WheelScroller {
     void onFinished();
 
     /**
-     * justifying callback called to justify a view when scrolling is ended
+     * justifying callback, called to justify a view when scrolling is ended
      */
     void onJustify();
   }
@@ -147,12 +148,8 @@ public class WheelScroller {
   private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
         float distanceY) {
-      // Do scrolling in
-      // onTouchEvent() since
-      // onScroll() are not call
-      // immediately
-      // when user touch and
-      // move the wheel
+      // Do scrolling in  onTouchEvent() since onScroll() are not call
+      // immediately when user touch and move the wheel
       return true;
     }
 
