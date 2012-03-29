@@ -20,7 +20,6 @@ import hkust.comp3111h.focus.R;
  * Subclass QuickActionWidget A QuckActionWidget is displayed on top of the user
  * interface (it overlaps all UI elements but the notification bar)
  */
-
 public class FragmentPopover extends QuickActionWidget {
   // for graphical translation
   protected DisplayMetrics matrics;

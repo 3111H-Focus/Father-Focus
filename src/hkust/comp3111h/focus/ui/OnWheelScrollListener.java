@@ -1,7 +1,9 @@
 package hkust.comp3111h.focus.ui;
 
 /**
- * Wheel scrolled listener infterface
+ * @class
+ *        Wheel scrolled listener infterface. Definition for a callback to be 
+ *        invoked when teh list or gird has been scrolled. 
  */
 
 public interface OnWheelScrollListener {
@@ -14,10 +16,10 @@ public interface OnWheelScrollListener {
   void onScrollingStarted(WheelView wheel);
 
   /**
-   * Callback method to be invoked when scrolling started
+   * Callback method to be invoked when scrolling finished
    * 
    * @param wheel
-   *          teh whell view whose state has changed
+   *          the whell view whose state has changed
    */
   void onScrollingFinished(WheelView wheel);
 }
