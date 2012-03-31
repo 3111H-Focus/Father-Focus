@@ -6,20 +6,15 @@ package hkust.comp3111h.focus.ui;
 
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.ArrayWheelAdapter;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Binder;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -81,6 +76,7 @@ public class TimerFragment extends Fragment {
 	if (b) Log.i("binded?", "yes");
 	else Log.i("binded?", "no");*/
     isTimerStart = true;
+    mTimer = new Timer();
     WheelThree.setCurrentItem(0, false);
     mTimer.schedule(new TimerTask() {
       @Override
@@ -96,6 +92,7 @@ public class TimerFragment extends Fragment {
   //Stop the timer
   private void stopTimer() {
     mTimer.cancel();
+    isTimerStart = false;
   }
 
   //Initialize the adapter for the timer
@@ -123,7 +120,24 @@ public class TimerFragment extends Fragment {
 
   private void setWheelForTask() {
     WheelOne.setViewAdapter(taskListWheelAdapter);
-    updateTasks(WheelTwo, Tasks, WheelOne.getCurrentItem());
+    int l_index = WheelOne.getCurrentItem();
+    TaskDbAdapter db = new TaskDbAdapter(getActivity());
+    db.open();
+    Cursor c = db.fetchAllTaskLists();
+    int c_index = c.getColumnIndex(TaskDbAdapter.KEY_TASK_TLID);
+    for (c.moveToFirst(); l_index > 0; c.moveToNext()) {
+      l_index--;
+    }
+    c = db.fetchAllTasksInList(c.getLong(c_index));
+    ArrayList<String> tasks_al = new ArrayList<String>();
+    int c_index_for_task = c.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME);
+    for (c.moveToFirst(); c.isAfterLast(); c.moveToNext()) {
+        tasks_al.add(c.getString(c_index_for_task));
+    }
+    String[] tasks = new String[0];
+    tasks = tasks_al.toArray(tasks);
+    taskListWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
+        tasks);
   }
 
   @Override
@@ -140,6 +154,7 @@ public class TimerFragment extends Fragment {
   /**
    * Update the task wheel
    */
+  //not used
   private void updateTasks(WheelView tWheel, String Tasks[][], int index) {
     if (!isTimerStart) {
       ArrayWheelAdapter<String> adapter = new ArrayWheelAdapter<String>(
@@ -172,8 +187,18 @@ public class TimerFragment extends Fragment {
   private void initWheelOne(View timberView) {
     WheelOne = (WheelView) timerView.findViewById(R.id.wheel_one);
     WheelOne.setVisibleItems(3);
+    TaskDbAdapter db = new TaskDbAdapter(getActivity());
+    db.open();
+    Cursor c = db.fetchAllTaskLists();
+    ArrayList<String> task_lists_al = new ArrayList<String>();
+    int index = c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME);
+    for (c.moveToFirst(); c.isAfterLast(); c.moveToNext()) {
+      task_lists_al.add(c.getString(index));
+    }
+    String[] task_lists = new String[0];
+    task_lists = task_lists_al.toArray(task_lists);
     taskListWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
-        TaskLists);
+        task_lists);
     WheelOne.setViewAdapter(taskListWheelAdapter);
     WheelOne.addChangingListener(new OnWheelChangedListener() {
       public void onChanged(WheelView wheel, int oldValue, int newValue) {
