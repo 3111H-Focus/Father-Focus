@@ -10,9 +10,10 @@ package hkust.comp3111h.focus.database;
  * WARNING:
  * Foreign key enabled, so when you delete a taskList, ALL the tasks that belong to the taskList will also be deleted. 
  * 
- * Waiting for further implementation. 
  * 
  */
+
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,6 +36,7 @@ public class TaskDbAdapter {
   // TaskList Table Key info
   public static final String KEY_TASKLIST_TLID = "taskListId";
   public static final String KEY_TASKLIST_TLNAME = "taskListName";
+  public static final String KEY_TASKLIST_TLSEQUENCE = "taskListSequence";
 
   // Task Table Key info
   public static final String KEY_TASK_TLID = "taskListId";
@@ -44,6 +46,7 @@ public class TaskDbAdapter {
   public static final String KEY_TASK_DUEDATE = "dueDate";
   public static final String KEY_TASK_STARTDATE = "startDate";
   public static final String KEY_TASK_ENDDATE = "endDate";
+  public static final String KEY_TASK_TSEQUENCE = "taskSequence";
 
   // TODO:
   // Time should be added into record table.
@@ -72,16 +75,17 @@ public class TaskDbAdapter {
 
   private static final String DATABASE_CREATE_TASKLIST = "CREATE TABLE "
       + TABLE_TASKLIST + " (" + KEY_TASKLIST_TLID + " INTEGER PRIMARY KEY, "
-      + KEY_TASKLIST_TLNAME + " TEXT NOT NULL" + ");";
+      + KEY_TASKLIST_TLNAME + " TEXT NOT NULL, " + KEY_TASKLIST_TLSEQUENCE
+      + " INTEGER NOT NULL" + ");";
 
   private static final String DATABASE_CREATE_TASK = "CREATE TABLE "
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
       + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
       + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
       + KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE + " TEXT NOT NULL, "
-      + "FOREIGN KEY (" + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST
-      + "(" + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE "
-      + ");";
+      + KEY_TASK_TSEQUENCE + " INTEGER NOT NULL, " + "FOREIGN KEY ("
+      + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST + "("
+      + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   // SQL commands to destroy the tables.
   private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
@@ -317,6 +321,143 @@ public class TaskDbAdapter {
 
     return mDb.update(TABLE_TASKLIST, updatedInfo, KEY_TASKLIST_TLID + "="
         + taskListId, null) > 0;
+  }
+
+  /**
+   * Update taskList sequence according to the given ids. This function will
+   * update the sequence between two ids, both included. Notice: the id will not
+   * change, just the sequcne attribute. Please sort the result if you want
+   * updated views.
+   * 
+   * @param dragId
+   *          The id of the item you drag.
+   * @param dropId
+   *          The id of the item where you drop in.
+   * @return whether it successfully updates.
+   */
+  public boolean updateTaskListSequence(long dragId, long dropId) {
+    if (dragId == dropId) {
+      return true; // Same item. No need to update.
+    }
+
+    // Get sequence of the specified id.
+    long dragOrigSeq = getTaskListSequenceById(dragId);
+    long dropOrigSeq = getTaskListSequenceById(dropId);
+
+    // find the records that will be influence by this update.
+    // i.e, those items with sequence inside dragOrigSeq and dropOrigSeq, both
+    // included.
+    Cursor interval = getTaskListByInterval(dragOrigSeq, dropOrigSeq);
+
+    ArrayList<Long> seqList = new ArrayList<Long>();
+    ArrayList<Long> idList = new ArrayList<Long>();
+
+    // Get all values and map them into origId and origSeq arraylist.
+    for (interval.moveToFirst(); !interval.isAfterLast(); interval.moveToNext()) {
+      seqList.add(interval.getLong(interval
+          .getColumnIndexOrThrow(KEY_TASKLIST_TLSEQUENCE)));
+      idList.add(interval.getLong(interval
+          .getColumnIndexOrThrow(KEY_TASKLIST_TLID)));
+    }
+
+    if (seqList.size() != idList.size()) {
+      return false;
+    }
+
+    // For debug use.
+    for (int i = 0; i < seqList.size(); ++i) {
+      Log.d("seq list", String.valueOf(seqList.get(i)));
+    }
+    for (int i = 0; i < idList.size(); ++i) {
+      Log.d("id list", String.valueOf(idList.get(i)));
+    }
+
+    // Now, seqList's sequence are 1-to-1 corresponding to the idList.
+    // Handle two situations.
+    if (dragId < dropId) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
+      idList.remove(0);
+      idList.add(dragId);
+    } else { // 2, Drag from down to up. e.g, drag 5th to 2nd.
+      idList.remove(idList.size() - 1); // remove the last.
+      idList.add(0, dragId);
+    }
+
+    // Now idList and the sequence should be 1-to-1 corresponding.
+    boolean status = true;
+    for (int i = 0; i < idList.size(); ++i) {
+      status = status
+          ^ updateTaskListSequenceById(idList.get(i), seqList.get(i));
+    }
+
+    return status;
+  }
+
+  /**
+   * Private function to help updateTaskListSequence Given an interval, return
+   * the taskLists that are inside this interval. boundaryA <= RESULT <=
+   * boundaryB or boundaryB <= RESULT <= boundaryA The function will take care
+   * of the boundaries. Don't need to specify which is bigger. NOTE: the return
+   * value will by order by sequence. NOT original id.
+   * 
+   * @param boundaryA
+   * @param end
+   * @return the rows between the two sequence id.
+   */
+  private Cursor getTaskListByInterval(long boundaryA, long boundaryB) {
+    long startSeq = min(boundaryA, boundaryB);
+    long endSeq = max(boundaryB, boundaryA);
+
+    return mDb.query(TABLE_TASKLIST, new String[] { KEY_TASKLIST_TLID,
+        KEY_TASKLIST_TLSEQUENCE }, KEY_TASKLIST_TLSEQUENCE + ">=" + startSeq
+        + " AND " + KEY_TASKLIST_TLSEQUENCE + "<=" + endSeq, null, null, null,
+        KEY_TASKLIST_TLSEQUENCE);
+  }
+
+  /**
+   * private function to help updateTaskListSequence. update the sequence of the
+   * item given its id.
+   * 
+   * @param taskListId
+   * @param seq
+   * @return whether it successfully updates or not.
+   */
+  private boolean updateTaskListSequenceById(long taskListId, long seq) {
+    ContentValues info = new ContentValues();
+    info.put(KEY_TASKLIST_TLSEQUENCE, seq);
+
+    return mDb.update(TABLE_TASKLIST, info, KEY_TASKLIST_TLID + "="
+        + taskListId, null) > 0;
+  }
+
+  /**
+   * private function to help updateTaskListSequence. get the sequence of the
+   * item given its id.
+   * 
+   * @param id
+   * @return
+   */
+  private long getTaskListSequenceById(long taskListId) {
+    Cursor mCursor = mDb.query(true, TABLE_TASKLIST,
+        new String[] { KEY_TASKLIST_TLSEQUENCE }, KEY_TASKLIST_TLID + "="
+            + taskListId, null, null, null, null, null);
+    return mCursor.getLong(mCursor
+        .getColumnIndexOrThrow(KEY_TASKLIST_TLSEQUENCE));
+  }
+
+  private long max(long a, long b) {
+    if (a > b) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
+  private long min(long a, long b) {
+    if (a < b) {
+      return a;
+    } else {
+      return b;
+    }
   }
 
   /**
