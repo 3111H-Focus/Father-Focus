@@ -76,7 +76,7 @@ public class TaskDbAdapter {
   private static final String DATABASE_CREATE_TASKLIST = "CREATE TABLE "
       + TABLE_TASKLIST + " (" + KEY_TASKLIST_TLID + " INTEGER PRIMARY KEY, "
       + KEY_TASKLIST_TLNAME + " TEXT NOT NULL, " + KEY_TASKLIST_TLSEQUENCE
-      + " INTEGER NOT NULL" + ");";
+      + " INTEGER" + ");";
 
   private static final String DATABASE_CREATE_TASK = "CREATE TABLE "
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
@@ -269,7 +269,14 @@ public class TaskDbAdapter {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TASKLIST_TLNAME, taskListName);
 
-    return mDb.insert(TABLE_TASKLIST, null, initialValues);
+    // Initialize sequence by the value of the newId. 
+    // i.e, seq == id as initialization. 
+    long newId = mDb.insert(TABLE_TASKLIST, null, initialValues);
+    ContentValues seqInfo = new ContentValues();
+    seqInfo.put(KEY_TASKLIST_TLSEQUENCE, newId);
+    mDb.update(TABLE_TASKLIST, seqInfo, KEY_TASKLIST_TLID + "=" + newId, null);
+    
+    return newId;
   }
 
   /**
@@ -289,12 +296,25 @@ public class TaskDbAdapter {
   }
 
   /**
-   * Fetch all tasklists info.
-   * 
+   * Fetch all tasklists info ordered by ROWID. 
    * @return a Cursor pointing to all the records.
    */
   public Cursor fetchAllTaskLists() {
-    return mDb.query(TABLE_TASKLIST, null, null, null, null, null, null);
+    return fetchAllTaskLists(false);
+  }
+  
+  /**
+   * Fetch all tasklists info.
+   * @param orderBySequence whether order the query by sequence. On default order by ROWID. 
+   * @return cursor pointing to the results. 
+   */
+  public Cursor fetchAllTaskLists(boolean orderBySequence) {
+    if(orderBySequence){
+      return mDb.query(TABLE_TASKLIST, null, null, null, null, null, KEY_TASKLIST_TLSEQUENCE);
+    }
+    else{
+      return mDb.query(TABLE_TASKLIST, null, null, null, null, null, null);
+    }
   }
 
   /**
@@ -386,7 +406,7 @@ public class TaskDbAdapter {
     boolean status = true;
     for (int i = 0; i < idList.size(); ++i) {
       status = status
-          ^ updateTaskListSequenceById(idList.get(i), seqList.get(i));
+          && updateTaskListSequenceById(idList.get(i), seqList.get(i));
     }
 
     return status;
@@ -440,6 +460,7 @@ public class TaskDbAdapter {
     Cursor mCursor = mDb.query(true, TABLE_TASKLIST,
         new String[] { KEY_TASKLIST_TLSEQUENCE }, KEY_TASKLIST_TLID + "="
             + taskListId, null, null, null, null, null);
+    mCursor.moveToFirst();
     return mCursor.getLong(mCursor
         .getColumnIndexOrThrow(KEY_TASKLIST_TLSEQUENCE));
   }
