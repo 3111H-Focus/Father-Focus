@@ -44,18 +44,6 @@ public final class TaskDnDAdapter extends BaseAdapter implements
 
     long tl1 = mDbAdapter.createTaskList("3111H");
     long tl2 = mDbAdapter.createTaskList("2031");
-
-    /*
-     * mDbAdapter.createTask(tl1, "Project", "Database checking", "Next week",
-     * "Today", "Tomorrow"); mDbAdapter.createTask(tl1, "Assignment",
-     * "UML Diagram", "Next Monday", "Tomorrow", "TBD");
-     * mDbAdapter.createTask(tl1, "Coding", "Part-time job", "Today", "TBD",
-     * "TBD");
-     * 
-     * mDbAdapter.createTask(tl2, "Presentation", "Exercise11", "Tuesday",
-     * "Thursday", ""); mDbAdapter.createTask(tl2, "Writing", "Homework",
-     * "Wednesday", "", "");
-     */
   }
 
   /**

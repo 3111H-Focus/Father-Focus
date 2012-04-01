@@ -11,4 +11,6 @@
     <string name="main_menu_about">About</string>
     <string name="button_text_start">Start Timer</string>
     <string name="button_text_stop">Stop</string>
+    <string name="pull_to_add">Pull to Add New Task"</string>
+    <string name="release_to_add">Release to add New Task"</string>
 </resources>
