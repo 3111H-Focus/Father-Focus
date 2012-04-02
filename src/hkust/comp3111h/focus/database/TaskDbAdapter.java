@@ -83,7 +83,7 @@ public class TaskDbAdapter {
       + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
       + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
       + KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE + " TEXT NOT NULL, "
-      + KEY_TASK_TSEQUENCE + " INTEGER NOT NULL, " + "FOREIGN KEY ("
+      + KEY_TASK_TSEQUENCE + " INTEGER, " + "FOREIGN KEY ("
       + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST + "("
       + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
@@ -413,14 +413,14 @@ public class TaskDbAdapter {
   }
 
   /**
-   * Private function to help updateTaskListSequence Given an interval, return
+   * Private function to help updateTaskListSequence Given an interval specified by sequence ID, return
    * the taskLists that are inside this interval. boundaryA <= RESULT <=
    * boundaryB or boundaryB <= RESULT <= boundaryA The function will take care
    * of the boundaries. Don't need to specify which is bigger. NOTE: the return
    * value will by order by sequence. NOT original id.
    * 
    * @param boundaryA
-   * @param end
+   * @param boundaryB
    * @return the rows between the two sequence id.
    */
   private Cursor getTaskListByInterval(long boundaryA, long boundaryB) {
@@ -465,22 +465,6 @@ public class TaskDbAdapter {
         .getColumnIndexOrThrow(KEY_TASKLIST_TLSEQUENCE));
   }
 
-  private long max(long a, long b) {
-    if (a > b) {
-      return a;
-    } else {
-      return b;
-    }
-  }
-
-  private long min(long a, long b) {
-    if (a < b) {
-      return a;
-    } else {
-      return b;
-    }
-  }
-
   /**
    * Get the schema of the taskList table.
    * 
@@ -514,7 +498,14 @@ public class TaskDbAdapter {
     initialValues.put(KEY_TASK_STARTDATE, startDate);
     initialValues.put(KEY_TASK_ENDDATE, endDate);
 
-    return mDb.insert(TABLE_TASK, null, initialValues);
+    // Initialize sequence by the value of the newId. 
+    // i.e, seq == id as initialization. 
+    long newId = mDb.insert(TABLE_TASK, null, initialValues);
+    ContentValues seqInfo = new ContentValues();
+    seqInfo.put(KEY_TASKLIST_TLSEQUENCE, newId);
+    mDb.update(TABLE_TASKLIST, seqInfo, KEY_TASKLIST_TLID + "=" + newId, null);
+    
+    return newId;
   }
 
   /**
@@ -530,12 +521,25 @@ public class TaskDbAdapter {
   }
 
   /**
-   * Fetch info of all the tasks.
-   * 
+   * Fetch info of all the tasks ordered by ROWID. 
    * @return the Cursor pointing to all the records in task table.
    */
   public Cursor fetchAllTasks() {
-    return mDb.query(TABLE_TASK, null, null, null, null, null, null);
+    return fetchAllTasks(false);
+  }
+  
+  /**
+   * Fetch all tasks info.
+   * @param orderBySequence whether order the query by sequence. On default order by ROWID
+   * @return Cursor pointing to all the records. 
+   */
+  public Cursor fetchAllTasks(boolean orderBySequence){
+    if(orderBySequence){
+      return mDb.query(TABLE_TASK, null, null, null, null, null, KEY_TASK_TSEQUENCE);
+    }
+    else{
+      return mDb.query(TABLE_TASK, null, null, null, null, null, null);
+    }
   }
 
   /**
@@ -582,6 +586,129 @@ public class TaskDbAdapter {
     return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "=" + taskId,
         null) > 0;
   }
+  
+  /**
+   * Update task sequence according to the given ids. This function will
+   * update the sequence between two ids, both included. Notice: the id will not
+   * change, just the sequcne attribute. Please sort the result if you want
+   * updated views, or call fetchAllTasks(true). 
+   * 
+   * @param dragId
+   *          The id of the item you drag.
+   * @param dropId
+   *          The id of the item where you drop in.
+   * @return whether it successfully updates.
+   */
+  public boolean updateTaskSequence(long dragId, long dropId) {
+    if (dragId == dropId) {
+      return true; // Same item. No need to update.
+    }
+
+    // Get sequence of the specified id.
+    long dragOrigSeq = getTaskSequenceById(dragId);
+    long dropOrigSeq = getTaskSequenceById(dropId);
+
+    // find the records that will be influence by this update.
+    // i.e, those items with sequence inside dragOrigSeq and dropOrigSeq, both
+    // included.
+    Cursor interval = getTaskByInterval(dragOrigSeq, dropOrigSeq);
+
+    ArrayList<Long> seqList = new ArrayList<Long>();
+    ArrayList<Long> idList = new ArrayList<Long>();
+
+    // Get all values and map them into origId and origSeq arraylist.
+    for (interval.moveToFirst(); !interval.isAfterLast(); interval.moveToNext()) {
+      seqList.add(interval.getLong(interval
+          .getColumnIndexOrThrow(KEY_TASK_TSEQUENCE)));
+      idList.add(interval.getLong(interval
+          .getColumnIndexOrThrow(KEY_TASK_TID)));
+    }
+
+    if (seqList.size() != idList.size()) {
+      return false;
+    }
+
+    // For debug use.
+    for (int i = 0; i < seqList.size(); ++i) {
+      Log.d("seq list", String.valueOf(seqList.get(i)));
+    }
+    for (int i = 0; i < idList.size(); ++i) {
+      Log.d("id list", String.valueOf(idList.get(i)));
+    }
+
+    // Now, seqList's sequence are 1-to-1 corresponding to the idList.
+    // Handle two situations.
+    if (dragId < dropId) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
+      idList.remove(0);
+      idList.add(dragId);
+    } else { // 2, Drag from down to up. e.g, drag 5th to 2nd.
+      idList.remove(idList.size() - 1); // remove the last.
+      idList.add(0, dragId);
+    }
+
+    // Now idList and the sequence should be 1-to-1 corresponding.
+    boolean status = true;
+    for (int i = 0; i < idList.size(); ++i) {
+      status = status
+          && updateTaskSequenceById(idList.get(i), seqList.get(i));
+    }
+
+    return status;
+  }
+
+  /**
+   * Private function to help updateTaskSequence Given an interval specified by sequence ID, return
+   * the tasks that are inside this interval. boundaryA <= RESULT <=
+   * boundaryB or boundaryB <= RESULT <= boundaryA The function will take care
+   * of the boundaries. Don't need to specify which is bigger. NOTE: the return
+   * value will by order by sequence, NOT original id.
+   * 
+   * @param boundaryA
+   * @param boundaryB
+   * @return the rows between the two sequence id.
+   */
+  private Cursor getTaskByInterval(long boundaryA, long boundaryB) {
+    long startSeq = min(boundaryA, boundaryB);
+    long endSeq = max(boundaryB, boundaryA);
+
+    return mDb.query(TABLE_TASK, new String[] { KEY_TASK_TID,
+        KEY_TASK_TSEQUENCE }, KEY_TASK_TSEQUENCE + ">=" + startSeq
+        + " AND " + KEY_TASK_TSEQUENCE + "<=" + endSeq, null, null, null,
+        KEY_TASK_TSEQUENCE);
+  }
+
+  /**
+   * private function to help updateTaskSequence. update the sequence of the
+   * item given its id.
+   * 
+   * @param taskId
+   * @param seq
+   * @return whether it successfully updates or not.
+   */
+  private boolean updateTaskSequenceById(long taskId, long seq) {
+    ContentValues info = new ContentValues();
+    info.put(KEY_TASK_TSEQUENCE, seq);
+
+    return mDb.update(TABLE_TASK, info, KEY_TASK_TID + "="
+        + taskId, null) > 0;
+  }
+
+  /**
+   * private function to help updateTaskSequence. get the sequence of the
+   * item given its id.
+   * 
+   * @param id
+   * @return
+   */
+  private long getTaskSequenceById(long taskId) {
+    Cursor mCursor = mDb.query(true, TABLE_TASK,
+        new String[] { KEY_TASK_TSEQUENCE }, KEY_TASK_TID + "="
+            + taskId, null, null, null, null, null);
+    mCursor.moveToFirst();
+    return mCursor.getLong(mCursor
+        .getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
+  }
+
 
   /**
    * Get the schema of task table.
@@ -592,4 +719,25 @@ public class TaskDbAdapter {
     return new String[] { KEY_TASK_TLID, KEY_TASK_TID, KEY_TASK_TYPE,
         KEY_TASK_NAME, KEY_TASK_DUEDATE, KEY_TASK_STARTDATE, KEY_TASK_ENDDATE };
   }
+  
+
+  // all helper functions. 
+
+  private long max(long a, long b) {
+    if (a > b) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
+  private long min(long a, long b) {
+    if (a < b) {
+      return a;
+    } else {
+      return b;
+    }
+  }
+
+  
 }
