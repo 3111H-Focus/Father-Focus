@@ -5,6 +5,8 @@
  * Using the library of ActionBarSherlock
  */
 package hkust.comp3111h.focus.Activity;
+import hkust.comp3111h.focus.ui.QuickAddDialog;
+
 
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.PagerAdapter;
@@ -15,12 +17,15 @@ import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
+import hkust.comp3111h.focus.ui.TitlePageIndicator;
+import hkust.comp3111h.focus.ui.FragmentPopover;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import android.util.Log;
 
+import android.util.Log;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,28 +43,40 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.PopupWindow.OnDismissListener;
 
 public class MainActivity extends FragmentActivity implements
     ActionBar.TabListener, ViewPager.OnPageChangeListener, MainMenuListener {
   // determine honecome or not
-  static final boolean IS_HONEYCOMB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+  static final int DIALOG_QUICK_ADD = 0;
+
 
   private final Handler handler = new Handler();
   private ViewPager mViewPager;
   private PagerAdapter mPagerAdapter;
-  private ImageButton mainMenu;
+  private ImageView mainMenu;
+  private TextView listTitle;
+  private View listsNav;
+  private ImageView listsNavDisclosure;
 
   private MenuItem addTaskMenuItem;
 
   private MainMenuPopover mainMenuPopover;
+  private FragmentPopover listsPopover;
 
   // Actionbar set up
   private boolean useLogo = false;
   private boolean showHomeUp = false;
   private TaskDbAdapter mDbAdapter;
+  private List<Fragment> fragments;
 
   Intent addTaskIntent;
 
+  public TaskDbAdapter getDbAdapter() {
+    return mDbAdapter;
+  }
   /**
    * Called when the activity is first created Initialize Environment
    */
@@ -67,22 +84,61 @@ public class MainActivity extends FragmentActivity implements
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.pagerlayout); // Basically a easy linear layout
-    final ActionBar ab = getSupportActionBar();
-    mDbAdapter = new TaskDbAdapter(this);
-    // Initialise ActionBar
-    // Set defaults for logo and home up
-    ab.setDisplayHomeAsUpEnabled(showHomeUp);
-    ab.setDisplayUseLogoEnabled(useLogo);
-    ab.setDisplayShowTitleEnabled(false);
 
-    // Set up tabs navigation
-    ab.addTab(ab.newTab().setText(R.string.tab1_name).setTabListener(this));
-    ab.addTab(ab.newTab().setText(R.string.tab2_name).setTabListener(this));
-    ab.addTab(ab.newTab().setText(R.string.tab3_name).setTabListener(this));
-    ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    //****************************************************
+    //************Initialize the action bar here**********
+    //****************************************************
+    final ActionBar ab = getSupportActionBar();
+    ab.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+    ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+    ab.setCustomView(R.layout.header_actionbar_layout);
+
+    //Main menu button setting up
+    mainMenu = (ImageView) ab.getCustomView().findViewById(R.id.main_menu);
+    mainMenu.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mainMenu.setSelected(true);
+        mainMenuPopover.show(v);
+      }
+    });
+
+    //List title, showing the active list
+    listsNavDisclosure = (ImageView) ab.getCustomView().findViewById(R.id.list_disclosure_arrow);
+    listTitle = (TextView) ab.getCustomView().findViewById(R.id.list_title);
+    listsNav = ab.getCustomView().findViewById(R.id.taskLists);
+    listsNav.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        setListsDropdownSelected(true);
+        listsPopover.show(v);
+      }
+    });
+
+    //***************************************************************
+    //******end of action bar
+    //**************************************************************
+    mDbAdapter = new TaskDbAdapter(this);
+    mDbAdapter.open();
     // Initialise ViewPager
     this.initialiseViewPager();
     createMainMenuPopover();
+  }
+  private void setListsDropdownSelected(boolean selected) {
+    int oldTextColor = listTitle.getTextColors().getDefaultColor();
+    int textStyle = (selected ? R.style.TextAppearance_ActionBar_ListsHeader_Selected:R.style.TextAppearance_ActionBar_ListsHeader);
+    listTitle.setTextAppearance(this, textStyle);
+    listsNav.setBackgroundColor(selected ? oldTextColor: android.R.color.transparent);
+    listsNavDisclosure.setSelected(selected);
+  }
+  public void initialiseListsPopover() {
+    listsPopover = new FragmentPopover(this, R.layout.tlist_popover_layout);
+    listsPopover.setOnDismissListener(new OnDismissListener() {
+      @Override
+      public void onDismiss() {
+        setListsDropdownSelected(false);
+      }
+    });
   }
 
   /**
@@ -90,7 +146,7 @@ public class MainActivity extends FragmentActivity implements
    */
 
   private void initialiseViewPager() {
-    List<Fragment> fragments = new Vector<Fragment>();
+    fragments = new Vector<Fragment>();
     fragments
         .add(Fragment.instantiate(this, TaskManageFragment.class.getName()));
     fragments.add(Fragment.instantiate(this, TimerFragment.class.getName()));
@@ -101,6 +157,26 @@ public class MainActivity extends FragmentActivity implements
     this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
     this.mViewPager.setAdapter(this.mPagerAdapter);
     this.mViewPager.setOnPageChangeListener(this);
+    //Bind the title indicator to the adapter
+    TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titleIndicator);
+    titleIndicator.setViewPager(this.mViewPager);
+  }
+
+  @Override
+  protected Dialog onCreateDialog(int id) {
+    Dialog dialog;
+    switch(id) {
+      case DIALOG_QUICK_ADD:
+        dialog = new QuickAddDialog(this,(TaskManageFragment)fragments.get(0));
+        break;
+      default:
+        dialog=null;
+    }
+    return dialog;
+  }
+
+  public void showQuickAddDialog() {
+    showDialog(DIALOG_QUICK_ADD);
   }
 
   /**
@@ -108,9 +184,10 @@ public class MainActivity extends FragmentActivity implements
    * 
    * @param menu
    */
+  /*
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+    //getMenuInflater().inflate(R.menu.action_bar_menu, menu);
     // find the buttons
     mainMenu = (ImageButton) menu.findItem(R.id.main_menu).getActionView();
     mainMenu.setImageResource(R.drawable.menu_button_icon);
@@ -133,6 +210,7 @@ public class MainActivity extends FragmentActivity implements
     });
     return super.onCreateOptionsMenu(menu);
   }
+  */
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -152,11 +230,25 @@ public class MainActivity extends FragmentActivity implements
     int layout = R.layout.main_menu_popover;
     mainMenuPopover = new MainMenuPopover(this, layout);
     mainMenuPopover.setMenuListener(this);
+    mainMenuPopover.setOnDismissListener(new OnDismissListener() {
+      @Override
+      public void onDismiss() {
+        mainMenu.setSelected(false);
+      }
+    });
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    if(mainMenuPopover!=null) {
+      mainMenuPopover.dismiss();
+    }
   }
 
   @Override
@@ -170,10 +262,12 @@ public class MainActivity extends FragmentActivity implements
 
   public void onTabSelected(Tab tab, FragmentTransaction ft) {
     // TODO Auto-generated method stub
+    /*
     if (mViewPager == null) {
       this.initialiseViewPager();
     }
     mViewPager.setCurrentItem(tab.getPosition());
+    */
   }
 
   public void onTabUnselected(Tab tab, FragmentTransaction ft) {
@@ -188,8 +282,10 @@ public class MainActivity extends FragmentActivity implements
 
   public void onPageSelected(int position) {
     // TODO Auto-generated method stub
+    /*
     final ActionBar ab = getSupportActionBar();
     ab.setSelectedNavigationItem(position);
+    */
 
   }
 

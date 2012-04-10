@@ -107,7 +107,7 @@ public class AddTaskActivity extends Activity implements OnClickListener {
     String taskName = etTaskName.getText().toString();
     String taskType = etTaskType.getText().toString();
     // TODO:HARDCODED TASKLIST
-    // String taskList = etTaskList.getText().toString();
+     String taskList = etTaskList.getText().toString();
     Date dpDate = new Date(dpDueDate.getYear() - 1900, dpDueDate.getMonth(),
         dpDueDate.getDayOfMonth());
     String dueDate = dpDate.toGMTString();
@@ -119,6 +119,7 @@ public class AddTaskActivity extends Activity implements OnClickListener {
       if (id > 0) {
         mRowId = id;
       } else {
+        Log.d("AddTaskActivity",mRowId.toString()+ taskType.toString()+ taskName.toString()+dueDate.toString());
         mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
       }
     } else {
