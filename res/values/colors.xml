@@ -15,8 +15,11 @@
 -->
 
 <resources>
-	<color name="theme_blue">#0066CC</color>
+  <color name="theme_blue">#33B5E5</color>
+	<color name="theme_blue_light">#B1BDF0</color>
+  <color name="theme_blue_dark">#0034AD</color>
 	<color name="honeycombish_blue">#FF58BAED</color>
 	<color name="soft_grey">#FF777777</color>
 	<color name="background">#FFEFEFEF</color>
+  <color name="popover_bg_color">#5E5A5C</color>
 </resources>

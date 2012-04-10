@@ -24,6 +24,7 @@ import hkust.comp3111h.focus.ui.TouchInterceptingFrameLayout.InterceptTouchListe
 public class MainMenuPopover extends FragmentPopover implements
     InterceptTouchListener {
   public static final int MAIN_MENU_SETTING = R.string.main_menu_setting;
+  public static final int MAIN_MENU_SYNC_NOW = R.string.main_menu_sync;
   public static final int MAIN_MENU_ABOUT = R.string.main_menu_about;
   public static final int MAIN_MENU_SORT = R.string.main_menu_sort;
 
@@ -63,6 +64,7 @@ public class MainMenuPopover extends FragmentPopover implements
         return false;
       }
     });
+
     rowLayout = R.layout.main_menu_row_layout;
     inflater = (LayoutInflater) context
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -102,11 +104,25 @@ public class MainMenuPopover extends FragmentPopover implements
     super.setBackgroundDrawable(null);
   }
 
+  private void addFixedItems() {
+    addMenuItem(R.string.main_menu_setting, 
+        R.drawable.icn_menu_settings, 
+        MAIN_MENU_SETTING, null,topFixed);
+    addMenuItem(R.string.main_menu_sort, 
+        R.drawable.icn_menu_sort,
+        MAIN_MENU_SORT, null, topFixed);
+    addMenuItem(R.string.main_menu_about, 
+        R.drawable.icn_menu_about, 
+        MAIN_MENU_ABOUT,
+        null,bottomFixed);
+  }
+
   /*
-   * @Override protected int getArrowLeftMargin(View arrow) { return
-   * mRect.centerX() - arrow.getMeasuredWidth() / 2 - (int) (12*
-   * matrics.density); }
-   */
+  @Override 
+  protected int getArrowLeftMargin(View arrow) {
+    return mRect.centerX() - arrow.getMeasuredWidth() / 2 - (int)(12 * metrics.density);
+  }
+  */
 
   // -----------------Public interfaces----
   public void addMenuItem(int title, int imageRes, int id) {
@@ -186,11 +202,5 @@ public class MainMenuPopover extends FragmentPopover implements
     return itemRow;
   }
 
-  private void addFixedItems() {
-    addMenuItem(MAIN_MENU_SORT, R.drawable.setting_icon, MAIN_MENU_SORT, null,
-        topFixed);
-    addMenuItem(MAIN_MENU_ABOUT, R.drawable.setting_icon, MAIN_MENU_ABOUT,
-        null, bottomFixed);
-  }
 
 }

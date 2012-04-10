@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.view.View.MeasureSpec;
+import android.view.Display;
+import android.view.WindowManager;
 
 import hkust.comp3111h.focus.R;
 
@@ -22,12 +24,12 @@ import hkust.comp3111h.focus.R;
  */
 public class FragmentPopover extends QuickActionWidget {
   // for graphical translation
-  protected DisplayMetrics matrics;
+  protected DisplayMetrics metrics;
 
   public FragmentPopover(Context context, int layout) {
     super(context);
     setContentView(layout);
-    matrics = context.getResources().getDisplayMetrics();
+    metrics = context.getResources().getDisplayMetrics();
 
     setFocusable(true);
     setTouchable(true);
@@ -36,7 +38,7 @@ public class FragmentPopover extends QuickActionWidget {
   public void setContent(View content) {
     // set the contianer to the root
     FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
-        android.R.id.content);
+        R.id.content);
     contentContainer.addView(content);
   }
 
@@ -77,9 +79,11 @@ public class FragmentPopover extends QuickActionWidget {
     setWidgetSpecs(popupY, onTop);
 
   }
-  /*
-   * @Override protected int getArrowLeftMargin(View arrow) { return mRect.left
-   * + arrow.getMeasureWidth() /2 - (int) (10 * merics.density); }
-   */
-
+  @Override
+  public void show(View anchor) {
+    if(isShowing()) {
+      return;
+    }
+    super.show(anchor);
+  }
 }

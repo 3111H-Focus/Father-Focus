@@ -1,11 +1,14 @@
 package hkust.comp3111h.focus.Adapter;
 
 import hkust.comp3111h.focus.database.TaskDbAdapter;
-import hkust.comp3111h.focus.ui.*;
+import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.ui.DropListener;
+import hkust.comp3111h.focus.ui.RemoveListener;
 
 import java.util.ArrayList;
+
 import android.content.Context;
-import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +24,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
   private int[] mLayouts;
   private LayoutInflater mInflater;
   private TaskDbAdapter mDbAdapter;
-  private ArrayList<String> mContent;
+  private ArrayList<TaskItem> mTaskItems;
 
   public TaskDnDAdapter(Context context) {
     init(context, new int[] { android.R.layout.simple_list_item_1 },
@@ -38,40 +41,16 @@ public final class TaskDnDAdapter extends BaseAdapter implements
     mInflater = LayoutInflater.from(context);
     mIds = ids;
     mLayouts = layouts;
-    mContent = new ArrayList<String>();
     mDbAdapter = new TaskDbAdapter(mCtx);
     mDbAdapter.open();
-
-    long tl1 = mDbAdapter.createTaskList("3111H");
-    long tl2 = mDbAdapter.createTaskList("2031");
-
-    /*
-     * mDbAdapter.createTask(tl1, "Project", "Database checking", "Next week",
-     * "Today", "Tomorrow"); mDbAdapter.createTask(tl1, "Assignment",
-     * "UML Diagram", "Next Monday", "Tomorrow", "TBD");
-     * mDbAdapter.createTask(tl1, "Coding", "Part-time job", "Today", "TBD",
-     * "TBD");
-     * 
-     * mDbAdapter.createTask(tl2, "Presentation", "Exercise11", "Tuesday",
-     * "Thursday", ""); mDbAdapter.createTask(tl2, "Writing", "Homework",
-     * "Wednesday", "", "");
-     */
+    update();
   }
 
   /**
    * Fetch all tasks from database and refresh the tasks.
    */
   public void update() {
-    mContent.clear();
-    // Insertion of dummy records.
-
-    Cursor mCursor = mDbAdapter.fetchAllTasks();
-    for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-      mContent.add(mCursor.getString(mCursor
-          .getColumnIndex(TaskDbAdapter.KEY_TASK_NAME)));
-    }
-
-    mCursor.close();
+    mTaskItems = mDbAdapter.fetchAllTaskObjs(true);
   }
 
   /**
@@ -80,15 +59,15 @@ public final class TaskDnDAdapter extends BaseAdapter implements
    * @return
    */
 
-  public ArrayList<String> getContent() {
-    return mContent;
+  public ArrayList<TaskItem> getContent() {
+    return mTaskItems;
   }
 
   /**
    * The number of items in the list
    */
   public int getCount() {
-    return mContent.size();
+    return mTaskItems.size();
   }
 
   /**
@@ -99,7 +78,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
    * @see android.widget.ListAdapter#getItem(int)
    */
   public String getItem(int position) {
-    return mContent.get(position);
+    return mTaskItems.get(position).taskName();
   }
 
   /**
@@ -142,7 +121,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
     }
 
     // Bind the data efficiently with the holder.
-    holder.text.setText(mContent.get(position));
+    holder.text.setText(mTaskItems.get(position).taskName());
 
     return convertView;
   }
@@ -152,14 +131,24 @@ public final class TaskDnDAdapter extends BaseAdapter implements
   }
 
   public void onRemove(int which) {
-    if (which < 0 || which > mContent.size())
+    //waiting for hook to database
+    /*
+    if (which < 0 || which > mTaskItems.size())
       return;
-    mContent.remove(which);
+    mTaskItems.remove(which);
+    */
   }
 
   public void onDrop(int from, int to) {
-    String temp = mContent.get(from);
-    mContent.remove(from);
-    mContent.add(to, temp);
+    if(from == to) {
+      return;
+    }
+    Log.d("DnDonDrop","From "+from + "To "+ to);
+    Log.d("from TaskID: ", String.valueOf(mTaskItems.get(from-1).taskId()));
+    Log.d("to TaskID: ", String.valueOf(mTaskItems.get(to-1).taskId()));
+    mDbAdapter.updateTaskSequence(
+        mTaskItems.get(from-1).taskId(),
+        mTaskItems.get(to-1).taskId());
+    update();
   }
 }

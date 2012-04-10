@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Father-Focus</string>
-    <string name="tab1_name">Tasks</string>
-    <string name="tab2_name">Timer</string>
-    <string name="tab3_name">Statistics</string>
-    <string name="task_lists">Task lists</string>
-    <string name="PlsSelectTask">Please Select A Task</string>
-    <string name="main_menu_setting">Setting</string>
-    <string name="main_menu_sort">Sort</string>
-    <string name="main_menu_about">About</string>
-    <string name="button_text_start">Start Timer</string>
-    <string name="button_text_stop">Stop</string>
+  <string name="app_name">Father-Focus</string>
+  <string name="tab1_name">Tasks</string>
+  <string name="tab2_name">Timer</string>
+  <string name="tab3_name">Statistics</string>
+  <string name="task_lists">Task lists</string>
+  <string name="PlsSelectTask">Please Select A Task</string>
+  <string name="main_menu_setting">Setting</string>
+  <string name="main_menu_sort">Sort</string>
+  <string name="main_menu_about">About</string>
+  <string name="main_menu_sync">Sync Now!</string>
+  <string name="button_text_start">Start Timer</string>
+  <string name="button_text_stop">Stop</string>
+  <string name="pull_to_add">Pull to Add New Task"</string>
+  <string name="release_to_add">Release to add New Task"</string>
+  <string name="list_all">All</string>
+  <string name="quick_add_hint">Add a task</string>
+  <string name="dlg_detail">Detail</string>
+  <string name="dlg_cancel">Cancel</string>
 </resources>
