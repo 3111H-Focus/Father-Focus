@@ -502,8 +502,8 @@ public class TaskDbAdapter {
     // i.e, seq == id as initialization. 
     long newId = mDb.insert(TABLE_TASK, null, initialValues);
     ContentValues seqInfo = new ContentValues();
-    seqInfo.put(KEY_TASKLIST_TLSEQUENCE, newId);
-    mDb.update(TABLE_TASKLIST, seqInfo, KEY_TASKLIST_TLID + "=" + newId, null);
+    seqInfo.put(KEY_TASK_TSEQUENCE, newId);
+    mDb.update(TABLE_TASK, seqInfo, KEY_TASK_TID + "=" + newId, null);
     
     return newId;
   }
