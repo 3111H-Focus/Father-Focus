@@ -1,19 +1,19 @@
 package hkust.comp3111h.focus.Adapter;
 
-import hkust.comp3111h.focus.database.TaskItem;
-import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
-import hkust.comp3111h.focus.ui.*;
+import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.ui.DropListener;
+import hkust.comp3111h.focus.ui.RemoveListener;
 
 import java.util.ArrayList;
+
 import android.content.Context;
-import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.util.Log;
 
 //Current for testing
 public final class TaskDnDAdapter extends BaseAdapter implements
@@ -144,6 +144,8 @@ public final class TaskDnDAdapter extends BaseAdapter implements
       return;
     }
     Log.d("DnDonDrop","From "+from + "To "+ to);
+    Log.d("from TaskID: ", String.valueOf(mTaskItems.get(from-1).taskId()));
+    Log.d("to TaskID: ", String.valueOf(mTaskItems.get(to-1).taskId()));
     mDbAdapter.updateTaskSequence(
         mTaskItems.get(from-1).taskId(),
         mTaskItems.get(to-1).taskId());
