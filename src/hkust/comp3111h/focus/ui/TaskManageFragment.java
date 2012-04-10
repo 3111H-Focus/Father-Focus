@@ -7,6 +7,9 @@ package hkust.comp3111h.focus.ui;
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.database.TaskListItem;
+import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.Activity.MainActivity;
 
 import java.util.ArrayList;
 
@@ -33,6 +36,14 @@ public class TaskManageFragment extends Fragment {
     Log.v("Fragment", "updating");
     mAdapter.update();
     mAdapter.notifyDataSetChanged();
+  }
+
+  /**
+   * Get the active task list
+   * Use other currently
+   */
+  public TaskListItem  getActiveTaskList() {
+    return ((MainActivity)getActivity()).getDbAdapter().fetchAllTaskListsObjs(true).get(0);
   }
 
   @Override
@@ -102,5 +113,4 @@ public class TaskManageFragment extends Fragment {
       itemView.setBackgroundColor(defaultBackgroundColor);
     }
   };
-
 }

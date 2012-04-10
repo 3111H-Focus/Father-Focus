@@ -6,8 +6,7 @@ package hkust.comp3111h.focus.database;
  * Currently (Mar 24) it has 3 tables: user, taskList, and task. 
  * Each table holds the ID as its single primary key.
  * In task table, it has a foreign key which references tasklistid. 
- * 
- * WARNING:
+ * * WARNING:
  * Foreign key enabled, so when you delete a taskList, ALL the tasks that belong to the taskList will also be deleted. 
  * 
  * 
@@ -82,7 +81,7 @@ public class TaskDbAdapter {
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
       + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
       + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
-      + KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE + " TEXT NOT NULL, "
+      + KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE + " TEXT, "
       + KEY_TASK_TSEQUENCE + " INTEGER, " + "FOREIGN KEY ("
       + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST + "("
       + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
@@ -122,6 +121,8 @@ public class TaskDbAdapter {
       db.execSQL(DATABASE_CREATE_TASKLIST);
       Log.i(TAG, DATABASE_CREATE_TASK);
       db.execSQL(DATABASE_CREATE_TASK);
+      //not sure about that
+      db.execSQL("INSERT INTO taskList VALUES (1,'other',1)");
     }
 
     @Override
@@ -295,6 +296,30 @@ public class TaskDbAdapter {
     return mCursor;
   }
 
+  /*
+   * @param dataCursor a cursor pointng to the task table
+   * @return arraly list containing all the tasklists pointing by the cursor
+   */
+  public ArrayList<TaskListItem> taskListItemsFromCursor(Cursor cursor) {
+    ArrayList<TaskListItem> items = new ArrayList<TaskListItem>();
+    for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()) {
+      //create a item and add it to the list
+      items.add(new TaskListItem(cursor.getLong(cursor.getColumnIndex(KEY_TASKLIST_TLID)),
+        cursor.getString(cursor.getColumnIndex(KEY_TASKLIST_TLNAME)),
+        cursor.getLong(cursor.getColumnIndex(KEY_TASKLIST_TLSEQUENCE))));
+    }
+    return items;
+  }
+  /**
+   * Return the databse items as objects
+   * @param taskListId
+   * @return a arraylist containing all the TaskListItem ojbects
+   */
+  public ArrayList<TaskListItem> fetchAllTaskListsObjs(boolean orderBySequence) throws SQLException {
+    Cursor mCursor = fetchAllTaskLists(orderBySequence);
+    return taskListItemsFromCursor(mCursor);
+  }
+
   /**
    * Fetch all tasklists info ordered by ROWID. 
    * @return a Cursor pointing to all the records.
@@ -311,8 +336,7 @@ public class TaskDbAdapter {
   public Cursor fetchAllTaskLists(boolean orderBySequence) {
     if(orderBySequence){
       return mDb.query(TABLE_TASKLIST, null, null, null, null, null, KEY_TASKLIST_TLSEQUENCE);
-    }
-    else{
+    }else{
       return mDb.query(TABLE_TASKLIST, null, null, null, null, null, null);
     }
   }
@@ -474,9 +498,21 @@ public class TaskDbAdapter {
     return new String[] { KEY_TASKLIST_TLID, KEY_TASKLIST_TLNAME };
   }
 
+
+
   // ****************END METHODS OF TASKLIST**************************
 
   // ****************METHODS OF TASK**************************
+  public long createTask(TaskItem newTask) {
+    return createTask(
+        newTask.taskListId(),
+        newTask.taskType(),
+        newTask.taskName(),
+        newTask.dueDate(),
+        null,   //startdate
+        null);  //enddate
+  }
+
   /**
    * Create a tasklist given the info.
    * 
@@ -502,11 +538,13 @@ public class TaskDbAdapter {
     // i.e, seq == id as initialization. 
     long newId = mDb.insert(TABLE_TASK, null, initialValues);
     ContentValues seqInfo = new ContentValues();
-    seqInfo.put(KEY_TASKLIST_TLSEQUENCE, newId);
-    mDb.update(TABLE_TASKLIST, seqInfo, KEY_TASKLIST_TLID + "=" + newId, null);
+    seqInfo.put(KEY_TASK_TSEQUENCE, newId);
+    mDb.update(TABLE_TASK, seqInfo, KEY_TASK_TID + "=" + newId, null);
     
     return newId;
   }
+   
+
 
   /**
    * Fetch a task given the ID
@@ -518,6 +556,25 @@ public class TaskDbAdapter {
   public Cursor fetchTask(long taskId) throws SQLException {
     return mDb.query(true, TABLE_TASK, null, KEY_TASK_TID + "=" + taskId, null,
         null, null, null, null);
+  }
+  public ArrayList<TaskItem> taskItemsFromCursor(Cursor cursor) {
+    ArrayList<TaskItem> items = new ArrayList<TaskItem>();
+    for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+      items.add(new TaskItem(
+            cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)),
+            cursor.getLong(cursor.getColumnIndex(KEY_TASK_TLID)),
+            cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)),
+            cursor.getString(cursor.getColumnIndex(KEY_TASK_TYPE)),
+            cursor.getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)),
+            cursor.getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
+    }
+    return items;
+  }
+  /**
+   * Fetch all tasks info, containing in a array list  
+   */
+  public ArrayList<TaskItem> fetchAllTaskObjs(boolean bySequence) {
+    return taskItemsFromCursor(fetchAllTasks(bySequence));
   }
 
   /**

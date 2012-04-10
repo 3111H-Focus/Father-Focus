@@ -1,4 +1,5 @@
 package hkust.comp3111h.focus.ui;
+import hkust.comp3111h.focus.Activity.MainActivity;
 import hkust.comp3111h.focus.R;
 
 import android.content.Context;
@@ -228,6 +229,7 @@ public class DnDListView extends ListView {
             case RELEASE_TO_ADD:
               setPullingState(State.ADD);
               bounceBackHeader();
+              ((MainActivity)getContext()).showQuickAddDialog();
               break;
             case PULL_TO_ADD:
               resetHeader();

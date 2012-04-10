@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-   <LinearLayout
-     android:orientation="vertical"
+<LinearLayout 
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res/hkust.comp3111h.focus"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+ <LinearLayout
+   android:orientation="vertical"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   >
+   <FrameLayout
+     android:id="@android:id/tabcontent"
+     android:layout_width="0dp"
+     android:layout_height="0dp"
+     android:layout_weight="0"/>
+   <hkust.comp3111h.focus.ui.TitlePageIndicator
+     android:id="@+id/titleIndicator"
+     android:padding="10dip"
+     android:layout_height="wrap_content"
      android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
-     >
-
-     <FrameLayout
-       android:id="@android:id/tabcontent"
-       android:layout_width="0dp"
-       android:layout_height="0dp"
-       android:layout_weight="0"/>
-
-     <android.support.v4.view.ViewPager
-     android:id="@+id/viewpager"
-     android:layout_width="fill_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-     />
-    </LinearLayout>
+     android:background="@color/theme_blue_light"
+     app:footerColor="@color/theme_blue"
+     app:footerLineHeight="0.5dp"
+     app:footerIndicatorHeight="2dp"
+     app:footerIndicatorStyle="underline"
+     app:textColor="@color/theme_blue"
+     app:selectedColor="@color/theme_blue_dark"
+     app:selectedBold="true"/>
+   <android.support.v4.view.ViewPager
+   android:id="@+id/viewpager"
+   android:layout_width="fill_parent"
+   android:layout_height="0dp"
+   android:layout_weight="1"
+   />
+  </LinearLayout>
 </LinearLayout>
 

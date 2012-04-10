@@ -7,6 +7,7 @@ package hkust.comp3111h.focus.ui;
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.ArrayWheelAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.database.TaskItem;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -14,6 +15,7 @@ import java.util.TimerTask;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +26,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.util.Log;
 
 public class TimerFragment extends Fragment {
   // scrolling flag
   private boolean scrolling = false;
   private Timer mTimer = new Timer();
-  int sec;
+  long baseTime;
   View timerView;
   WheelView WheelOne;
   WheelView WheelTwo;
@@ -50,41 +53,22 @@ public class TimerFragment extends Fragment {
       new String[] { "Task 6", "Task 7", "Task 8", "Task 9", "Task 10" },
       new String[] { "Task 11", "Task 12", "Task 13", "Task 14", "Task 15" } };
 
-  /*private ServiceConnection timer_serviceconnection = new ServiceConnection() {
-
-	@Override
-	public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-	  Log.i("onServiceConenection", "Fuck Yeah!");
-	  TimerService.LocalBinder binder = (TimerService.LocalBinder)arg1;
-      TimerService timer_service = binder.getService();
-      sec = timer_service.getSec();
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		// TODO Auto-generated method stub
-	}
-  };*/
   
   //Start the timer
   private void startTimer() {
-	sec = 0;
-	/*Intent i = new Intent();
-	i.setClass(getActivity().getApplicationContext(), TimerService.class);
-	getActivity().getApplicationContext().startService(i);
-	boolean b = getActivity().getApplicationContext().bindService(i, timer_serviceconnection, Context.BIND_AUTO_CREATE);
-	if (b) Log.i("binded?", "yes");
-	else Log.i("binded?", "no");*/
+    Log.d("Timer", "starting");
+    baseTime = SystemClock.elapsedRealtime();
     isTimerStart = true;
     mTimer = new Timer();
     WheelThree.setCurrentItem(0, false);
     mTimer.schedule(new TimerTask() {
       @Override
       public void run() {
-    	sec++;
-        WheelThree.setCurrentItem(sec / 3600, true);
-        WheelFour.setCurrentItem((sec % 3600) / 60, true);
-        WheelFive.setCurrentItem(sec % 60, true);
+        long sec = (SystemClock.elapsedRealtime() - baseTime)/1000;
+        Log.d("Timer", "Sec"+sec);
+        WheelThree.setCurrentItem((int)sec / 3600, true);
+        WheelFour.setCurrentItem((int)(sec % 3600) / 60, true);
+        WheelFive.setCurrentItem((int)sec % 60, true);
       }
     }, 0, 1000);
   }
