@@ -43,8 +43,6 @@ public class TaskDbAdapter {
   public static final String KEY_TASK_TYPE = "taskType";
   public static final String KEY_TASK_NAME = "taskName";
   public static final String KEY_TASK_DUEDATE = "dueDate";
-  public static final String KEY_TASK_STARTDATE = "startDate";
-  public static final String KEY_TASK_ENDDATE = "endDate";
   public static final String KEY_TASK_TSEQUENCE = "taskSequence";
 
   // TODO:
@@ -81,10 +79,9 @@ public class TaskDbAdapter {
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
       + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
       + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
-      + KEY_TASK_STARTDATE + " TEXT, " + KEY_TASK_ENDDATE + " TEXT, "
-      + KEY_TASK_TSEQUENCE + " INTEGER, " + "FOREIGN KEY ("
-      + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST + "("
-      + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
+      + KEY_TASK_TSEQUENCE + " INTEGER, " + "FOREIGN KEY (" + KEY_TASK_TLID
+      + ") REFERENCES " + TABLE_TASKLIST + "(" + KEY_TASKLIST_TLID
+      + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   // SQL commands to destroy the tables.
   private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
@@ -121,7 +118,6 @@ public class TaskDbAdapter {
       db.execSQL(DATABASE_CREATE_TASKLIST);
       Log.i(TAG, DATABASE_CREATE_TASK);
       db.execSQL(DATABASE_CREATE_TASK);
-      //not sure about that
       db.execSQL("INSERT INTO taskList VALUES (1,'other',1)");
     }
 
@@ -270,13 +266,13 @@ public class TaskDbAdapter {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TASKLIST_TLNAME, taskListName);
 
-    // Initialize sequence by the value of the newId. 
-    // i.e, seq == id as initialization. 
+    // Initialize sequence by the value of the newId.
+    // i.e, seq == id as initialization.
     long newId = mDb.insert(TABLE_TASKLIST, null, initialValues);
     ContentValues seqInfo = new ContentValues();
     seqInfo.put(KEY_TASKLIST_TLSEQUENCE, newId);
     mDb.update(TABLE_TASKLIST, seqInfo, KEY_TASKLIST_TLID + "=" + newId, null);
-    
+
     return newId;
   }
 
@@ -298,45 +294,54 @@ public class TaskDbAdapter {
 
   /*
    * @param dataCursor a cursor pointng to the task table
+   * 
    * @return arraly list containing all the tasklists pointing by the cursor
    */
   public ArrayList<TaskListItem> taskListItemsFromCursor(Cursor cursor) {
     ArrayList<TaskListItem> items = new ArrayList<TaskListItem>();
-    for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()) {
-      //create a item and add it to the list
-      items.add(new TaskListItem(cursor.getLong(cursor.getColumnIndex(KEY_TASKLIST_TLID)),
-        cursor.getString(cursor.getColumnIndex(KEY_TASKLIST_TLNAME)),
-        cursor.getLong(cursor.getColumnIndex(KEY_TASKLIST_TLSEQUENCE))));
+    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+      // create a item and add it to the list
+      items.add(new TaskListItem(cursor.getLong(cursor
+          .getColumnIndex(KEY_TASKLIST_TLID)), cursor.getString(cursor
+          .getColumnIndex(KEY_TASKLIST_TLNAME)), cursor.getLong(cursor
+          .getColumnIndex(KEY_TASKLIST_TLSEQUENCE))));
     }
     return items;
   }
+
   /**
    * Return the databse items as objects
+   * 
    * @param taskListId
    * @return a arraylist containing all the TaskListItem ojbects
    */
-  public ArrayList<TaskListItem> fetchAllTaskListsObjs(boolean orderBySequence) throws SQLException {
+  public ArrayList<TaskListItem> fetchAllTaskListsObjs(boolean orderBySequence)
+      throws SQLException {
     Cursor mCursor = fetchAllTaskLists(orderBySequence);
     return taskListItemsFromCursor(mCursor);
   }
 
   /**
-   * Fetch all tasklists info ordered by ROWID. 
+   * Fetch all tasklists info ordered by ROWID.
+   * 
    * @return a Cursor pointing to all the records.
    */
   public Cursor fetchAllTaskLists() {
     return fetchAllTaskLists(false);
   }
-  
+
   /**
    * Fetch all tasklists info.
-   * @param orderBySequence whether order the query by sequence. On default order by ROWID. 
-   * @return cursor pointing to the results. 
+   * 
+   * @param orderBySequence
+   *          whether order the query by sequence. On default order by ROWID.
+   * @return cursor pointing to the results.
    */
   public Cursor fetchAllTaskLists(boolean orderBySequence) {
-    if(orderBySequence){
-      return mDb.query(TABLE_TASKLIST, null, null, null, null, null, KEY_TASKLIST_TLSEQUENCE);
-    }else{
+    if (orderBySequence) {
+      return mDb.query(TABLE_TASKLIST, null, null, null, null, null,
+          KEY_TASKLIST_TLSEQUENCE);
+    } else {
       return mDb.query(TABLE_TASKLIST, null, null, null, null, null, null);
     }
   }
@@ -418,7 +423,8 @@ public class TaskDbAdapter {
 
     // Now, seqList's sequence are 1-to-1 corresponding to the idList.
     // Handle two situations.
-    if (dragOrigSeq < dropOrigSeq) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
+    if (dragOrigSeq < dropOrigSeq) { // 1, Drag from up to down. e.g, drag 2nd
+                                     // to 5th.
       idList.remove(0);
       idList.add(dragId);
     } else { // 2, Drag from down to up. e.g, drag 5th to 2nd.
@@ -437,11 +443,11 @@ public class TaskDbAdapter {
   }
 
   /**
-   * Private function to help updateTaskListSequence Given an interval specified by sequence ID, return
-   * the taskLists that are inside this interval. boundaryA <= RESULT <=
-   * boundaryB or boundaryB <= RESULT <= boundaryA The function will take care
-   * of the boundaries. Don't need to specify which is bigger. NOTE: the return
-   * value will by order by sequence. NOT original id.
+   * Private function to help updateTaskListSequence Given an interval specified
+   * by sequence ID, return the taskLists that are inside this interval.
+   * boundaryA <= RESULT <= boundaryB or boundaryB <= RESULT <= boundaryA The
+   * function will take care of the boundaries. Don't need to specify which is
+   * bigger. NOTE: the return value will by order by sequence. NOT original id.
    * 
    * @param boundaryA
    * @param boundaryB
@@ -498,19 +504,12 @@ public class TaskDbAdapter {
     return new String[] { KEY_TASKLIST_TLID, KEY_TASKLIST_TLNAME };
   }
 
-
-
   // ****************END METHODS OF TASKLIST**************************
 
   // ****************METHODS OF TASK**************************
   public long createTask(TaskItem newTask) {
-    return createTask(
-        newTask.taskListId(),
-        newTask.taskType(),
-        newTask.taskName(),
-        newTask.dueDate(),
-        null,   //startdate
-        null);  //enddate
+    return createTask(newTask.taskListId(), newTask.taskType(),
+        newTask.taskName(), newTask.dueDate());
   }
 
   /**
@@ -520,31 +519,25 @@ public class TaskDbAdapter {
    * @param taskType
    * @param taskName
    * @param dueDate
-   * @param startDate
-   * @param endDate
    * @return the ID of the newly inserted item, or -1 if an error occurred.
    */
   public long createTask(long taskListId, String taskType, String taskName,
-      String dueDate, String startDate, String endDate) {
+      String dueDate) {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TASK_TLID, taskListId);
     initialValues.put(KEY_TASK_TYPE, taskType);
     initialValues.put(KEY_TASK_NAME, taskName);
     initialValues.put(KEY_TASK_DUEDATE, dueDate);
-    initialValues.put(KEY_TASK_STARTDATE, startDate);
-    initialValues.put(KEY_TASK_ENDDATE, endDate);
 
-    // Initialize sequence by the value of the newId. 
-    // i.e, seq == id as initialization. 
+    // Initialize sequence by the value of the newId.
+    // i.e, seq == id as initialization.
     long newId = mDb.insert(TABLE_TASK, null, initialValues);
     ContentValues seqInfo = new ContentValues();
     seqInfo.put(KEY_TASK_TSEQUENCE, newId);
     mDb.update(TABLE_TASK, seqInfo, KEY_TASK_TID + "=" + newId, null);
-    
+
     return newId;
   }
-   
-
 
   /**
    * Fetch a task given the ID
@@ -557,44 +550,49 @@ public class TaskDbAdapter {
     return mDb.query(true, TABLE_TASK, null, KEY_TASK_TID + "=" + taskId, null,
         null, null, null, null);
   }
+
   public ArrayList<TaskItem> taskItemsFromCursor(Cursor cursor) {
     ArrayList<TaskItem> items = new ArrayList<TaskItem>();
-    for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
       items.add(new TaskItem(
-            cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)),
-            cursor.getLong(cursor.getColumnIndex(KEY_TASK_TLID)),
-            cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)),
-            cursor.getString(cursor.getColumnIndex(KEY_TASK_TYPE)),
-            cursor.getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)),
-            cursor.getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
+          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), cursor
+              .getLong(cursor.getColumnIndex(KEY_TASK_TLID)), cursor
+              .getString(cursor.getColumnIndex(KEY_TASK_NAME)), cursor
+              .getString(cursor.getColumnIndex(KEY_TASK_TYPE)), cursor
+              .getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)), cursor
+              .getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
     }
     return items;
   }
+
   /**
-   * Fetch all tasks info, containing in a array list  
+   * Fetch all tasks info, containing in a array list
    */
   public ArrayList<TaskItem> fetchAllTaskObjs(boolean bySequence) {
     return taskItemsFromCursor(fetchAllTasks(bySequence));
   }
 
   /**
-   * Fetch info of all the tasks ordered by ROWID. 
+   * Fetch info of all the tasks ordered by ROWID.
+   * 
    * @return the Cursor pointing to all the records in task table.
    */
   public Cursor fetchAllTasks() {
     return fetchAllTasks(false);
   }
-  
+
   /**
    * Fetch all tasks info.
-   * @param orderBySequence whether order the query by sequence. On default order by ROWID
-   * @return Cursor pointing to all the records. 
+   * 
+   * @param orderBySequence
+   *          whether order the query by sequence. On default order by ROWID
+   * @return Cursor pointing to all the records.
    */
-  public Cursor fetchAllTasks(boolean orderBySequence){
-    if(orderBySequence){
-      return mDb.query(TABLE_TASK, null, null, null, null, null, KEY_TASK_TSEQUENCE);
-    }
-    else{
+  public Cursor fetchAllTasks(boolean orderBySequence) {
+    if (orderBySequence) {
+      return mDb.query(TABLE_TASK, null, null, null, null, null,
+          KEY_TASK_TSEQUENCE);
+    } else {
       return mDb.query(TABLE_TASK, null, null, null, null, null, null);
     }
   }
@@ -627,28 +625,24 @@ public class TaskDbAdapter {
    * @param taskType
    * @param taskName
    * @param dueDate
-   * @param startDate
-   * @param endDate
    * @return successfully updated or not.
    */
   public boolean updateTask(long taskId, String taskType, String taskName,
-      String dueDate, String startDate, String endDate) {
+      String dueDate) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASK_TYPE, taskType);
     updatedInfo.put(KEY_TASK_NAME, taskName);
     updatedInfo.put(KEY_TASK_DUEDATE, dueDate);
-    updatedInfo.put(KEY_TASK_STARTDATE, startDate);
-    updatedInfo.put(KEY_TASK_ENDDATE, endDate);
 
     return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "=" + taskId,
         null) > 0;
   }
-  
+
   /**
-   * Update task sequence according to the given ids. This function will
-   * update the sequence between two ids, both included. Notice: the id will not
+   * Update task sequence according to the given ids. This function will update
+   * the sequence between two ids, both included. Notice: the id will not
    * change, just the sequcne attribute. Please sort the result if you want
-   * updated views, or call fetchAllTasks(true). 
+   * updated views, or call fetchAllTasks(true).
    * 
    * @param dragId
    *          The id of the item you drag.
@@ -657,8 +651,9 @@ public class TaskDbAdapter {
    * @return whether it successfully updates.
    */
   public boolean updateTaskSequence(long dragId, long dropId) {
-    
-    Log.d("inside updateTaskSequence", "dragId: "+dragId+" dropId: "+dropId);
+
+    Log.d("inside updateTaskSequence", "dragId: " + dragId + " dropId: "
+        + dropId);
     if (dragId == dropId) {
       return true; // Same item. No need to update.
     }
@@ -678,19 +673,18 @@ public class TaskDbAdapter {
     // Get all values and map them into origId and origSeq arraylist.
     Long tempSeq;
     Long tempId;
- //   Log.d("Going to retrieve", "");
+    // Log.d("Going to retrieve", "");
     for (interval.moveToFirst(); !interval.isAfterLast(); interval.moveToNext()) {
       tempSeq = interval.getLong(interval
           .getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
-      //Log.d("tempSeq: ", String.valueOf(tempSeq));
+      // Log.d("tempSeq: ", String.valueOf(tempSeq));
       seqList.add(tempSeq);
-      
-      tempId = interval.getLong(interval
-          .getColumnIndexOrThrow(KEY_TASK_TID));
-      //Log.d("tempId: ", String.valueOf(tempId));
+
+      tempId = interval.getLong(interval.getColumnIndexOrThrow(KEY_TASK_TID));
+      // Log.d("tempId: ", String.valueOf(tempId));
       idList.add(tempId);
     }
-//    Log.d("End retrieving info", "");
+    // Log.d("End retrieving info", "");
 
     if (seqList.size() != idList.size()) {
       return false;
@@ -707,10 +701,11 @@ public class TaskDbAdapter {
       idlistbefore_db += String.valueOf(idList.get(i));
     }
     Log.d("id list before", idlistbefore_db);
-    
+
     // Now, seqList's sequence are 1-to-1 corresponding to the idList.
     // Handle two situations.
-    if (dragOrigSeq < dropOrigSeq) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
+    if (dragOrigSeq < dropOrigSeq) { // 1, Drag from up to down. e.g, drag 2nd
+                                     // to 5th.
       idList.remove(0);
       idList.add(dragId);
     } else { // 2, Drag from down to up. e.g, drag 5th to 2nd.
@@ -721,10 +716,9 @@ public class TaskDbAdapter {
     // Now idList and the sequence should be 1-to-1 corresponding.
     boolean status = true;
     for (int i = 0; i < idList.size(); ++i) {
-      status = status
-          && updateTaskSequenceById(idList.get(i), seqList.get(i));
+      status = status && updateTaskSequenceById(idList.get(i), seqList.get(i));
     }
-    
+
     // For debug use.
     String seqlistafter_db = new String();
     String idlistafter_db = new String();
@@ -737,16 +731,17 @@ public class TaskDbAdapter {
     }
     Log.d("id list after", idlistafter_db);
 
-    Log.d("leaving updateTaskSequence", "dragId: "+dragId+" dropId: "+dropId);
+    Log.d("leaving updateTaskSequence", "dragId: " + dragId + " dropId: "
+        + dropId);
     return status;
   }
 
   /**
-   * Private function to help updateTaskSequence Given an interval specified by sequence ID, return
-   * the tasks that are inside this interval. boundaryA <= RESULT <=
-   * boundaryB or boundaryB <= RESULT <= boundaryA The function will take care
-   * of the boundaries. Don't need to specify which is bigger. NOTE: the return
-   * value will by order by sequence, NOT original id.
+   * Private function to help updateTaskSequence Given an interval specified by
+   * sequence ID, return the tasks that are inside this interval. boundaryA <=
+   * RESULT <= boundaryB or boundaryB <= RESULT <= boundaryA The function will
+   * take care of the boundaries. Don't need to specify which is bigger. NOTE:
+   * the return value will by order by sequence, NOT original id.
    * 
    * @param boundaryA
    * @param boundaryB
@@ -757,8 +752,8 @@ public class TaskDbAdapter {
     long endSeq = max(boundaryB, boundaryA);
 
     return mDb.query(TABLE_TASK, new String[] { KEY_TASK_TID,
-        KEY_TASK_TSEQUENCE }, KEY_TASK_TSEQUENCE + ">=" + startSeq
-        + " AND " + KEY_TASK_TSEQUENCE + "<=" + endSeq, null, null, null,
+        KEY_TASK_TSEQUENCE }, KEY_TASK_TSEQUENCE + ">=" + startSeq + " AND "
+        + KEY_TASK_TSEQUENCE + "<=" + endSeq, null, null, null,
         KEY_TASK_TSEQUENCE);
   }
 
@@ -774,26 +769,23 @@ public class TaskDbAdapter {
     ContentValues info = new ContentValues();
     info.put(KEY_TASK_TSEQUENCE, seq);
 
-    return mDb.update(TABLE_TASK, info, KEY_TASK_TID + "="
-        + taskId, null) > 0;
+    return mDb.update(TABLE_TASK, info, KEY_TASK_TID + "=" + taskId, null) > 0;
   }
 
   /**
-   * private function to help updateTaskSequence. get the sequence of the
-   * item given its id.
+   * private function to help updateTaskSequence. get the sequence of the item
+   * given its id.
    * 
    * @param id
    * @return
    */
   private long getTaskSequenceById(long taskId) {
     Cursor mCursor = mDb.query(true, TABLE_TASK,
-        new String[] { KEY_TASK_TSEQUENCE }, KEY_TASK_TID + "="
-            + taskId, null, null, null, null, null);
+        new String[] { KEY_TASK_TSEQUENCE }, KEY_TASK_TID + "=" + taskId, null,
+        null, null, null, null);
     mCursor.moveToFirst();
-    return mCursor.getLong(mCursor
-        .getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
+    return mCursor.getLong(mCursor.getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
   }
-
 
   /**
    * Get the schema of task table.
@@ -802,11 +794,10 @@ public class TaskDbAdapter {
    */
   public String[] getTaskSchema() {
     return new String[] { KEY_TASK_TLID, KEY_TASK_TID, KEY_TASK_TYPE,
-        KEY_TASK_NAME, KEY_TASK_DUEDATE, KEY_TASK_STARTDATE, KEY_TASK_ENDDATE };
+        KEY_TASK_NAME, KEY_TASK_DUEDATE };
   }
-  
 
-  // all helper functions. 
+  // all helper functions.
 
   private long max(long a, long b) {
     if (a > b) {
@@ -824,5 +815,4 @@ public class TaskDbAdapter {
     }
   }
 
-  
 }
