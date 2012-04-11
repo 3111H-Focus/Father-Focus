@@ -330,6 +330,7 @@ public class TaskDbAdapter {
           .getColumnIndex(KEY_TASKLIST_TLNAME)), cursor.getLong(cursor
           .getColumnIndex(KEY_TASKLIST_TLSEQUENCE))));
     }
+    cursor.close();
     return items;
   }
 
@@ -515,8 +516,10 @@ public class TaskDbAdapter {
         new String[] { KEY_TASKLIST_TLSEQUENCE }, KEY_TASKLIST_TLID + "="
             + taskListId, null, null, null, null, null);
     mCursor.moveToFirst();
-    return mCursor.getLong(mCursor
+    long seq = mCursor.getLong(mCursor
         .getColumnIndexOrThrow(KEY_TASKLIST_TLSEQUENCE));
+    mCursor.close();
+    return seq;
   }
 
   /**
@@ -595,6 +598,7 @@ public class TaskDbAdapter {
               .getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)), cursor
               .getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
     }
+    cursor.close();
     return items;
   }
 
@@ -818,7 +822,9 @@ public class TaskDbAdapter {
         new String[] { KEY_TASK_TSEQUENCE }, KEY_TASK_TID + "=" + taskId, null,
         null, null, null, null);
     mCursor.moveToFirst();
-    return mCursor.getLong(mCursor.getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
+    long seq = mCursor.getLong(mCursor.getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
+    mCursor.close();
+    return seq;
   }
 
   /**
@@ -876,7 +882,23 @@ public class TaskDbAdapter {
     return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TID + "=" + timeId,
         null) > 0;
   }
-
+  
+  /**
+   * given a starttime and taskid, return the time spent on the specific task. 
+   * @return
+   */
+  //TODO:
+  /*
+  public long timeSpentOnTaskFromSpecifiedDate(long taskId, String startTime){
+    return 0;
+  }
+  */
+  
+  /*
+  public TaskItem getInProgressTask(){
+  }
+  */
+  
   public String[] getTimeSchema() {
     return new String[] { KEY_TIME_TIMEID, KEY_TIME_STARTTIME,
         KEY_TIME_ENDTIME, KEY_TIME_TID };
@@ -899,5 +921,4 @@ public class TaskDbAdapter {
       return b;
     }
   }
-
 }
