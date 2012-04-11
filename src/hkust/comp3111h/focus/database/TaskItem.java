@@ -11,6 +11,7 @@ public class TaskItem implements Comparable<TaskItem> {
   long mTaskId;
   String mTaskName;
   String mTaskType;
+  int mStatus;
   String mDueDate;
   long mSequence;
   public TaskItem() {
@@ -18,6 +19,7 @@ public class TaskItem implements Comparable<TaskItem> {
     mTaskId = 0;
     mTaskName = null;
     mTaskType= null;
+    mStatus = 0;
     mDueDate = null;
     mSequence = 0;
   }
@@ -26,12 +28,14 @@ public class TaskItem implements Comparable<TaskItem> {
       long tlid,
       String tname,
       String ttype,
+      int tstatus,
       String tduedate,
       long tsequence) {
     mTaskListId = tlid;
     mTaskId = tid;
     mTaskName = tname;
     mTaskType = ttype;
+    mStatus = tstatus;
     mDueDate = tduedate;
     mSequence = tsequence;
   }
@@ -66,6 +70,12 @@ public class TaskItem implements Comparable<TaskItem> {
   }
   public void sequence(long seq) {
     mSequence = seq;
+  }
+  public void status(int tstatus) {
+    mStatus = tstatus;
+  }
+  public int status(){
+    return mStatus;
   }
   public void dueDate(String ddate) {
     mDueDate = ddate;
