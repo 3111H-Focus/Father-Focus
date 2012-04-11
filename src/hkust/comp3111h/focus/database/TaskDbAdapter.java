@@ -43,14 +43,8 @@ public class TaskDbAdapter {
   public static final String KEY_TASK_TYPE = "taskType";
   public static final String KEY_TASK_NAME = "taskName";
   public static final String KEY_TASK_DUEDATE = "dueDate";
+  public static final String KEY_TASK_STATUS = "status";
   public static final String KEY_TASK_TSEQUENCE = "taskSequence";
-
-  // Time Table Key info
-  public static final String KEY_TIME_TIMEID = "timeId";
-  public static final String KEY_TIME_STARTTIME = "startTime";
-  public static final String KEY_TIME_ENDTIME = "endTime";
-  public static final String KEY_TIME_STATUS = "status";
-  public static final String KEY_TIME_TID = "taskId";
   // Enum declaration for KEY_TIME_STATUS
   // new added task's default value, indicated that task added but not started
   // yet.
@@ -61,6 +55,12 @@ public class TaskDbAdapter {
   public static final int STATUS_PAUSE = 2;
   // task already finished.
   public static final int STATUS_DONE = 3;
+
+  // Time Table Key info
+  public static final String KEY_TIME_TIMEID = "timeId";
+  public static final String KEY_TIME_STARTTIME = "startTime";
+  public static final String KEY_TIME_ENDTIME = "endTime";
+  public static final String KEY_TIME_TID = "taskId";
 
   // Definition of database and table info.
   private static final String DATABASE_NAME = "data";
@@ -90,16 +90,16 @@ public class TaskDbAdapter {
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
       + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
       + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
-      + KEY_TASK_TSEQUENCE + " INTEGER, " + "FOREIGN KEY (" + KEY_TASK_TLID
-      + ") REFERENCES " + TABLE_TASKLIST + "(" + KEY_TASKLIST_TLID
-      + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
+      + KEY_TASK_STATUS + " INTEGER," + KEY_TASK_TSEQUENCE + " INTEGER, "
+      + "FOREIGN KEY (" + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST
+      + "(" + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE "
+      + ");";
 
   private static final String DATABASE_CREATE_TIME = "CREATE TABLE "
       + TABLE_TIME + " (" + KEY_TIME_TIMEID + " INTEGER PRIMARY KEY, "
       + KEY_TIME_STARTTIME + " TEXT NOT NULL, " + KEY_TIME_ENDTIME
-      + " TEXT NOT NULL, " + KEY_TIME_STATUS + " INTEGER NOT NULL, "
-      + KEY_TIME_TID + " INTEGER, " + "FOREIGN KEY (" + KEY_TIME_TID
-      + ") REFERENCES " + TABLE_TASK + "(" + KEY_TASK_TID
+      + " TEXT NOT NULL, " + KEY_TIME_TID + " INTEGER, " + "FOREIGN KEY ("
+      + KEY_TIME_TID + ") REFERENCES " + TABLE_TASK + "(" + KEY_TASK_TID
       + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   // SQL commands to destroy the tables.
@@ -540,7 +540,7 @@ public class TaskDbAdapter {
    */
   public long createTask(TaskItem newTask) {
     return createTask(newTask.taskListId(), newTask.taskType(),
-        newTask.taskName(), newTask.dueDate());
+        newTask.taskName(), newTask.status(), newTask.dueDate());
   }
 
   /**
@@ -553,11 +553,12 @@ public class TaskDbAdapter {
    * @return the ID of the newly inserted item, or -1 if an error occurred.
    */
   public long createTask(long taskListId, String taskType, String taskName,
-      String dueDate) {
+      int status, String dueDate) {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TASK_TLID, taskListId);
     initialValues.put(KEY_TASK_TYPE, taskType);
     initialValues.put(KEY_TASK_NAME, taskName);
+    initialValues.put(KEY_TASK_STATUS, status);
     initialValues.put(KEY_TASK_DUEDATE, dueDate);
 
     // Initialize sequence by the value of the newId.
@@ -590,6 +591,7 @@ public class TaskDbAdapter {
               .getLong(cursor.getColumnIndex(KEY_TASK_TLID)), cursor
               .getString(cursor.getColumnIndex(KEY_TASK_NAME)), cursor
               .getString(cursor.getColumnIndex(KEY_TASK_TYPE)), cursor
+              .getInt(cursor.getColumnIndex(KEY_TASK_STATUS)), cursor
               .getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)), cursor
               .getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
     }
@@ -658,11 +660,12 @@ public class TaskDbAdapter {
    * @param dueDate
    * @return successfully updated or not.
    */
-  public boolean updateTask(long taskId, String taskType, String taskName,
+  public boolean updateTask(long taskId, String taskType, String taskName, int status, 
       String dueDate) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASK_TYPE, taskType);
     updatedInfo.put(KEY_TASK_NAME, taskName);
+    updatedInfo.put(KEY_TASK_STATUS, status);
     updatedInfo.put(KEY_TASK_DUEDATE, dueDate);
 
     return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "=" + taskId,
@@ -825,7 +828,7 @@ public class TaskDbAdapter {
    */
   public String[] getTaskSchema() {
     return new String[] { KEY_TASK_TLID, KEY_TASK_TID, KEY_TASK_TYPE,
-        KEY_TASK_NAME, KEY_TASK_DUEDATE };
+        KEY_TASK_NAME, KEY_TASK_STATUS, KEY_TASK_DUEDATE };
   }
 
   // all helper functions.

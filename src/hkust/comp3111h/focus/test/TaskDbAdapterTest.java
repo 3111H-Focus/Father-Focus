@@ -127,16 +127,16 @@ public class TaskDbAdapterTest extends Activity implements OnClickListener {
     tl2 = mDbAdapter.createTaskList("2031");
 
     task1 = mDbAdapter.createTask(tl1, "Project", "Database checking",
-        "Next week");
+        TaskDbAdapter.STATUS_NOT_START, "Next week");
     task2 = mDbAdapter.createTask(tl1, "Assignment", "UML Diagram",
-        "Next Monday");
-    task3 = mDbAdapter.createTask(tl1, "Coding", "Part-time job", "Today"
-       );
+        TaskDbAdapter.STATUS_NOT_START, "Next Monday");
+    task3 = mDbAdapter.createTask(tl1, "Coding", "Part-time job",
+        TaskDbAdapter.STATUS_NOT_START, "Today");
 
-    task4 = mDbAdapter.createTask(tl2, "Presentation", "Exercise11", "Tuesday"
-        );
-    task5 = mDbAdapter.createTask(tl2, "Writing", "Homework", "Wednesday"
-        );
+    task4 = mDbAdapter.createTask(tl2, "Presentation", "Exercise11",
+        TaskDbAdapter.STATUS_NOT_START, "Tuesday");
+    task5 = mDbAdapter.createTask(tl2, "Writing", "Homework",
+        TaskDbAdapter.STATUS_NOT_START, "Wednesday");
 
     etStatus
         .setText(etStatus.getText() + "Data added. use adb to see content.");
