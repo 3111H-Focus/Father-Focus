@@ -90,16 +90,16 @@ public class TaskDbAdapter {
       + TABLE_TASK + " (" + KEY_TASK_TID + " INTEGER PRIMARY KEY, "
       + KEY_TASK_TLID + " INTEGER, " + KEY_TASK_TYPE + " TEXT NOT NULL, "
       + KEY_TASK_NAME + " TEXT NOT NULL, " + KEY_TASK_DUEDATE + " TEXT,"
-      + KEY_TASK_STATUS + " INTEGER," + KEY_TASK_TSEQUENCE + " INTEGER, "
-      + "FOREIGN KEY (" + KEY_TASK_TLID + ") REFERENCES " + TABLE_TASKLIST
-      + "(" + KEY_TASKLIST_TLID + ") ON UPDATE CASCADE ON DELETE CASCADE "
-      + ");";
+      + KEY_TASK_STATUS + " INTEGER NOT NULL, " + KEY_TASK_TSEQUENCE
+      + " INTEGER, " + "FOREIGN KEY (" + KEY_TASK_TLID + ") REFERENCES "
+      + TABLE_TASKLIST + "(" + KEY_TASKLIST_TLID
+      + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   private static final String DATABASE_CREATE_TIME = "CREATE TABLE "
       + TABLE_TIME + " (" + KEY_TIME_TIMEID + " INTEGER PRIMARY KEY, "
-      + KEY_TIME_STARTTIME + " TEXT NOT NULL, " + KEY_TIME_ENDTIME
-      + " TEXT NOT NULL, " + KEY_TIME_TID + " INTEGER, " + "FOREIGN KEY ("
-      + KEY_TIME_TID + ") REFERENCES " + TABLE_TASK + "(" + KEY_TASK_TID
+      + KEY_TIME_STARTTIME + " TEXT NOT NULL, " + KEY_TIME_ENDTIME + " TEXT, "
+      + KEY_TIME_TID + " INTEGER, " + "FOREIGN KEY (" + KEY_TIME_TID
+      + ") REFERENCES " + TABLE_TASK + "(" + KEY_TASK_TID
       + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   // SQL commands to destroy the tables.
@@ -660,8 +660,8 @@ public class TaskDbAdapter {
    * @param dueDate
    * @return successfully updated or not.
    */
-  public boolean updateTask(long taskId, String taskType, String taskName, int status, 
-      String dueDate) {
+  public boolean updateTask(long taskId, String taskType, String taskName,
+      int status, String dueDate) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASK_TYPE, taskType);
     updatedInfo.put(KEY_TASK_NAME, taskName);
@@ -829,6 +829,57 @@ public class TaskDbAdapter {
   public String[] getTaskSchema() {
     return new String[] { KEY_TASK_TLID, KEY_TASK_TID, KEY_TASK_TYPE,
         KEY_TASK_NAME, KEY_TASK_STATUS, KEY_TASK_DUEDATE };
+  }
+
+  // ***********************METHODS FOR TIME********************
+
+  public long createTime(String startTime, String endTime, long taskId) {
+    ContentValues initialValues = new ContentValues();
+    initialValues.put(KEY_TIME_STARTTIME, startTime);
+    initialValues.put(KEY_TIME_ENDTIME, endTime);
+    initialValues.put(KEY_TIME_TID, taskId);
+
+    // Initialize sequence by the value of the newId.
+    // i.e, seq == id as initialization.
+    return mDb.insert(TABLE_TIME, null, initialValues);
+  }
+
+  public Cursor fetchTime(long timeId) throws SQLException {
+    Cursor mCursor = mDb.query(true, TABLE_TIME, null, KEY_TIME_TIMEID + "="
+        + timeId, null, null, null, null, null);
+    if (mCursor != null) {
+      mCursor.moveToFirst();
+    }
+    return mCursor;
+  }
+
+  public Cursor fetchAllTimes() {
+    return mDb.query(TABLE_TIME, null, null, null, null, null, null);
+  }
+
+  public Cursor fetchAllTimesOfTask(long taskId) {
+    return mDb.query(TABLE_TIME, null, KEY_TIME_TID + "=" + taskId, null, null,
+        null, null);
+  }
+
+  public boolean deleteTime(long timeId) {
+    return mDb.delete(TABLE_TIME, KEY_TIME_TIMEID + "=" + timeId, null) > 0;
+  }
+
+  public boolean updateTime(long timeId, String startTime, String endTime,
+      long taskId) {
+    ContentValues updatedInfo = new ContentValues();
+    updatedInfo.put(KEY_TIME_STARTTIME, startTime);
+    updatedInfo.put(KEY_TIME_ENDTIME, endTime);
+    updatedInfo.put(KEY_TIME_TID, taskId);
+
+    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TID + "=" + timeId,
+        null) > 0;
+  }
+
+  public String[] getTimeSchema() {
+    return new String[] { KEY_TIME_TIMEID, KEY_TIME_STARTTIME,
+        KEY_TIME_ENDTIME, KEY_TIME_TID };
   }
 
   // all helper functions.
