@@ -45,18 +45,29 @@ public class TaskDbAdapter {
   public static final String KEY_TASK_DUEDATE = "dueDate";
   public static final String KEY_TASK_TSEQUENCE = "taskSequence";
 
-  // TODO:
-  // Time should be added into record table.
-  /*
-   * public static final String KEY_TASK_STARTTIME = "taskStartTime"; public
-   * static final String KEY_TASK_ENDTIME = "taskEndTime";
-   */
+  // Time Table Key info
+  public static final String KEY_TIME_TIMEID = "timeId";
+  public static final String KEY_TIME_STARTTIME = "startTime";
+  public static final String KEY_TIME_ENDTIME = "endTime";
+  public static final String KEY_TIME_STATUS = "status";
+  public static final String KEY_TIME_TID = "taskId";
+  // Enum declaration for KEY_TIME_STATUS
+  // new added task's default value, indicated that task added but not started
+  // yet.
+  public static final int STATUS_NOT_START = 0;
+  // task now in progress, i.e, counting
+  public static final int STATUS_IN_PROGRESS = 1;
+  // task started already, and paused.
+  public static final int STATUS_PAUSE = 2;
+  // task already finished.
+  public static final int STATUS_DONE = 3;
 
   // Definition of database and table info.
   private static final String DATABASE_NAME = "data";
   private static final String TABLE_USER = "user";
   private static final String TABLE_TASKLIST = "taskList";
   private static final String TABLE_TASK = "task";
+  private static final String TABLE_TIME = "time";
 
   // Tag for LogCat output.
   private static final String TAG = "DBCHECK";
@@ -83,6 +94,14 @@ public class TaskDbAdapter {
       + ") REFERENCES " + TABLE_TASKLIST + "(" + KEY_TASKLIST_TLID
       + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
+  private static final String DATABASE_CREATE_TIME = "CREATE TABLE "
+      + TABLE_TIME + " (" + KEY_TIME_TIMEID + " INTEGER PRIMARY KEY, "
+      + KEY_TIME_STARTTIME + " TEXT NOT NULL, " + KEY_TIME_ENDTIME
+      + " TEXT NOT NULL, " + KEY_TIME_STATUS + " INTEGER NOT NULL, "
+      + KEY_TIME_TID + " INTEGER, " + "FOREIGN KEY (" + KEY_TIME_TID
+      + ") REFERENCES " + TABLE_TASK + "(" + KEY_TASK_TID
+      + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
+
   // SQL commands to destroy the tables.
   private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
       + TABLE_USER;
@@ -90,6 +109,8 @@ public class TaskDbAdapter {
       + TABLE_TASKLIST;
   private static final String DATABASE_DESTROY_TASK = "DROP TABLE IF EXISTS "
       + TABLE_TASK;
+  private static final String DATABASE_DESTROY_TIME = "DROP TABLE IF EXISTS "
+      + TABLE_TIME;
 
   // **************************************END************************************************
 
@@ -118,6 +139,8 @@ public class TaskDbAdapter {
       db.execSQL(DATABASE_CREATE_TASKLIST);
       Log.i(TAG, DATABASE_CREATE_TASK);
       db.execSQL(DATABASE_CREATE_TASK);
+      Log.i(TAG, DATABASE_CREATE_TIME);
+      db.execSQL(DATABASE_CREATE_TIME);
       db.execSQL("INSERT INTO taskList VALUES (1,'other',1)");
     }
 
@@ -128,6 +151,7 @@ public class TaskDbAdapter {
       db.execSQL(DATABASE_DESTROY_USER);
       db.execSQL(DATABASE_DESTROY_TASKLIST);
       db.execSQL(DATABASE_DESTROY_TASK);
+      db.execSQL(DATABASE_DESTROY_TIME);
       onCreate(db);
     }
 
@@ -507,6 +531,13 @@ public class TaskDbAdapter {
   // ****************END METHODS OF TASKLIST**************************
 
   // ****************METHODS OF TASK**************************
+  /**
+   * Overloading method to add a task.
+   * 
+   * @param newTask
+   *          the TaskItem object.
+   * @return the id of the task.
+   */
   public long createTask(TaskItem newTask) {
     return createTask(newTask.taskListId(), newTask.taskType(),
         newTask.taskName(), newTask.dueDate());
