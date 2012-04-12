@@ -93,8 +93,6 @@ public final class TaskDnDAdapter extends BaseAdapter implements
   /**
    * Make a view to hold each row.
    * 
-   * @see android.widget.ListAdapter#getView(int, android.view.View,
-   *      android.view.ViewGroup)
    */
   public View getView(int position, View convertView, ViewGroup parent) {
     // A ViewHolder keeps references to children views to avoid unneccessary

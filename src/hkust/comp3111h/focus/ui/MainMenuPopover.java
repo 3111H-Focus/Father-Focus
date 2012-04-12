@@ -201,6 +201,4 @@ public class MainMenuPopover extends FragmentPopover implements
 
     return itemRow;
   }
-
-
 }

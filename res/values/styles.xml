@@ -46,10 +46,19 @@
     <item name="android:textSize">18dip</item>
     <item name="android:textStyle">bold</item>
   </style>
+  <style name="TextAppearance.ListsPop">
+    <item name="android:textColor">#111111</item>
+  </style>
 <!--=========================General =========================-->
 
   <style name="Content">
     <item name="android:background">@android:color/black</item>
+  </style>
+  <style name="ListView">
+    <item name="android:dividerHeight">1px</item>
+    <item name="android:scrollbars">vertical</item>
+    <item name="android:cacheColorHint">#00000000</item>
+    <item name="android:smoothScrollbar">true</item>
   </style>
 <!--=======================Pull header========================-->
   <style name="pull_headerContainer">

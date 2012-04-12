@@ -308,6 +308,7 @@ public class TaskDbAdapter {
         cursor.getString(cursor.getColumnIndex(KEY_TASKLIST_TLNAME)),
         cursor.getLong(cursor.getColumnIndex(KEY_TASKLIST_TLSEQUENCE))));
     }
+    cursor.close();
     return items;
   }
   /**
@@ -568,6 +569,7 @@ public class TaskDbAdapter {
             cursor.getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)),
             cursor.getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
     }
+    cursor.close();
     return items;
   }
   /**

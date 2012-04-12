@@ -11,6 +11,7 @@ import hkust.comp3111h.focus.ui.QuickAddDialog;
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.PagerAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.Adapter.TaskListSidebarAdapter;
 import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
 import hkust.comp3111h.focus.ui.MainMenuPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
@@ -19,6 +20,8 @@ import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
 import hkust.comp3111h.focus.ui.TitlePageIndicator;
 import hkust.comp3111h.focus.ui.FragmentPopover;
+import hkust.comp3111h.focus.database.TaskListItem;
+import hkust.comp3111h.focus.database.TaskItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,22 +38,27 @@ import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.Menu;
 import android.support.v4.view.MenuItem;
 import android.support.v4.view.MenuItem.OnMenuItemClickListener;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.PopupWindow.OnDismissListener;
+import android.widget.FrameLayout;
 
 public class MainActivity extends FragmentActivity implements
-    ActionBar.TabListener, ViewPager.OnPageChangeListener, MainMenuListener {
+    ActionBar.TabListener, ViewPager.OnPageChangeListener, MainMenuListener{
+  public static final String BROADCAST_REQUEST_EVENT_REFRESH = "hkust.comp3111h.focus.REQUEST_EVENT_REFRESH";
   // determine honecome or not
   static final int DIALOG_QUICK_ADD = 0;
+  static final int DIALOG_QUICK_ADD_LIST = 1;
 
 
   private final Handler handler = new Handler();
@@ -61,10 +69,10 @@ public class MainActivity extends FragmentActivity implements
   private View listsNav;
   private ImageView listsNavDisclosure;
 
-  private MenuItem addTaskMenuItem;
+  private ListView sidebarTaskLists;
+  private TextView addListButton;
 
   private MainMenuPopover mainMenuPopover;
-  private FragmentPopover listsPopover;
 
   // Actionbar set up
   private boolean useLogo = false;
@@ -72,7 +80,6 @@ public class MainActivity extends FragmentActivity implements
   private TaskDbAdapter mDbAdapter;
   private List<Fragment> fragments;
 
-  Intent addTaskIntent;
 
   public TaskDbAdapter getDbAdapter() {
     return mDbAdapter;
@@ -111,7 +118,6 @@ public class MainActivity extends FragmentActivity implements
       @Override
       public void onClick(View v) {
         setListsDropdownSelected(true);
-        listsPopover.show(v);
       }
     });
 
@@ -122,8 +128,10 @@ public class MainActivity extends FragmentActivity implements
     mDbAdapter.open();
     // Initialise ViewPager
     this.initialiseViewPager();
+    initialiseTaskListSidebar();
     createMainMenuPopover();
   }
+
   private void setListsDropdownSelected(boolean selected) {
     int oldTextColor = listTitle.getTextColors().getDefaultColor();
     int textStyle = (selected ? R.style.TextAppearance_ActionBar_ListsHeader_Selected:R.style.TextAppearance_ActionBar_ListsHeader);
@@ -131,20 +139,22 @@ public class MainActivity extends FragmentActivity implements
     listsNav.setBackgroundColor(selected ? oldTextColor: android.R.color.transparent);
     listsNavDisclosure.setSelected(selected);
   }
-  public void initialiseListsPopover() {
-    listsPopover = new FragmentPopover(this, R.layout.tlist_popover_layout);
-    listsPopover.setOnDismissListener(new OnDismissListener() {
-      @Override
-      public void onDismiss() {
-        setListsDropdownSelected(false);
-      }
-    });
+
+  private void initialiseTaskListSidebar() {
+    ArrayList<TaskListItem> tlists = getDbAdapter().fetchAllTaskListsObjs(true);
+    sidebarTaskLists = (ListView) findViewById(R.id.task_lists);
+    sidebarTaskLists.setAdapter(new TaskListSidebarAdapter(
+          this,
+          sidebarTaskLists,
+          tlists,
+          R.layout.tlist_sidebar_row_layout));
+   addListButton  = (TextView) findViewById(R.id.new_list_button);
+    //TODO:set addTaskMenutItemListener
   }
 
   /**
    * Initialize ViewPager
    */
-
   private void initialiseViewPager() {
     fragments = new Vector<Fragment>();
     fragments
@@ -178,39 +188,6 @@ public class MainActivity extends FragmentActivity implements
   public void showQuickAddDialog() {
     showDialog(DIALOG_QUICK_ADD);
   }
-
-  /**
-   * Creating the action bar menu
-   * 
-   * @param menu
-   */
-  /*
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    //getMenuInflater().inflate(R.menu.action_bar_menu, menu);
-    // find the buttons
-    mainMenu = (ImageButton) menu.findItem(R.id.main_menu).getActionView();
-    mainMenu.setImageResource(R.drawable.menu_button_icon);
-    addTaskMenuItem = menu.findItem(R.id.add_task);
-    mainMenu.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        mainMenuPopover.show(v);
-      }
-    });
-    addTaskMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-      // TODO: propriate listener
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
-        startActivityForResult(addTaskIntent, 0); // 0 just a random
-                                                  // requestCode.
-        return false;
-      }
-    });
-    return super.onCreateOptionsMenu(menu);
-  }
-  */
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,6 +226,63 @@ public class MainActivity extends FragmentActivity implements
     if(mainMenuPopover!=null) {
       mainMenuPopover.dismiss();
     }
+  }
+  private void setTasksByList(TaskListItem item) {
+
+  }
+
+  /**
+   * General function to setup the popover
+   */
+  private void setupPopoverWithFragment(
+      FragmentPopover popover,
+      Fragment frag, 
+      LayoutParams params) {
+    if(popover != null) {
+      Log.d("MainAcitivity","Fragment is "+frag.toString());
+      View view = frag.getView();
+      Log.d("MainActivity","The view:"+view);
+      if(view!=null) {
+        FrameLayout parent = (FrameLayout) view.getParent();
+        if(parent!=null) {
+          parent.removeView(view);
+        }
+        if(params == null) {
+          popover.setContent(view);
+        }else {
+          Log.d("MainActivity", "Setting content");
+          popover.setContent(view,params);
+        }
+      }
+    }
+  }
+
+  protected Fragment setupFragment(String tag, int container, Class<? extends Fragment> cls) {
+    FragmentManager fm = getSupportFragmentManager();
+    Fragment fragment = fm.findFragmentByTag(tag);
+    if(fragment == null) {
+      try{
+        fragment = cls.newInstance();
+      } catch (InstantiationException e) {
+        return null;
+      } catch (IllegalAccessException e) {
+        return null;
+      }
+
+      FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+      if(container==0) {
+        ft.add(fragment, tag);
+      } else {
+        ft.replace(container, fragment, tag);
+      }
+      ft.commit();
+      
+    }
+    return fragment;
+  }
+
+  private void setTaskByList(TaskListItem item) {
+
   }
 
   @Override
