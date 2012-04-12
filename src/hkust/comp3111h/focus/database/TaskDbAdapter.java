@@ -419,7 +419,7 @@ public class TaskDbAdapter {
 
     // Now, seqList's sequence are 1-to-1 corresponding to the idList.
     // Handle two situations.
-    if (dragId < dropId) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
+    if (dragOrigSeq < dropOrigSeq) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
       idList.remove(0);
       idList.add(dragId);
     } else { // 2, Drag from down to up. e.g, drag 5th to 2nd.
@@ -659,6 +659,8 @@ public class TaskDbAdapter {
    * @return whether it successfully updates.
    */
   public boolean updateTaskSequence(long dragId, long dropId) {
+    
+    Log.d("inside updateTaskSequence", "dragId: "+dragId+" dropId: "+dropId);
     if (dragId == dropId) {
       return true; // Same item. No need to update.
     }
@@ -676,28 +678,41 @@ public class TaskDbAdapter {
     ArrayList<Long> idList = new ArrayList<Long>();
 
     // Get all values and map them into origId and origSeq arraylist.
+    Long tempSeq;
+    Long tempId;
+ //   Log.d("Going to retrieve", "");
     for (interval.moveToFirst(); !interval.isAfterLast(); interval.moveToNext()) {
-      seqList.add(interval.getLong(interval
-          .getColumnIndexOrThrow(KEY_TASK_TSEQUENCE)));
-      idList.add(interval.getLong(interval
-          .getColumnIndexOrThrow(KEY_TASK_TID)));
+      tempSeq = interval.getLong(interval
+          .getColumnIndexOrThrow(KEY_TASK_TSEQUENCE));
+      //Log.d("tempSeq: ", String.valueOf(tempSeq));
+      seqList.add(tempSeq);
+      
+      tempId = interval.getLong(interval
+          .getColumnIndexOrThrow(KEY_TASK_TID));
+      //Log.d("tempId: ", String.valueOf(tempId));
+      idList.add(tempId);
     }
+//    Log.d("End retrieving info", "");
 
     if (seqList.size() != idList.size()) {
       return false;
     }
 
     // For debug use.
+    String seqlistbefore_db = new String();
+    String idlistbefore_db = new String();
     for (int i = 0; i < seqList.size(); ++i) {
-      Log.d("seq list", String.valueOf(seqList.get(i)));
+      seqlistbefore_db += String.valueOf(seqList.get(i));
     }
+    Log.d("seq list before", seqlistbefore_db);
     for (int i = 0; i < idList.size(); ++i) {
-      Log.d("id list", String.valueOf(idList.get(i)));
+      idlistbefore_db += String.valueOf(idList.get(i));
     }
-
+    Log.d("id list before", idlistbefore_db);
+    
     // Now, seqList's sequence are 1-to-1 corresponding to the idList.
     // Handle two situations.
-    if (dragId < dropId) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
+    if (dragOrigSeq < dropOrigSeq) { // 1, Drag from up to down. e.g, drag 2nd to 5th.
       idList.remove(0);
       idList.add(dragId);
     } else { // 2, Drag from down to up. e.g, drag 5th to 2nd.
@@ -711,7 +726,20 @@ public class TaskDbAdapter {
       status = status
           && updateTaskSequenceById(idList.get(i), seqList.get(i));
     }
+    
+    // For debug use.
+    String seqlistafter_db = new String();
+    String idlistafter_db = new String();
+    for (int i = 0; i < seqList.size(); ++i) {
+      seqlistafter_db += String.valueOf(seqList.get(i));
+    }
+    Log.d("seq list after", seqlistafter_db);
+    for (int i = 0; i < idList.size(); ++i) {
+      idlistafter_db += String.valueOf(idList.get(i));
+    }
+    Log.d("id list after", idlistafter_db);
 
+    Log.d("leaving updateTaskSequence", "dragId: "+dragId+" dropId: "+dropId);
     return status;
   }
 
