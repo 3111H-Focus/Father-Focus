@@ -36,7 +36,6 @@ public class PagerAdapter extends FragmentPagerAdapter implements TitleProvider 
   }
   @Override
   public String getTitle(int position) {
-    Log.d("PagerAdapter", "tabposition is "+position);
     switch(position) {
       case 0:
         return "Task Manager";

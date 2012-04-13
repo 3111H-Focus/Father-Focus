@@ -18,4 +18,5 @@
   <string name="quick_add_hint">Add a task</string>
   <string name="dlg_detail">Detail</string>
   <string name="dlg_cancel">Cancel</string>
+  <string name="create_new_list">New Task List</string>
 </resources>
