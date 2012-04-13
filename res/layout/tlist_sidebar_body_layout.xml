@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
-  android:background="@color/popover_bg_color"
   android:orientation="vertical">
   <!--The list-->
   <ListView android:id="@android:id/list"
     android:layout_width="fill_parent"
     android:layout_height="320dip"
+    android:background="@color/popover_bg_color"
     android:layout_alignParentTop="true"
     android:scrollbars="vertical"
     android:divider="@android:color/transparent"

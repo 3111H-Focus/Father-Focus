@@ -611,6 +611,12 @@ public class TaskDbAdapter {
     return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
         null, null, null);
   }
+  public ArrayList<TaskItem> fetchTasksObjInList(long taskListId) throws SQLException {
+    Cursor cur = fetchAllTasksInList(taskListId);
+    ArrayList<TaskItem> items = taskItemsFromCursor(cur);
+    cur.close();
+    return items;
+  }
 
   /**
    * Delete a task given the id.

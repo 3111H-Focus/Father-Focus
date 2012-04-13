@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Bundle;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
@@ -56,16 +57,22 @@ public class TaskListSidebarAdapter extends ArrayAdapter<TaskListItem> {
     //viewHolder.icon.setImageResource(R.drawable.list_icon);
     if(position == 0){
       viewHolder.item = null;
+      viewHolder.name.setText("New List");
+      viewHolder.name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.plus_button_black,0,0,0);
+      viewHolder.name.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    } else if(position == 1) {
+      viewHolder.item = null;
       viewHolder.name.setText("All Tasks");
-    }else{
-      viewHolder.item = (TaskListItem) getItem(position-1);
+    } else{
+      viewHolder.item = (TaskListItem) getItem(position-2);
       viewHolder.name.setText(viewHolder.item.taskListName());
     }
     return convertView;
   }
+
   @Override
   public int getCount() {
-    return super.getCount()+1;
+    return super.getCount()+2;
   }
 
   public void populateView(ViewHolder viewHolder) {

@@ -2,10 +2,14 @@ package hkust.comp3111h.focus.Adapter;
 
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.ui.DropListener;
 import hkust.comp3111h.focus.ui.RemoveListener;
+import hkust.comp3111h.focus.ui.TaskManageFragment;
+import hkust.comp3111h.focus.Activity.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
@@ -50,7 +54,12 @@ public final class TaskDnDAdapter extends BaseAdapter implements
    * Fetch all tasks from database and refresh the tasks.
    */
   public void update() {
-    mTaskItems = mDbAdapter.fetchAllTaskObjs(true);
+    TaskListItem activeTl = ((TaskManageFragment)((MainActivity) mCtx).getFragments().get(0)).getActiveTaskList();
+    if(activeTl==null) {
+      mTaskItems = mDbAdapter.fetchAllTaskObjs(true);
+    }else{
+      mTaskItems = mDbAdapter.fetchTasksObjInList(activeTl.taskListId());
+    }
   }
 
   /**
