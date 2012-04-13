@@ -22,4 +22,6 @@
 	<color name="soft_grey">#FF777777</color>
 	<color name="background">#FFEFEFEF</color>
   <color name="popover_bg_color">#5E5A5C</color>
+  <color name="black">#000000</color>
+  <color name="white">#FFFFFF</color>
 </resources>

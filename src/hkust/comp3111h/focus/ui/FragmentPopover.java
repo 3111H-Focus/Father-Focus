@@ -2,6 +2,7 @@ package hkust.comp3111h.focus.ui;
 
 import greendroid.widget.QuickAction;
 import greendroid.widget.QuickActionWidget;
+import android.util.Log;
 
 import java.util.List;
 
@@ -30,12 +31,12 @@ public class FragmentPopover extends QuickActionWidget {
     super(context);
     setContentView(layout);
     metrics = context.getResources().getDisplayMetrics();
-
     setFocusable(true);
     setTouchable(true);
   }
 
   public void setContent(View content) {
+    Log.d("FragmentPopover","Setting content"+content.toString());
     // set the contianer to the root
     FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
         R.id.content);
@@ -44,7 +45,7 @@ public class FragmentPopover extends QuickActionWidget {
 
   public void setContent(View content, LayoutParams params) {
     FrameLayout contentContainer = (FrameLayout) getContentView().findViewById(
-        android.R.id.content);
+        R.id.content);
     contentContainer.addView(content, params);
 
   }
@@ -81,6 +82,7 @@ public class FragmentPopover extends QuickActionWidget {
   }
   @Override
   public void show(View anchor) {
+    Log.d("FragmentPopover","Showing");
     if(isShowing()) {
       return;
     }

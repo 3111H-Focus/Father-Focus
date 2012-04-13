@@ -31,11 +31,15 @@ import hkust.comp3111h.focus.R;
 public class TaskManageFragment extends Fragment {
   private TaskDnDAdapter mAdapter;
   private DnDListView mListView;
+  private TaskListItem activeTaskList; 
 
   public void updateList() {
     Log.v("Fragment", "updating");
     mAdapter.update();
     mAdapter.notifyDataSetChanged();
+  }
+  public void setActiveTaskList(TaskListItem atl) {
+    activeTaskList = atl;
   }
 
   /**
@@ -43,8 +47,9 @@ public class TaskManageFragment extends Fragment {
    * Use other currently
    */
   public TaskListItem  getActiveTaskList() {
-    return ((MainActivity)getActivity()).getDbAdapter().fetchAllTaskListsObjs(true).get(0);
+    return activeTaskList;
   }
+
 
   @Override
   public void onCreate(Bundle savedInstanceState) {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--layout file for the quick add dialog -->
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:minWidth="100dip"
+  android:orientation="vertical">
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="50dip"
+    android:padding="3dip"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+  <!-- Quick Add Task -->
+    <EditText android:id="@+id/addListEdit"
+      android:layout_width="180dip"
+      android:layout_height="39dip"
+      android:layout_marginRight="8dip"
+      android:layout_marginLeft="5dip"
+      android:layout_marginBottom="2dip"
+      android:layout_weight="100"
+      android:paddingLeft="5dip"
+      android:background="@drawable/edit_title_background"
+      android:hint="@string/quick_add_hint"
+      android:textSize="16sp"
+      android:autoText="true"
+      android:textColor="@android:color/black"
+      android:capitalize="sentences"/>
+    <ImageButton android:id="@+id/add_list_button"
+      android:layout_width="39dip"
+      android:layout_height="39dip"
+      android:layout_gravity="top"
+      android:layout_marginRight="5dip"
+      android:layout_weight="1"
+      android:background="@android:color/transparent"
+      android:src="@drawable/plus_button"
+      android:scaleType="center"/>
+  </LinearLayout>
+  <LinearLayout
+    android:id="@+id/detail"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="7dip"
+    android:paddingRight="7dip"
+    android:orientation="horizontal">
+    <Button
+      android:id="@+id/cancel_add_list_button"
+      android:layout_width="fill_parent"
+      android:layout_height="50dip"
+      android:layout_weight="1"
+      android:text="@string/dlg_cancel"/>
+  </LinearLayout>
+</LinearLayout>
+
+
+
+
+
+
