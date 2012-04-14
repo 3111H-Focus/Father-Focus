@@ -114,16 +114,16 @@ public class AddTaskActivity extends Activity implements OnClickListener {
 
     if (mRowId == null) {
       // TODO:DELETE the 1!! DEFAULT FOR 3111H. JUST FOR TEST.
-      long id = mDbHelper.createTask(1, taskType, taskName, dueDate, "", "");
+      long id = mDbHelper.createTask(1, taskType, taskName, TaskDbAdapter.TASKSTATUS_NOT_START, dueDate);
       Log.d("id=", String.valueOf(id));
       if (id > 0) {
         mRowId = id;
       } else {
         Log.d("AddTaskActivity",mRowId.toString()+ taskType.toString()+ taskName.toString()+dueDate.toString());
-        mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
+        mDbHelper.updateTask(mRowId, taskType, taskName, TaskDbAdapter.TASKSTATUS_NOT_START, dueDate);
       }
     } else {
-      mDbHelper.updateTask(mRowId, taskType, taskName, dueDate, "", "");
+      mDbHelper.updateTask(mRowId, taskType, taskName, TaskDbAdapter.TASKSTATUS_NOT_START, dueDate);
     }
   }
 
