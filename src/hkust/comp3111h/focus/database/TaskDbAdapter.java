@@ -854,7 +854,7 @@ public class TaskDbAdapter {
     return seq;
   }
 
- /**
+  /**
    * return id of the in-progress task if found, -1 if not found.
    * 
    * @return
@@ -913,12 +913,14 @@ public class TaskDbAdapter {
 
   /**
    * General function to create a time record.
+   * 
    * @param startTime
    * @param endTime
    * @param taskId
    * @return the newly inserted time record id.
    */
-  public long createTime(DateTime startTime, DateTime endTime, int status, long taskId) {
+  public long createTime(DateTime startTime, DateTime endTime, int status,
+      long taskId) {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TIME_STARTTIME, startTime.toString());
     initialValues.put(KEY_TIME_ENDTIME, endTime.toString());
@@ -931,6 +933,7 @@ public class TaskDbAdapter {
   /**
    * overloaded function to createTime. No need to provide endTime which will
    * automatically set to null.
+   * 
    * @param startTime
    * @param taskId
    * @return
@@ -1006,20 +1009,22 @@ public class TaskDbAdapter {
    * @param taskId
    * @return
    */
-  public boolean updateTime(long timeId, DateTime startTime, DateTime endTime, int status,
-      long taskId) {
+  public boolean updateTime(long timeId, DateTime startTime, DateTime endTime,
+      int status, long taskId) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TIME_STARTTIME, startTime.toString());
     updatedInfo.put(KEY_TIME_ENDTIME, endTime.toString());
     updatedInfo.put(KEY_TIME_STATUS, status);
     updatedInfo.put(KEY_TIME_TID, taskId);
 
-    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TID + "=" + timeId,
+    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TIMEID + "=" + timeId,
         null) > 0;
   }
 
   /**
-   * given the timeId, update the endTime to current time and set the status to done. 
+   * given the timeId, update the endTime to current time and set the status to
+   * done.
+   * 
    * @param timeId
    * @return
    */
@@ -1029,56 +1034,59 @@ public class TaskDbAdapter {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TIME_ENDTIME, endTime.toString());
     updatedInfo.put(KEY_TIME_STATUS, TIMESTATUS_DONE);
-    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TID + "=" + timeId,
+    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TIMEID + "=" + timeId,
         null) > 0;
   }
-  
+
   /**
-   * update status of a specified time by its id. 
+   * update status of a specified time by its id.
+   * 
    * @param timeId
    * @param status
    * @return
    */
-  public boolean updateTimeStatus(long timeId, int status){
+  public boolean updateTimeStatus(long timeId, int status) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TIME_STATUS, status);
-    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TIMEID + "=" + timeId, null) > 0;
+    return mDb.update(TABLE_TIME, updatedInfo, KEY_TIME_TIMEID + "=" + timeId,
+        null) > 0;
   }
-  
+
   /**
-   * Get duration of a specified timeId.
-   * If no such record, return a duration of 0. 
-   * If the time is still running, calculate the duration until now. 
+   * Get duration of a specified timeId. If no such record, return a duration of
+   * 0. If the time is still running, calculate the duration until now.
+   * 
    * @param timeId
    * @return
    */
-  public Duration getDurationByTimeId(long timeId){
+  public Duration getDurationByTimeId(long timeId) {
     Duration duration = new Duration(0);
     Cursor mCursor = this.fetchTime(timeId);
-    if(mCursor.moveToFirst()){
-      if(mCursor.getInt(mCursor.getColumnIndex(KEY_TIME_STATUS)) == TIMESTATUS_DONE){
-        // Time is done. EndTime not null. 
-        String startTimeStr = mCursor.getString(mCursor.getColumnIndex(KEY_TIME_STARTTIME));
-        String endTimeStr = mCursor.getString(mCursor.getColumnIndex(KEY_TIME_ENDTIME));
+    if (mCursor.moveToFirst()) {
+      if (mCursor.getInt(mCursor.getColumnIndex(KEY_TIME_STATUS)) == TIMESTATUS_DONE) {
+        // Time is done. EndTime not null.
+        String startTimeStr = mCursor.getString(mCursor
+            .getColumnIndex(KEY_TIME_STARTTIME));
+        String endTimeStr = mCursor.getString(mCursor
+            .getColumnIndex(KEY_TIME_ENDTIME));
         DateTime startTime = DateTime.parse(startTimeStr);
         DateTime endTime = DateTime.parse(endTimeStr);
         duration.plus(new Duration(startTime, endTime));
-        
+
         mCursor.close();
         return duration;
-      }
-      else{
-        // Time is still running. Set endTime as current time. 
-        String startTimeStr = mCursor.getString(mCursor.getColumnIndex(KEY_TIME_STARTTIME));
+      } else {
+        // Time is still running. Set endTime as current time.
+        String startTimeStr = mCursor.getString(mCursor
+            .getColumnIndex(KEY_TIME_STARTTIME));
         DateTime startTime = DateTime.parse(startTimeStr);
         DateTime endTime = new DateTime();
         duration.plus(new Duration(startTime, endTime));
-        
+
         mCursor.close();
         return duration;
       }
-    }
-    else{
+    } else {
       mCursor.close();
       return duration;
     }
@@ -1121,51 +1129,61 @@ public class TaskDbAdapter {
   }
   
   /**
-   * Return timeId that are currently in progress. At most 1 task
-   * in progress at the same time, so return TimeItem. CAUTIONS: If no time in
-   * progress, return -1.
+   * all time spent on a specified task
+   * @param taskId
+   * @return
+   */
+  public Duration timeSpentOnTask(long taskId){
+    return timeSpentOnTaskFromSpecifiedDate(taskId, new DateTime(1970, 1, 1, 1, 1, 1, 1));
+  }
+
+  /**
+   * Return timeId that are currently in progress. At most 1 task in progress at
+   * the same time, so return TimeItem. CAUTIONS: If no time in progress, return
+   * -1.
    * 
    * @return
    */
   public long getRunningTimeId() {
-    Cursor mCursor = mDb.query(TABLE_TIME, null, KEY_TIME_STATUS + "=" + TIMESTATUS_RUNNING, null, null, null, null);
-    if(mCursor.getCount() == 1 && mCursor.moveToFirst()){
+    Cursor mCursor = mDb.query(TABLE_TIME, null, KEY_TIME_STATUS + "="
+        + TIMESTATUS_RUNNING, null, null, null, null);
+    if (mCursor.getCount() == 1 && mCursor.moveToFirst()) {
       long result = mCursor.getLong(mCursor.getColumnIndex(KEY_TIME_TIMEID));
       mCursor.close();
       return result;
-    }
-    else{
-      // Not found. 
+    } else {
+      // Not found.
       mCursor.close();
       return -1;
     }
   }
 
   /**
-   * return TimeItem that are currently in progress. At most 1 task
-   * in progress at the same time, so return TimeItem. CAUTIONS: If no time in
-   * progress, return NULL.
+   * return TimeItem that are currently in progress. At most 1 task in progress
+   * at the same time, so return TimeItem. CAUTIONS: If no time in progress,
+   * return NULL.
    * 
    * @return
    */
   public TimeItem getRunningTimeItem() {
-    Cursor mCursor = mDb.query(TABLE_TIME, null, KEY_TIME_STATUS + "=" + TIMESTATUS_RUNNING, null, null, null, null);
-    if(mCursor.getCount() == 1 && mCursor.moveToFirst()){
-      TimeItem result = new TimeItem(mCursor.getLong(mCursor.getColumnIndex(KEY_TIME_TIMEID)),
-          mCursor.getString(mCursor.getColumnIndex(KEY_TIME_STARTTIME)),
-          mCursor.getString(mCursor.getColumnIndex(KEY_TIME_ENDTIME)),
-          mCursor.getInt(mCursor.getColumnIndex(KEY_TIME_STATUS)),
-          mCursor.getLong(mCursor.getColumnIndex(KEY_TIME_TID)));
+    Cursor mCursor = mDb.query(TABLE_TIME, null, KEY_TIME_STATUS + "="
+        + TIMESTATUS_RUNNING, null, null, null, null);
+    if (mCursor.getCount() == 1 && mCursor.moveToFirst()) {
+      TimeItem result = new TimeItem(mCursor.getLong(mCursor
+          .getColumnIndex(KEY_TIME_TIMEID)), mCursor.getString(mCursor
+          .getColumnIndex(KEY_TIME_STARTTIME)), mCursor.getString(mCursor
+          .getColumnIndex(KEY_TIME_ENDTIME)), mCursor.getInt(mCursor
+          .getColumnIndex(KEY_TIME_STATUS)), mCursor.getLong(mCursor
+          .getColumnIndex(KEY_TIME_TID)));
       mCursor.close();
       return result;
-    }
-    else{
-      // No found. 
+    } else {
+      // No found.
       mCursor.close();
-      return null; 
+      return null;
     }
   }
-  
+
   /**
    * return whether there is a time in progress.
    * 
@@ -1174,8 +1192,6 @@ public class TaskDbAdapter {
   public boolean isAnyTimeRunning() {
     return getRunningTimeId() > 0;
   }
-
- 
 
   /**
    * return the schema of Time.
