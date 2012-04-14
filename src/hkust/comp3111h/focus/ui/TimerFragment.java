@@ -3,11 +3,18 @@
  */
 
 package hkust.comp3111h.focus.ui;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.ArrayWheelAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.database.TaskListItem;
+import hkust.comp3111h.focus.database.TimeItem;
+import hkust.comp3111h.focus.Activity.MainActivity;
+import hkust.comp3111h.focus.Adapter.TaskWheelViewAdapter;
+import hkust.comp3111h.focus.Adapter.TaskListWheelAdapter;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -16,6 +23,10 @@ import java.util.TimerTask;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.PowerManager;
+import android.os.Handler;
+import android.os.Message;
+
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,51 +43,102 @@ public class TimerFragment extends Fragment {
   // scrolling flag
   private boolean scrolling = false;
   private Timer mTimer = new Timer();
-  long baseTime;
+  private long runningItemId;
+  DateTime startTime;
   View timerView;
-  WheelView WheelOne;
-  WheelView WheelTwo;
-  WheelView WheelThree;
-  WheelView WheelFour;
-  WheelView WheelFive;
+  WheelView TaskListWheel;
+  WheelView TaskWheel;
+  WheelView HourWheel;
+  WheelView MinuteWheel;
+  WheelView SecondWheel;
 
   ArrayWheelAdapter<String> hrWheelAdapter;
   ArrayWheelAdapter<String> minuteWheelAdapter;
   ArrayWheelAdapter<String> secondWheelAdapter;
-  ArrayWheelAdapter<String> taskListWheelAdapter;
+  TaskListWheelAdapter taskListWheelAdapter;
+  TaskWheelViewAdapter taskAdapter;
   Button stopOrStartButton;
-  boolean isTimerStart = false;
-  //Dummy data for testing propose
-  final String TaskLists[] = { "List 1", "List 2", "List 3" };
-  final String Tasks[][] = new String[][] {
-      new String[] { "Task 1", "Task 2", "Task 3", "Task 4", "Task 5" },
-      new String[] { "Task 6", "Task 7", "Task 8", "Task 9", "Task 10" },
-      new String[] { "Task 11", "Task 12", "Task 13", "Task 14", "Task 15" } };
 
-  
-  //Start the timer
-  private void startTimer() {
-    Log.d("Timer", "starting");
-    baseTime = SystemClock.elapsedRealtime();
-    isTimerStart = true;
-    mTimer = new Timer();
-    WheelThree.setCurrentItem(0, false);
-    mTimer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        long sec = (SystemClock.elapsedRealtime() - baseTime)/1000;
-        Log.d("Timer", "Sec"+sec);
-        WheelThree.setCurrentItem((int)sec / 3600, true);
-        WheelFour.setCurrentItem((int)(sec % 3600) / 60, true);
-        WheelFive.setCurrentItem((int)sec % 60, true);
-      }
-    }, 0, 1000);
+  TaskDbAdapter mDbAdapter;
+  TaskItem selectedTask;
+  boolean isTimerStart = false;
+
+/*=====================================================
+ * Initializations
+ *======================================================*/
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    scrolling = true;
+    mDbAdapter = ((MainActivity)getActivity()).getDbAdapter();
   }
 
-  //Stop the timer
-  private void stopTimer() {
-    mTimer.cancel();
-    isTimerStart = false;
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    if (container == null) {
+      return null;
+    }
+    timerView = (LinearLayout) inflater.inflate(R.layout.timerfrag, container,
+        false);
+    initWheels();
+    initButton();
+    return timerView;
+  }
+  
+  //Methods for setting up the wheels
+  private void initWheels() {
+    TaskWheel = (WheelView) timerView.findViewById(R.id.wheel_two);
+    TaskWheel.setVisibleItems(5);
+    HourWheel = (WheelView) timerView.findViewById(R.id.wheel_three);
+    MinuteWheel = (WheelView) timerView.findViewById(R.id.wheel_four);
+    SecondWheel = (WheelView) timerView.findViewById(R.id.wheel_five);
+    initTaskListWheel();
+    updateTaskWheel();
+    initializeTimeAdapters();
+    HourWheel.setViewAdapter(hrWheelAdapter);
+    MinuteWheel.setViewAdapter(minuteWheelAdapter);
+    SecondWheel.setViewAdapter(secondWheelAdapter);
+  }
+  
+  private void initTaskListWheel() {
+    TaskListWheel = (WheelView) timerView.findViewById(R.id.wheel_one);
+    TaskListWheel.setVisibleItems(3);
+    ArrayList<TaskListItem> tlistItems = mDbAdapter.fetchAllTaskListsObjs(true);
+    taskListWheelAdapter = new TaskListWheelAdapter( getActivity(),tlistItems);
+    TaskListWheel.setViewAdapter(taskListWheelAdapter);
+    TaskListWheel.addChangingListener(new OnWheelChangedListener() {
+      public void onChanged(WheelView wheel, int oldValue, int newValue) {
+        if (!scrolling) {
+          updateTaskWheel();
+        }
+      }
+    });
+    TaskListWheel.addScrollingListener(new OnWheelScrollListener() {
+      public void onScrollingStarted(WheelView wheel) {
+        scrolling = true;
+      }
+      public void onScrollingFinished(WheelView wheel) {
+        scrolling = false;
+        updateTaskWheel();
+      }
+    });
+    TaskListWheel.setCurrentItem(1);
+  }
+
+  /**
+   * Update the task wheel
+   */
+  private void updateTaskWheel() {
+    if (!isTimerStart) {
+      TaskListItem curTlist = taskListWheelAdapter.getItem(TaskListWheel.getCurrentItem());
+      ArrayList<TaskItem> curTaskItems = mDbAdapter.fetchTasksObjInList(curTlist.taskListId());
+      taskAdapter = new TaskWheelViewAdapter(getActivity(), curTaskItems);
+      taskAdapter.setTextSize(18);
+      TaskWheel.setViewAdapter(taskAdapter);
+      TaskWheel.setCurrentItem(taskAdapter.getItemsCount() / 2);
+    }
   }
 
   //Initialize the adapter for the timer
@@ -96,238 +158,171 @@ public class TimerFragment extends Fragment {
     hrWheelAdapter = new ArrayWheelAdapter<String>(getActivity(), hrs);
   }
 
-  private void setWheelForTimer() {
-    WheelThree.setViewAdapter(hrWheelAdapter);
-    WheelFour.setViewAdapter(minuteWheelAdapter);
-    WheelFive.setViewAdapter(secondWheelAdapter);
+
+  /**
+   * Set up the button
+   */
+  private void initButton() {
+    stopOrStartButton = (Button) timerView
+        .findViewById(R.id.start_or_stop_button);
+    stopOrStartButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public synchronized void onClick(View v) {
+        if (!isTimerStart) {
+          isTimerStart = true;
+          stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
+          startTimer();
+          transform2Timer();
+        } else {
+          isTimerStart = false;
+          stopTimer();
+          stopOrStartButton.setText("Start Timer", TextView.BufferType.NORMAL);
+          mDbAdapter.updateEndTime(runningItemId);
+          transform2TaskSelection();
+        }
+      }
+    });
+  }
+  /**
+   * Transforms the user interface to task selection
+   */
+  private void transform2TaskSelection() {
+    TaskListWheel.setVisibility(View.VISIBLE);
+      TaskWheel.setVisibility(View.VISIBLE);
+      Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_in);
+    Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_out);
+    TaskListWheel.startAnimation(task_anim);
+    TaskWheel.startAnimation(task_anim);
+    HourWheel.startAnimation(timer_anim);
+    MinuteWheel.startAnimation(timer_anim);
+    SecondWheel.startAnimation(timer_anim);
+    HourWheel.setVisibility(View.GONE);
+    MinuteWheel.setVisibility(View.GONE);
+    SecondWheel.setVisibility(View.GONE);
+  }
+  /* Invoked when the wheels turn into the timer */
+  private void transform2Timer() {
+    HourWheel.setVisibility(View.VISIBLE);
+    MinuteWheel.setVisibility(View.VISIBLE);
+    SecondWheel.setVisibility(View.VISIBLE);
+    Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_out);
+    Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_in);
+    TaskListWheel.startAnimation(task_anim);
+    TaskWheel.startAnimation(task_anim);
+    HourWheel.startAnimation(timer_anim);
+    MinuteWheel.startAnimation(timer_anim);
+    SecondWheel.startAnimation(timer_anim);
+    TaskListWheel.setVisibility(View.GONE);
+    TaskWheel.setVisibility(View.GONE);
+  }
+  /*==========================================================
+   * =========================Timer controls=================
+   *==========================================================*/
+
+
+  //Start the timer
+  private synchronized void startTimer() {
+    selectedTask = taskAdapter.getItem(TaskWheel.getCurrentItem());
+    if(selectedTask!=null) {
+      Log.d("Timer", "starting");
+      startTime = new DateTime();
+      runningItemId = mDbAdapter.createTime(selectedTask.taskId());
+      isTimerStart = true;
+      mTimer = new Timer();
+      mTimer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          updateTimerValues();
+        }
+      }, 1000, 1000);
+    } else {
+      //TODO: toast to notify user
+    }
   }
 
-  private void setWheelForTask() {
-    WheelOne.setViewAdapter(taskListWheelAdapter);
-    int l_index = WheelOne.getCurrentItem();
-    TaskDbAdapter db = new TaskDbAdapter(getActivity());
-    db.open();
-    Cursor c = db.fetchAllTaskLists();
-    int c_index = c.getColumnIndex(TaskDbAdapter.KEY_TASK_TLID);
-    for (c.moveToFirst(); l_index > 0; c.moveToNext()) {
-      l_index--;
+  protected synchronized void updateTimerValues() {
+    if(startTime!=null) {
+      Duration duration = new Duration(startTime, new DateTime());
+      Log.v("TimerFragment","Duration is "+duration.toString());
+      HourWheel.setCurrentItem((int)duration.getStandardHours(),true);
+      MinuteWheel.setCurrentItem((int)duration.getStandardMinutes(),true);
+      SecondWheel.setCurrentItem((int)duration.getStandardSeconds(),true);
     }
-    c = db.fetchAllTasksInList(c.getLong(c_index));
-    ArrayList<String> tasks_al = new ArrayList<String>();
-    int c_index_for_task = c.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME);
-    for (c.moveToFirst(); c.isAfterLast(); c.moveToNext()) {
-        tasks_al.add(c.getString(c_index_for_task));
-    }
-    String[] tasks = new String[0];
-    tasks = tasks_al.toArray(tasks);
-    taskListWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
-        tasks);
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    scrolling = true;
+  /**
+   * When user click the stop button. This means that this time 
+   * interval is done. Then, the program should upate the corresponding 
+   * time entry in the database.
+   */
+  private synchronized void stopTimer() {
+    mTimer.cancel();
+    isTimerStart = false;
+  }
+  /*=================================================
+   * Life cycle control
+   *=================================================*/
+  /**
+   * Physically stop the timer when it is paused
+   * But logically, it is running
+   */
+   @Override
+   public void onPause() {
+     super.onPause();
+     synchronized(this) {
+       pauseTimer();
+     }
+   }
+
+  /**
+   * Pause timer means, the user leave the view, so that the 
+   * physical timer should be stoped, but logically, the task
+   * is still in progress. 
+   * This funciton here is just to stop the timer when the user
+   * is not looking at the fragment, for efficiency purpose
+   */
+  private synchronized void pauseTimer() {
+    if(mTimer!=null) {
+      mTimer.cancel();
+      mTimer=null;
+    }
+  }
+
+  /**
+   * This function should be called when the user returns from the 
+   * pauseTimer(). That is when the user return to this fragment when 
+   * this timer is logically running, get the data from the database 
+   * and make sure that it is the status at the time of quit
+   */
+  private synchronized void resumeTimer() {
+    TimeItem runningItem = mDbAdapter.getRunningTimeItem();
+    if(runningItem!=null) {
+      stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
+      runningItemId = runningItem.timeId();
+      Log.d("TimerFragment","Running:"+runningItem.taskId());
+      selectedTask = mDbAdapter.fetchTaskObj(runningItem.taskId());
+      isTimerStart = true;
+      transform2Timer();
+      mTimer = new Timer();
+      mTimer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          updateTimerValues();
+        }
+      }, 1000, 1000);
+    }
   }
 
   @Override
   public void onResume() {
     super.onResume();
+    resumeTimer();
   }
 
-  /**
-   * Update the task wheel
-   */
-  //not used
-  private void updateTasks(WheelView tWheel, String Tasks[][], int index) {
-    if (!isTimerStart) {
-      ArrayWheelAdapter<String> adapter = new ArrayWheelAdapter<String>(
-          getActivity(), Tasks[index]);
-      adapter.setTextSize(18);
-      tWheel.setViewAdapter(adapter);
-      tWheel.setCurrentItem(Tasks[index].length / 2);
-    }
-  }
-
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
-    if (container == null) {
-      return null;
-    }
-    timerView = (LinearLayout) inflater.inflate(R.layout.timerfrag, container,
-        false);
-    // For test purpose
-    initWheelTwo(timerView);
-    initWheelOne(timerView);
-    initWheelThree(timerView);
-    initWheelFour(timerView);
-    initWheelFive(timerView);
-    initButton(timerView);
-    initializeTimeAdapters();
-    return timerView;
-  }
-
-  private void initWheelOne(View timberView) {
-    WheelOne = (WheelView) timerView.findViewById(R.id.wheel_one);
-    WheelOne.setVisibleItems(3);
-    TaskDbAdapter db = new TaskDbAdapter(getActivity());
-    db.open();
-    Cursor c = db.fetchAllTaskLists();
-    ArrayList<String> task_lists_al = new ArrayList<String>();
-    int index = c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME);
-    for (c.moveToFirst(); c.isAfterLast(); c.moveToNext()) {
-      task_lists_al.add(c.getString(index));
-    }
-    String[] task_lists = new String[0];
-    task_lists = task_lists_al.toArray(task_lists);
-    taskListWheelAdapter = new ArrayWheelAdapter<String>(getActivity(),
-        task_lists);
-    WheelOne.setViewAdapter(taskListWheelAdapter);
-    WheelOne.addChangingListener(new OnWheelChangedListener() {
-      public void onChanged(WheelView wheel, int oldValue, int newValue) {
-        if (!scrolling) {
-          updateTasks(WheelTwo, Tasks, newValue);
-        }
-      }
-    });
-    WheelOne.addScrollingListener(new OnWheelScrollListener() {
-      public void onScrollingStarted(WheelView wheel) {
-        scrolling = true;
-      }
-
-      public void onScrollingFinished(WheelView wheel) {
-        scrolling = false;
-        updateTasks(WheelTwo, Tasks, WheelOne.getCurrentItem());
-      }
-    });
-    WheelOne.setCurrentItem(1);
-  }
-
-  private void initWheelTwo(View timerView) {
-    WheelTwo = (WheelView) timerView.findViewById(R.id.wheel_two);
-    WheelTwo.setVisibleItems(5);
-  }
-
-  private void initWheelThree(View timerView) {
-    WheelThree = (WheelView) timerView.findViewById(R.id.wheel_three);
-  }
-  
-  private void initWheelFour(View timerView) {
-	WheelFour = (WheelView) timerView.findViewById(R.id.wheel_four);
-  }
-  
-  private void initWheelFive(View timerView) {
-	WheelFive = (WheelView) timerView.findViewById(R.id.wheel_five);
-  }
-
-  /**
-   * Set up the button
-   */
-  private void initButton(View timerView) {
-    stopOrStartButton = (Button) timerView
-        .findViewById(R.id.start_or_stop_button);
-    stopOrStartButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (!isTimerStart) {
-          isTimerStart = true;
-          stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
-          setWheelForTimer();
-          startTimer();
-          onClickTransformation();
-        } else {
-          isTimerStart = false;
-          stopTimer();
-          stopOrStartButton.setText("Start Timer", TextView.BufferType.NORMAL);
-          setWheelForTask();
-          onClickReverseTransformation();
-        }
-      }
-      
-      /* Invoked when the wheels turn into the timer */
-      private void onClickTransformation() {
-    	WheelThree.setVisibility(View.VISIBLE);
-    	WheelFour.setVisibility(View.VISIBLE);
-    	WheelFive.setVisibility(View.VISIBLE);
-    	Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_out);
-    	Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_in);
-    	WheelOne.startAnimation(task_anim);
-    	WheelTwo.startAnimation(task_anim);
-    	WheelThree.startAnimation(timer_anim);
-    	WheelFour.startAnimation(timer_anim);
-    	WheelFive.startAnimation(timer_anim);
-    	WheelOne.setVisibility(View.GONE);
-    	WheelTwo.setVisibility(View.GONE);
-      }
-      
-      private void onClickReverseTransformation() {
-    	WheelOne.setVisibility(View.VISIBLE);
-      	WheelTwo.setVisibility(View.VISIBLE);
-      	Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_in);
-    	Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_out);
-    	WheelOne.startAnimation(task_anim);
-    	WheelTwo.startAnimation(task_anim);
-    	WheelThree.startAnimation(timer_anim);
-    	WheelFour.startAnimation(timer_anim);
-    	WheelFive.startAnimation(timer_anim);
-    	WheelThree.setVisibility(View.GONE);
-    	WheelFour.setVisibility(View.GONE);
-    	WheelFive.setVisibility(View.GONE);
-      }
-    });
-  }
 
   @Override
   public String toString() {
     return "TimerFragment";
   }
   
-  /*private class TimerService extends Service {
-
-	public class LocalBinder extends Binder {
-    
-  	  public TimerService getService() {
-        return TimerService.this;
-  	  }
-	}
-	
-	@Override
-	public void onCreate() {
-	  Log.i("created?", "yes");
-	  sec = 0;
-	  binder = new LocalBinder();
-	  timer.schedule(new TimerTask() {
-
-		@Override
-		public void run() {
-		  sec++;
-		}
-	  }, 0, 1000);
-	}
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-	  Log.i("started?", "yes");
-	  return 1;
-	}
-	
-	@Override
-	public void onDestroy() {
-	  
-	}
-	
-	@Override
-	public IBinder onBind(Intent arg0) {
-	  return binder;
-	}
-	
-	public int getSec() {
-    	return sec;
-      }
-      	
-	private Timer timer = new Timer();
-	private Binder binder;
-	private int sec;
-  }*/
 }
