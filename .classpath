@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/actionbarsherlock"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GreenDroid"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="libs/joda-time-2.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
