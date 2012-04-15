@@ -874,7 +874,7 @@ public class WheelView extends View {
   private boolean rebuildItems() {
     boolean updated = false;
     ItemsRange range = getItemsRange();
-    if (itemsLayout != null) {
+    if (itemsLayout != null && range!=null) {
       int first = recycle.recycleItems(itemsLayout, firstItem, range);
       updated = firstItem != first;
       firstItem = first;

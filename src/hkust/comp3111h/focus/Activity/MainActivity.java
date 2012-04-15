@@ -61,7 +61,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 public class MainActivity extends FragmentActivity implements
-    ActionBar.TabListener, ViewPager.OnPageChangeListener, MainMenuListener{
+     ViewPager.OnPageChangeListener, MainMenuListener{
   public static final String BROADCAST_REQUEST_EVENT_REFRESH = "hkust.comp3111h.focus.REQUEST_EVENT_REFRESH";
   // determine honecome or not
   static final int DIALOG_QUICK_ADD = 0;
@@ -213,10 +213,10 @@ public class MainActivity extends FragmentActivity implements
         fragments);
     this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
     this.mViewPager.setAdapter(this.mPagerAdapter);
-    this.mViewPager.setOnPageChangeListener(this);
     //Bind the title indicator to the adapter
     TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titleIndicator);
     titleIndicator.setViewPager(this.mViewPager);
+    titleIndicator.setOnPageChangeListener(this);
   }
 
   @Override
@@ -280,9 +280,6 @@ public class MainActivity extends FragmentActivity implements
       mainMenuPopover.dismiss();
     }
   }
-  private void setTasksByList(TaskListItem item) {
-
-  }
 
   /**
    * General function to setup the popover
@@ -333,51 +330,29 @@ public class MainActivity extends FragmentActivity implements
     }
     return fragment;
   }
-
-  private void setTaskByList(TaskListItem item) {
-
-  }
+  //Life cycle handling 
+  
 
   @Override
   public void mainMenuItemSelected(int item, Intent customIntent) {
     // TODO implmenent the main menu
   }
 
-  public void onTabReselected(Tab tab, FragmentTransaction ft) {
-    // TODO Auto-generated method stub
-  }
-
-  public void onTabSelected(Tab tab, FragmentTransaction ft) {
-    // TODO Auto-generated method stub
-    /*
-    if (mViewPager == null) {
-      this.initialiseViewPager();
-    }
-    mViewPager.setCurrentItem(tab.getPosition());
-    */
-  }
-
-  public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-    // TODO Auto-generated method stub
-  }
 
   public void onPageScrolled(int position, float positionOffset,
       int positionOffsetPixels) {
     // TODO Auto-generated method stub
-
   }
 
   public void onPageSelected(int position) {
     // TODO Auto-generated method stub
-    /*
-    final ActionBar ab = getSupportActionBar();
-    ab.setSelectedNavigationItem(position);
-    */
-
+    if(position==1) {
+      Log.d("MainActivity","ViewPager Changed to" + position);
+      ((TimerFragment)(fragments.get(1))).updateWheelData();
+    }
   }
 
   public void onPageScrollStateChanged(int state) {
     // TODO Auto-generated method stub
-
   }
 }
