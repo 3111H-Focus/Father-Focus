@@ -300,6 +300,7 @@ public class TimerFragment extends Fragment {
       stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
       runningItemId = runningItem.timeId();
       Log.d("TimerFragment","Running:"+runningItem.taskId());
+      Log.d("TimerFragment","timeId:"+runningItem.taskId());
       selectedTask = mDbAdapter.fetchTaskObj(runningItem.taskId());
       isTimerStart = true;
       transform2Timer();

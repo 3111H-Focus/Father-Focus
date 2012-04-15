@@ -448,6 +448,7 @@ public class TaskDbAdapter {
       idList.add(interval.getLong(interval
           .getColumnIndexOrThrow(KEY_TASKLIST_TLID)));
     }
+    interval.close();
 
     if (seqList.size() != idList.size()) {
       return false;
@@ -614,6 +615,9 @@ public class TaskDbAdapter {
 
   public TaskItem fetchTaskObj(long taskId) throws SQLException {
     Cursor cursor = fetchTask(taskId);
+    Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
+    cursor.moveToFirst();
+    Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
     TaskItem item = taskObjFormCursor(cursor);
     cursor.close();
     return item;
@@ -771,6 +775,7 @@ public class TaskDbAdapter {
       // Log.d("tempId: ", String.valueOf(tempId));
       idList.add(tempId);
     }
+    interval.close();
     // Log.d("End retrieving info", "");
 
     if (seqList.size() != idList.size()) {
