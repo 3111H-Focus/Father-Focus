@@ -595,7 +595,7 @@ public class TaskDbAdapter {
    * @param cursor
    * @return
    */
-  public TaskItem taskObjFormCursor(Cursor cursor) {
+  public TaskItem taskObjFromCursor(Cursor cursor) {
     return new TaskItem(
           cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), 
           cursor.getLong(cursor.getColumnIndex(KEY_TASK_TLID)),
@@ -631,7 +631,7 @@ public class TaskDbAdapter {
     Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
     Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
     if(cursor.moveToFirst()){
-      TaskItem item = taskObjFormCursor(cursor);
+      TaskItem item = taskObjFromCursor(cursor);
       cursor.close();
       return item;
     }
@@ -640,7 +640,103 @@ public class TaskDbAdapter {
       cursor.close();
       return item;
     }
-
+  }
+  
+  /**
+   * fetch tasks with the specified status. 
+   * return as cursor. 
+   * @param status
+   * @return
+   */
+  public Cursor fetchAllTasksByStatus(int status){
+    return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status, null, null, null, null, null);
+  }
+  
+  /**
+   * return tasks specified by status as ArrayList of TaskItems. 
+   * @param status
+   * @return
+   */
+  public ArrayList<TaskItem> fetchAllTasksObjsByStatus(int status){
+    Cursor cursor = fetchAllTasksByStatus(status);
+    if(cursor.moveToFirst()){
+      return taskItemsFromCursor(cursor);
+    }
+    else{
+      return new ArrayList<TaskItem>();
+    }
+  }
+   
+  /**
+   * return not-start tasks as cursor.  
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllNotStartTasks() throws SQLException{
+    return fetchAllTasksByStatus(TASKSTATUS_NOT_START);
+  }
+  
+  /**
+   * return not-start tasks as arraylist of objects. 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllNotStartTasksObj() throws SQLException{
+    return fetchAllTasksObjsByStatus(TASKSTATUS_NOT_START);
+  }
+  
+  /**
+  * return in-progress tasks as cursor.  
+  * @return
+  * @throws SQLException
+  */
+  public Cursor fetchAllInProgressTasks() throws SQLException{
+    return fetchAllTasksByStatus(TASKSTATUS_IN_PROGRESS);
+  }
+  
+  /**
+   * return in-progress tasks as arraylist of objects. 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllInProgressTasksObj() throws SQLException{
+    return fetchAllTasksObjsByStatus(TASKSTATUS_IN_PROGRESS);
+  }
+ 
+  /**
+   * return paused tasks as cursor.  
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllPauseTasks() throws SQLException{
+    return fetchAllTasksByStatus(TASKSTATUS_PAUSE);
+  }
+  
+  /**
+   * return paused tasks as arraylist of objects. 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllPauseTasksObj() throws SQLException{
+    return fetchAllTasksObjsByStatus(TASKSTATUS_PAUSE);
+  }
+   
+  /**
+   * return finished tasks as cursor.  
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllFinishedTasks() throws SQLException{
+    return fetchAllTasksByStatus(TASKSTATUS_DONE);
+  }
+  
+  /**
+   * return finished tasks as arraylist of objects. 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllFinishedTasksObj() throws SQLException{
+    return fetchAllTasksObjsByStatus(TASKSTATUS_DONE);
   }
 
   /**
@@ -651,7 +747,7 @@ public class TaskDbAdapter {
   public ArrayList<TaskItem> taskItemsFromCursor(Cursor cursor) {
     ArrayList<TaskItem> items = new ArrayList<TaskItem>();
     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-      items.add(taskObjFormCursor(cursor));
+      items.add(taskObjFromCursor(cursor));
     }
     cursor.close();
     return items;
