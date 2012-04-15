@@ -448,6 +448,7 @@ public class TaskDbAdapter {
       idList.add(interval.getLong(interval
           .getColumnIndexOrThrow(KEY_TASKLIST_TLID)));
     }
+    interval.close();
 
     if (seqList.size() != idList.size()) {
       return false;
@@ -589,6 +590,11 @@ public class TaskDbAdapter {
     return newId;
   }
 
+  /**
+   * Construct a taskItem given a cursor. 
+   * @param cursor
+   * @return
+   */
   public TaskItem taskObjFormCursor(Cursor cursor) {
     return new TaskItem(
           cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), 
@@ -612,14 +618,36 @@ public class TaskDbAdapter {
         null, null, null, null);
   }
 
+  /**
+   * given a taskId, return task as an object. 
+   * if taskId not exists, return a default TaskItem object. 
+   * @param taskId
+   * @return
+   * @throws SQLException
+   */
   public TaskItem fetchTaskObj(long taskId) throws SQLException {
     Cursor cursor = fetchTask(taskId);
-    cursor.moveToFirst();
-    TaskItem item = taskObjFormCursor(cursor);
-    cursor.close();
-    return item;
+
+    Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
+    Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
+    if(cursor.moveToFirst()){
+      TaskItem item = taskObjFormCursor(cursor);
+      cursor.close();
+      return item;
+    }
+    else{
+      TaskItem item = new TaskItem();
+      cursor.close();
+      return item;
+    }
+
   }
 
+  /**
+   * return a list of TaskItem given a cursor. 
+   * @param cursor
+   * @return
+   */
   public ArrayList<TaskItem> taskItemsFromCursor(Cursor cursor) {
     ArrayList<TaskItem> items = new ArrayList<TaskItem>();
     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -631,6 +659,8 @@ public class TaskDbAdapter {
 
   /**
    * Fetch all tasks info, containing in a array list
+   * @param bySequence
+   * @return
    */
   public ArrayList<TaskItem> fetchAllTaskObjs(boolean bySequence) {
     return taskItemsFromCursor(fetchAllTasks(bySequence));
@@ -677,7 +707,14 @@ public class TaskDbAdapter {
     }
   }
 
+  /**
+   * fetch all tasks by a cursor. 
+   * @param taskListId
+   * @return
+   * @throws SQLException
+   */
   public ArrayList<TaskItem> fetchTasksObjInList(long taskListId,boolean orderBySequence)
+
       throws SQLException {
     Cursor cur = fetchAllTasksInList(taskListId,orderBySequence);
     ArrayList<TaskItem> items = taskItemsFromCursor(cur);
@@ -777,6 +814,7 @@ public class TaskDbAdapter {
       // Log.d("tempId: ", String.valueOf(tempId));
       idList.add(tempId);
     }
+    interval.close();
     // Log.d("End retrieving info", "");
 
     if (seqList.size() != idList.size()) {
