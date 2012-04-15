@@ -302,6 +302,12 @@ public class TaskDbAdapter {
 
     return newId;
   }
+  /**
+   * Fetch info of taskList given the ID
+   */
+  public TaskListItem fetchTaskListObj(long taskListId) throws SQLException {
+    return taskListObjFromCursor(fetchTaskList(taskListId));
+  }
 
   /**
    * Fetch info of a tasklist given the ID.
@@ -318,8 +324,17 @@ public class TaskDbAdapter {
     }
     return mCursor;
   }
+  /**
+   * Convert a cursor to a single item
+   */
+  public TaskListItem taskListObjFromCursor(Cursor cursor){
+    return new TaskListItem(cursor.getLong(cursor
+          .getColumnIndex(KEY_TASKLIST_TLID)), cursor.getString(cursor
+          .getColumnIndex(KEY_TASKLIST_TLNAME)), cursor.getLong(cursor
+          .getColumnIndex(KEY_TASKLIST_TLSEQUENCE)));
+  }
 
-  /*
+  /**
    * @param dataCursor a cursor pointng to the task table
    * 
    * @return arraly list containing all the tasklists pointing by the cursor
@@ -328,10 +343,7 @@ public class TaskDbAdapter {
     ArrayList<TaskListItem> items = new ArrayList<TaskListItem>();
     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
       // create a item and add it to the list
-      items.add(new TaskListItem(cursor.getLong(cursor
-          .getColumnIndex(KEY_TASKLIST_TLID)), cursor.getString(cursor
-          .getColumnIndex(KEY_TASKLIST_TLNAME)), cursor.getLong(cursor
-          .getColumnIndex(KEY_TASKLIST_TLSEQUENCE))));
+      items.add(taskListObjFromCursor(cursor));
     }
     cursor.close();
     return items;
@@ -436,6 +448,7 @@ public class TaskDbAdapter {
       idList.add(interval.getLong(interval
           .getColumnIndexOrThrow(KEY_TASKLIST_TLID)));
     }
+    interval.close();
 
     if (seqList.size() != idList.size()) {
       return false;
@@ -578,6 +591,22 @@ public class TaskDbAdapter {
   }
 
   /**
+   * Construct a taskItem given a cursor. 
+   * @param cursor
+   * @return
+   */
+  public TaskItem taskObjFormCursor(Cursor cursor) {
+    return new TaskItem(
+          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), 
+          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TLID)),
+          cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)),
+          cursor.getString(cursor.getColumnIndex(KEY_TASK_TYPE)), 
+          cursor.getInt(cursor.getColumnIndex(KEY_TASK_STATUS)), 
+          cursor.getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)), 
+          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE)));
+  }
+
+  /**
    * Fetch a task given the ID
    * 
    * @param taskId
@@ -589,17 +618,38 @@ public class TaskDbAdapter {
         null, null, null, null);
   }
 
+  /**
+   * given a taskId, return task as an object. 
+   * if taskId not exists, return a default TaskItem object. 
+   * @param taskId
+   * @return
+   * @throws SQLException
+   */
+  public TaskItem fetchTaskObj(long taskId) throws SQLException {
+    Cursor cursor = fetchTask(taskId);
+    Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
+    Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
+    if(cursor.moveToFirst()){
+      TaskItem item = taskObjFormCursor(cursor);
+      cursor.close();
+      return item;
+    }
+    else{
+      TaskItem item = new TaskItem();
+      cursor.close();
+      return item;
+    }
+  }
+
+  /**
+   * return a list of TaskItem given a cursor. 
+   * @param cursor
+   * @return
+   */
   public ArrayList<TaskItem> taskItemsFromCursor(Cursor cursor) {
     ArrayList<TaskItem> items = new ArrayList<TaskItem>();
     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-      items.add(new TaskItem(
-          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), cursor
-              .getLong(cursor.getColumnIndex(KEY_TASK_TLID)), cursor
-              .getString(cursor.getColumnIndex(KEY_TASK_NAME)), cursor
-              .getString(cursor.getColumnIndex(KEY_TASK_TYPE)), cursor
-              .getInt(cursor.getColumnIndex(KEY_TASK_STATUS)), cursor
-              .getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)), cursor
-              .getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE))));
+      items.add(taskObjFormCursor(cursor));
     }
     cursor.close();
     return items;
@@ -607,6 +657,8 @@ public class TaskDbAdapter {
 
   /**
    * Fetch all tasks info, containing in a array list
+   * @param bySequence
+   * @return
    */
   public ArrayList<TaskItem> fetchAllTaskObjs(boolean bySequence) {
     return taskItemsFromCursor(fetchAllTasks(bySequence));
@@ -648,6 +700,12 @@ public class TaskDbAdapter {
         null, null, null);
   }
 
+  /**
+   * fetch all tasks by a cursor. 
+   * @param taskListId
+   * @return
+   * @throws SQLException
+   */
   public ArrayList<TaskItem> fetchTasksObjInList(long taskListId)
       throws SQLException {
     Cursor cur = fetchAllTasksInList(taskListId);
@@ -748,6 +806,7 @@ public class TaskDbAdapter {
       // Log.d("tempId: ", String.valueOf(tempId));
       idList.add(tempId);
     }
+    interval.close();
     // Log.d("End retrieving info", "");
 
     if (seqList.size() != idList.size()) {
@@ -923,7 +982,9 @@ public class TaskDbAdapter {
       long taskId) {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TIME_STARTTIME, startTime.toString());
-    initialValues.put(KEY_TIME_ENDTIME, endTime.toString());
+    if(endTime!=null) {
+      initialValues.put(KEY_TIME_ENDTIME, endTime.toString());
+    }
     initialValues.put(KEY_TIME_STATUS, status);
     initialValues.put(KEY_TIME_TID, taskId);
 

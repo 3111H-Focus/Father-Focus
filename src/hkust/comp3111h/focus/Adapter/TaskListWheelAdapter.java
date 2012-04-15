@@ -16,6 +16,10 @@ public class TaskListWheelAdapter extends AbstractWheelTextAdapter {
     super(context);
     mTaskLists = taskLists;
   }
+  public TaskListItem getItem(int index) {
+    return mTaskLists.get(index);
+  }
+
   @Override
   public CharSequence getItemText(int index) {
     if(index >= 0 && index < mTaskLists.size()) {

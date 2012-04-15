@@ -47,7 +47,9 @@ public class TimeItem {
       long tTaskId) {
     mTimeId = tTimeId;
     mStartTime = DateTime.parse(tStartTime);
-    mEndTime = DateTime.parse(tEndTime);
+    if(tEndTime!=null) {
+      mEndTime = DateTime.parse(tEndTime);
+    }
     mStatus = tStatus;
     mTaskId = tTaskId;
   }
