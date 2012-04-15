@@ -77,6 +77,7 @@ public class TimerFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
+    Log.v("TimerFragment","Start CreateView");
     if (container == null) {
       return null;
     }
@@ -84,6 +85,7 @@ public class TimerFragment extends Fragment {
         false);
     initWheels();
     initButton();
+    Log.v("TimerFragment","End CreateView");
     return timerView;
   }
   
@@ -105,9 +107,7 @@ public class TimerFragment extends Fragment {
   private void initTaskListWheel() {
     TaskListWheel = (WheelView) timerView.findViewById(R.id.wheel_one);
     TaskListWheel.setVisibleItems(3);
-    ArrayList<TaskListItem> tlistItems = mDbAdapter.fetchAllTaskListsObjs(true);
-    taskListWheelAdapter = new TaskListWheelAdapter( getActivity(),tlistItems);
-    TaskListWheel.setViewAdapter(taskListWheelAdapter);
+    updateTaskListData();
     TaskListWheel.addChangingListener(new OnWheelChangedListener() {
       public void onChanged(WheelView wheel, int oldValue, int newValue) {
         if (!scrolling) {
@@ -126,6 +126,16 @@ public class TimerFragment extends Fragment {
     });
     TaskListWheel.setCurrentItem(1);
   }
+  public void updateWheelData() {
+    updateTaskListData();
+    updateTaskWheel();
+  }
+
+  private void updateTaskListData() {
+    ArrayList<TaskListItem> tlistItems = mDbAdapter.fetchAllTaskListsObjs(true);
+    taskListWheelAdapter = new TaskListWheelAdapter( getActivity(),tlistItems);
+    TaskListWheel.setViewAdapter(taskListWheelAdapter);
+  }
 
   /**
    * Update the task wheel
@@ -133,7 +143,7 @@ public class TimerFragment extends Fragment {
   private void updateTaskWheel() {
     if (!isTimerStart) {
       TaskListItem curTlist = taskListWheelAdapter.getItem(TaskListWheel.getCurrentItem());
-      ArrayList<TaskItem> curTaskItems = mDbAdapter.fetchTasksObjInList(curTlist.taskListId());
+      ArrayList<TaskItem> curTaskItems = mDbAdapter.fetchTasksObjInList(curTlist.taskListId(),true);
       taskAdapter = new TaskWheelViewAdapter(getActivity(), curTaskItems);
       taskAdapter.setTextSize(18);
       TaskWheel.setViewAdapter(taskAdapter);
@@ -170,15 +180,13 @@ public class TimerFragment extends Fragment {
       public synchronized void onClick(View v) {
         if (!isTimerStart) {
           isTimerStart = true;
-          stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
           startTimer();
-          transform2Timer();
+          setUI4Timer(true);
         } else {
           isTimerStart = false;
           stopTimer();
-          stopOrStartButton.setText("Start Timer", TextView.BufferType.NORMAL);
           mDbAdapter.updateEndTime(runningItemId);
-          transform2TaskSelection();
+          setUI4TaskSelection(true);
         }
       }
     });
@@ -186,32 +194,38 @@ public class TimerFragment extends Fragment {
   /**
    * Transforms the user interface to task selection
    */
-  private void transform2TaskSelection() {
+  private void setUI4TaskSelection(boolean animation) {
+    stopOrStartButton.setText("Start Timer", TextView.BufferType.NORMAL);
     TaskListWheel.setVisibility(View.VISIBLE);
-      TaskWheel.setVisibility(View.VISIBLE);
-      Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_in);
-    Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_out);
-    TaskListWheel.startAnimation(task_anim);
-    TaskWheel.startAnimation(task_anim);
-    HourWheel.startAnimation(timer_anim);
-    MinuteWheel.startAnimation(timer_anim);
-    SecondWheel.startAnimation(timer_anim);
+    TaskWheel.setVisibility(View.VISIBLE);
+    if(animation) {
+        Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_in);
+      Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_out);
+      TaskListWheel.startAnimation(task_anim);
+      TaskWheel.startAnimation(task_anim);
+      HourWheel.startAnimation(timer_anim);
+      MinuteWheel.startAnimation(timer_anim);
+      SecondWheel.startAnimation(timer_anim);
+    }
     HourWheel.setVisibility(View.GONE);
     MinuteWheel.setVisibility(View.GONE);
     SecondWheel.setVisibility(View.GONE);
   }
   /* Invoked when the wheels turn into the timer */
-  private void transform2Timer() {
+  private void setUI4Timer(boolean animation) {
+    stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
     HourWheel.setVisibility(View.VISIBLE);
     MinuteWheel.setVisibility(View.VISIBLE);
     SecondWheel.setVisibility(View.VISIBLE);
-    Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_out);
-    Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_in);
-    TaskListWheel.startAnimation(task_anim);
-    TaskWheel.startAnimation(task_anim);
-    HourWheel.startAnimation(timer_anim);
-    MinuteWheel.startAnimation(timer_anim);
-    SecondWheel.startAnimation(timer_anim);
+    if(animation){
+      Animation task_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.wheel_task_out);
+      Animation timer_anim = AnimationUtils.loadAnimation(getActivity(), R.anim.timer_in);
+      TaskListWheel.startAnimation(task_anim);
+      TaskWheel.startAnimation(task_anim);
+      HourWheel.startAnimation(timer_anim);
+      MinuteWheel.startAnimation(timer_anim);
+      SecondWheel.startAnimation(timer_anim);
+    }
     TaskListWheel.setVisibility(View.GONE);
     TaskWheel.setVisibility(View.GONE);
   }
@@ -222,7 +236,11 @@ public class TimerFragment extends Fragment {
 
   //Start the timer
   private synchronized void startTimer() {
-    selectedTask = taskAdapter.getItem(TaskWheel.getCurrentItem());
+    int curIndex = TaskWheel.getCurrentItem();
+    if(curIndex < 0|| curIndex >= taskAdapter.getItemsCount()) {
+      return;
+    }
+    selectedTask = taskAdapter.getItem(curIndex);
     if(selectedTask!=null) {
       Log.d("Timer", "starting");
       startTime = new DateTime();
@@ -299,25 +317,35 @@ public class TimerFragment extends Fragment {
     if(runningItem!=null) {
       stopOrStartButton.setText("Stop", TextView.BufferType.NORMAL);
       runningItemId = runningItem.timeId();
+      startTime = runningItem.startTime();
       Log.d("TimerFragment","Running:"+runningItem.taskId());
-      Log.d("TimerFragment","timeId:"+runningItem.taskId());
-      selectedTask = mDbAdapter.fetchTaskObj(runningItem.taskId());
       isTimerStart = true;
-      transform2Timer();
+      setUI4Timer(false);
       mTimer = new Timer();
       mTimer.schedule(new TimerTask() {
         @Override
         public void run() {
+          Log.d("TimerFragment","Timer running");
           updateTimerValues();
         }
       }, 1000, 1000);
     }
   }
 
+  /**
+   * Called when the fragment is visible to the user and actively 
+   * running
+   */
   @Override
   public void onResume() {
     super.onResume();
+    updateTaskWheel();
     resumeTimer();
+  }
+  @Override 
+  public  void onStart() {
+    super.onStart();
+    Log.v("TimerFragment", "LifeCycle: onStart");
   }
 
 

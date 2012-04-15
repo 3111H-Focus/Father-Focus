@@ -627,6 +627,7 @@ public class TaskDbAdapter {
    */
   public TaskItem fetchTaskObj(long taskId) throws SQLException {
     Cursor cursor = fetchTask(taskId);
+
     Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
     Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
     if(cursor.moveToFirst()){
@@ -639,6 +640,7 @@ public class TaskDbAdapter {
       cursor.close();
       return item;
     }
+
   }
 
   /**
@@ -695,9 +697,14 @@ public class TaskDbAdapter {
    * @param taskListId
    * @return the Cursor pointing to all the records in the specified taskList.
    */
-  public Cursor fetchAllTasksInList(long taskListId) {
-    return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
+  public Cursor fetchAllTasksInList(long taskListId,boolean orderBySequence) {
+    if(orderBySequence) {
+      return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
+        null, null, KEY_TASK_TSEQUENCE);
+    } else {
+      return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
         null, null, null);
+    }
   }
 
   /**
@@ -706,9 +713,10 @@ public class TaskDbAdapter {
    * @return
    * @throws SQLException
    */
-  public ArrayList<TaskItem> fetchTasksObjInList(long taskListId)
+  public ArrayList<TaskItem> fetchTasksObjInList(long taskListId,boolean orderBySequence)
+
       throws SQLException {
-    Cursor cur = fetchAllTasksInList(taskListId);
+    Cursor cur = fetchAllTasksInList(taskListId,orderBySequence);
     ArrayList<TaskItem> items = taskItemsFromCursor(cur);
     cur.close();
     return items;
@@ -1030,6 +1038,22 @@ public class TaskDbAdapter {
     }
     return mCursor;
   }
+  /*
+  public TimeItem fetchTimeObj(long timeId) throws SQLException {
+    Cursor cur = timeObjFromCursor(timeId);
+    TimeItem item = timeObjFromCursor(cur);
+    cur.close();
+    return item;
+  }
+  public TimeItem timeObjFromCursor(Cursor cursor) {
+    return new TimeItem(
+        cursor.getLong(cursor.getColumnIndex(KEY_TIME_TIMEID)),
+        cursor.getString(cursor.getColumnIndex(KEY_TIME_STARTTIME)),
+        cursor.getString(cursor.getColumnIndex(KEY_TIME_ENDTIME)),
+        cursor.getLong(cursor.getColumnIndex(KEY_TASK_STATUS)),
+        cursor.getLong(cursor.getColumnIndex(KEY_TIME_TID)));
+  }
+  */
 
   /**
    * return all the time records.

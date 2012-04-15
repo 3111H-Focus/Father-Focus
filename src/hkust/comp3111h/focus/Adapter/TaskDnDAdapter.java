@@ -58,7 +58,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
     if(activeTl==null) {
       mTaskItems = mDbAdapter.fetchAllTaskObjs(true);
     }else{
-      mTaskItems = mDbAdapter.fetchTasksObjInList(activeTl.taskListId());
+      mTaskItems = mDbAdapter.fetchTasksObjInList(activeTl.taskListId(),true);
     }
   }
 

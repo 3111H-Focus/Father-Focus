@@ -58,7 +58,7 @@ public class QuickAddDialog extends Dialog {
     Log.d("QuickAddDialog", "Adding Task");
     TaskListItem tlist = mFragment.getActiveTaskList();
     if(tlist==null) {
-      tlist = ((MainActivity)mActivity).getDbAdapter().fetchTaskListObj(0);
+      tlist = ((MainActivity)mActivity).getDbAdapter().fetchTaskListObj(1);
     }
     TaskItem newTask = new TaskItem();
     newTask.taskListId(tlist.taskListId());
