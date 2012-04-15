@@ -590,6 +590,11 @@ public class TaskDbAdapter {
     return newId;
   }
 
+  /**
+   * Construct a taskItem given a cursor. 
+   * @param cursor
+   * @return
+   */
   public TaskItem taskObjFormCursor(Cursor cursor) {
     return new TaskItem(
           cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), 
@@ -613,16 +618,34 @@ public class TaskDbAdapter {
         null, null, null, null);
   }
 
+  /**
+   * given a taskId, return task as an object. 
+   * if taskId not exists, return a default TaskItem object. 
+   * @param taskId
+   * @return
+   * @throws SQLException
+   */
   public TaskItem fetchTaskObj(long taskId) throws SQLException {
     Cursor cursor = fetchTask(taskId);
     Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
-    cursor.moveToFirst();
     Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
-    TaskItem item = taskObjFormCursor(cursor);
-    cursor.close();
-    return item;
+    if(cursor.moveToFirst()){
+      TaskItem item = taskObjFormCursor(cursor);
+      cursor.close();
+      return item;
+    }
+    else{
+      TaskItem item = new TaskItem();
+      cursor.close();
+      return item;
+    }
   }
 
+  /**
+   * return a list of TaskItem given a cursor. 
+   * @param cursor
+   * @return
+   */
   public ArrayList<TaskItem> taskItemsFromCursor(Cursor cursor) {
     ArrayList<TaskItem> items = new ArrayList<TaskItem>();
     for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -634,6 +657,8 @@ public class TaskDbAdapter {
 
   /**
    * Fetch all tasks info, containing in a array list
+   * @param bySequence
+   * @return
    */
   public ArrayList<TaskItem> fetchAllTaskObjs(boolean bySequence) {
     return taskItemsFromCursor(fetchAllTasks(bySequence));
@@ -675,6 +700,12 @@ public class TaskDbAdapter {
         null, null, null);
   }
 
+  /**
+   * fetch all tasks by a cursor. 
+   * @param taskListId
+   * @return
+   * @throws SQLException
+   */
   public ArrayList<TaskItem> fetchTasksObjInList(long taskListId)
       throws SQLException {
     Cursor cur = fetchAllTasksInList(taskListId);
