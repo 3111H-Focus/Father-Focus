@@ -87,4 +87,8 @@
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@android:color/black</item>
   </style>
+  
+  <style name="PopWindowAnimation">  
+    <item name="android:windowEnterAnimation">@anim/popup_animation</item>  
+  </style>
 </resources>

@@ -5,64 +5,48 @@
  * Using the library of ActionBarSherlock
  */
 package hkust.comp3111h.focus.Activity;
-import hkust.comp3111h.focus.ui.QuickAddDialog;
-
-
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.PagerAdapter;
-import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.Adapter.TaskListSidebarAdapter;
-import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.database.TaskListItem;
+import hkust.comp3111h.focus.ui.AddTaskListDialog;
+import hkust.comp3111h.focus.ui.FragmentPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
-import hkust.comp3111h.focus.ui.AdminReceiver;
+import hkust.comp3111h.focus.ui.QuickAddDialog;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
 import hkust.comp3111h.focus.ui.TitlePageIndicator;
-import hkust.comp3111h.focus.ui.FragmentPopover;
-import hkust.comp3111h.focus.database.TaskListItem;
-import hkust.comp3111h.focus.database.TaskItem;
-import hkust.comp3111h.focus.ui.AddTaskListDialog;
-
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.util.Log;
 import android.app.Dialog;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.Menu;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItem;
-import android.support.v4.view.MenuItem.OnMenuItemClickListener;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.PopupWindow.OnDismissListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow.OnDismissListener;
+import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements
      ViewPager.OnPageChangeListener, MainMenuListener{
@@ -245,7 +229,7 @@ public class MainActivity extends FragmentActivity implements
   public void showAddListDialog() {
     showDialog(DIALOG_ADD_TLIST);
   }
-/*
+
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	super.onActivityResult(requestCode, resultCode,data);
@@ -259,7 +243,7 @@ public class MainActivity extends FragmentActivity implements
     if (requestCode == 0) {
       ((TaskManageFragment) mPagerAdapter.getItem(0)).updateList();
     }
-  }*/
+  }
 
   private void createMainMenuPopover() {
     int layout = R.layout.main_menu_popover;

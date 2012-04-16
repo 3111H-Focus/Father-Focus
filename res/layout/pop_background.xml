@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:gravity="center" 
+  android:orientation="vertical" 
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:layout_gravity="center"
+  android:background="#b0000000" >
+  <LinearLayout 
+    android:gravity="center"
+    android:orientation="vertical"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:layout_gravity="center"
+    android:background="@drawable/downbutton_corner">
+    <TextView
+      android:text="row one"
+      android:textSize="15pt"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"/>
+    <LinearLayout 
+      android:gravity="center"
+      android:orientation="horizontal"
+      android:layout_width="wrap_content" 
+      android:layout_height="wrap_content" 
+      android:layout_gravity="center"
+      android:layout_weight="1">
+      <Button
+        android:id="@+id/good_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Good" 
+        android:textSize="20pt"/>
+    </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

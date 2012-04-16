@@ -1,4 +1,4 @@
-package hkust.comp3111h.focus.ui;
+package hkust.comp3111h.focus.locker;
 
 import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;

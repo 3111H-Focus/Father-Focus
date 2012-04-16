@@ -3,31 +3,27 @@
  */
 
 package hkust.comp3111h.focus.ui;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-
 import hkust.comp3111h.focus.R;
+import hkust.comp3111h.focus.Activity.MainActivity;
 import hkust.comp3111h.focus.Adapter.ArrayWheelAdapter;
+import hkust.comp3111h.focus.Adapter.TaskListWheelAdapter;
+import hkust.comp3111h.focus.Adapter.TaskWheelViewAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskItem;
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TimeItem;
-import hkust.comp3111h.focus.Activity.MainActivity;
-import hkust.comp3111h.focus.Adapter.TaskWheelViewAdapter;
-import hkust.comp3111h.focus.Adapter.TaskListWheelAdapter;
+import hkust.comp3111h.focus.locker.ScreenLocker;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.database.Cursor;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.os.PowerManager;
-import android.os.Handler;
-import android.os.Message;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,7 +33,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.util.Log;
 
 public class TimerFragment extends Fragment {
   // scrolling flag
@@ -62,6 +57,8 @@ public class TimerFragment extends Fragment {
   TaskDbAdapter mDbAdapter;
   TaskItem selectedTask;
   boolean isTimerStart = false;
+  
+  ScreenLocker screen_locker;
 
 /*=====================================================
  * Initializations
@@ -72,6 +69,7 @@ public class TimerFragment extends Fragment {
     super.onCreate(savedInstanceState);
     scrolling = true;
     mDbAdapter = ((MainActivity)getActivity()).getDbAdapter();
+    screen_locker = new ScreenLocker(getActivity());
   }
 
   @Override
@@ -179,8 +177,6 @@ public class TimerFragment extends Fragment {
       @Override
       public synchronized void onClick(View v) {
         if (!isTimerStart) {
-          Log.d("Locker", "Start");
-          ScreenLocker screen_locker = new ScreenLocker(getActivity());
           screen_locker.lock();
           isTimerStart = true;
           startTimer();
