@@ -15,6 +15,7 @@ import hkust.comp3111h.focus.Adapter.TaskListSidebarAdapter;
 import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
 import hkust.comp3111h.focus.ui.MainMenuPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
+import hkust.comp3111h.focus.ui.AdminReceiver;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
@@ -34,6 +35,9 @@ import java.util.Vector;
 
 import android.util.Log;
 import android.app.Dialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -88,7 +92,7 @@ public class MainActivity extends FragmentActivity implements
   private boolean isShowingSidebar = false;
   private TaskDbAdapter mDbAdapter;
   private List<Fragment> fragments;
-
+  
   public void updateData() {
     ((TaskManageFragment)(fragments.get(0))).updateList();
     updateSidebarData();
@@ -155,7 +159,7 @@ public class MainActivity extends FragmentActivity implements
     initialiseTaskListSidebar();
     createMainMenuPopover();
   }
-
+  
   private void setListsSidebarSelected(boolean selected) {
     isShowingSidebar = selected;
     int oldTextColor = listTitle.getTextColors().getDefaultColor();
@@ -241,9 +245,10 @@ public class MainActivity extends FragmentActivity implements
   public void showAddListDialog() {
     showDialog(DIALOG_ADD_TLIST);
   }
-
+/*
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	super.onActivityResult(requestCode, resultCode,data);
     Log.v("Activity result", "requestCode is" + requestCode);
     if (resultCode == RESULT_CANCELED) {
       Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
@@ -254,7 +259,7 @@ public class MainActivity extends FragmentActivity implements
     if (requestCode == 0) {
       ((TaskManageFragment) mPagerAdapter.getItem(0)).updateList();
     }
-  }
+  }*/
 
   private void createMainMenuPopover() {
     int layout = R.layout.main_menu_popover;

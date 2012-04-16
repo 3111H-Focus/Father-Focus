@@ -179,6 +179,8 @@ public class TimerFragment extends Fragment {
       @Override
       public synchronized void onClick(View v) {
         if (!isTimerStart) {
+          ScreenLocker screen_locker = new ScreenLocker(getActivity());
+          screen_locker.lock();
           isTimerStart = true;
           startTimer();
           setUI4Timer(true);
