@@ -738,6 +738,26 @@ public class TaskDbAdapter {
   public ArrayList<TaskItem> fetchAllFinishedTasksObj() throws SQLException{
     return fetchAllTasksObjsByStatus(TASKSTATUS_DONE);
   }
+  
+   /**
+   * return unfinished tasks as cursor.  
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllUnfinishedTasks() throws SQLException{
+    return mDb.query(TABLE_TASK, null, KEY_TASK_STATUS + "!=" + TASKSTATUS_DONE, null, null, null, null);
+  }
+  
+  /**
+   * return unfinished tasks as arraylist of objects. 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllUnfinishedTasksObj() throws SQLException{
+    return taskItemsFromCursor(fetchAllUnfinishedTasks());
+  }
+  
+  
 
   /**
    * return a list of TaskItem given a cursor. 
