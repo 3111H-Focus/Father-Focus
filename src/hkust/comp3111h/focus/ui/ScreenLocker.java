@@ -25,18 +25,18 @@ public class ScreenLocker {
   }
 
   private void activeManage() {
-	  Log.d("going in active", "try");
+	Log.d("Locker", "going in active");
     Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
     intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Please confirm");
-    Log.d("leaving activie", "");
-
+    Log.d("Locker", "leaving activie");
     activity.startActivityForResult(intent, 0);
-    Log.d("leaving activie", "");
+    Log.d("Locker", "leaving activie2");
   }
   
   private void sysLock(){
     boolean active = dpm.isAdminActive(componentName);
+    Log.d("Locker", "active is" + active);
     if (!active) {
       activeManage();
     }

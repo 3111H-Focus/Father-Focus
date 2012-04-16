@@ -179,6 +179,7 @@ public class TimerFragment extends Fragment {
       @Override
       public synchronized void onClick(View v) {
         if (!isTimerStart) {
+          Log.d("Locker", "Start");
           ScreenLocker screen_locker = new ScreenLocker(getActivity());
           screen_locker.lock();
           isTimerStart = true;
