@@ -12,13 +12,8 @@
     android:layout_width="wrap_content" 
     android:layout_height="wrap_content" 
     android:layout_gravity="center"
-    android:background="@drawable/downbutton_corner">
-    <TextView
-      android:text="row one"
-      android:textSize="15pt"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"/>
+    android:background="@drawable/downbutton_corner"
+    android:padding="10dip">
     <LinearLayout 
       android:gravity="center"
       android:orientation="horizontal"
@@ -26,12 +21,66 @@
       android:layout_height="wrap_content" 
       android:layout_gravity="center"
       android:layout_weight="1">
-      <Button
-        android:id="@+id/good_button"
+      <ImageView
+        android:layout_width="90dip"
+        android:layout_height="62dip"
+        android:src="@drawable/chick_gary"
+        android:scaleType="centerInside"/>
+      <TextView
+        android:text="@string/pop_title"
+        android:textSize="12pt"
+        android:textColor="#FFFFFFCE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <TextView
+      android:text="@string/pop_retype"
+      android:textSize="7pt"
+      android:textColor="#FFFFFFFF"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="left"/>
+    <TextView
+      android:id="@+id/unlock_sequence"
+      android:text="@string/pop_sequence"
+      android:textSize="7pt"
+      android:textColor="#FF600000"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
+    <TextView
+      android:id="@+id/relock_time"
+      android:text="@string/pop_relock"
+      android:textSize="7pt"
+      android:textColor="#FFFFFFFF"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="left"/>
+    <EditText 
+      android:id="@+id/pop_input"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textSize="7pt"
+      android:layout_gravity="left"
+      android:textColor="#FFFFFFFF"/>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Good" 
-        android:textSize="20pt"/>
+        android:gravity="center"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:orientation="horizontal" >>
+        <Button
+            android:id="@+id/lazy_button"
+            android:layout_width="144dip"
+            android:layout_height="60dip"
+            android:text="@string/lazy"
+            android:textSize="8pt" />
+        <Button
+            android:id="@+id/gary_lee_button"
+            android:layout_width="144dip"
+            android:layout_height="60dip"
+            android:text="@string/gary_lee"
+            android:textSize="8pt" />
     </LinearLayout>
   </LinearLayout>
 </LinearLayout>
