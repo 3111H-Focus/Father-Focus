@@ -24,129 +24,232 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+/**
+ * The ScreenLocker class used to lock the screen
+ * @author Gary Cheung
+ * 1. Use one of the constructors to initiate the ScreenLocker
+ * 2. Use lock() to start the locking actions
+ * 3. Use cancel_lock() to cancel the locking actions
+ * 4. Use set_popup_description() to set the description in the pop-up window
+ */
+
 public class ScreenLocker {
+  private static final int DEFAULT_LOCK_DOWN_COUNT_TIME = 10000;
+  private static final int DEFAULT_WAIT_FOR_INPUT_TIME = 5000;
+  private static final int DEFAULT_RETYPE_LENGTH = 10;
   private DevicePolicyManager dpm;
   private ComponentName componentName;
   private Activity activity;
-  private CountDownTimer cdt;
+  private CountDownTimer lock_count_down;
+  private int lock_count_down_time;
   private CountDownTimer wait_for_input;
-  private PopupWindow pw;
-  View popview;
-  TextView pop_relock;
-  EditText et;
-  TextView tv;
-  Random r;
+  private int wait_for_input_time;
+  private PopupWindow popup_window;
+  private View popup_view;
+  private TextView popup_description;
+  private TextView popup_relock;
+  private TextView popup_sequence;
+  private EditText popup_input;
+  private Button lazy_button;
+  private Button gary_lee_button;
+  private Random string_generater;
+  private int retype_length;
 	
+  /**
+   * The basic constructor
+   * @param activity: the activity this locker bases on
+   */
   public ScreenLocker(Activity activity) {
     this.activity = activity;
+    this.wait_for_input_time = DEFAULT_WAIT_FOR_INPUT_TIME;
+    this.lock_count_down_time = DEFAULT_LOCK_DOWN_COUNT_TIME;
+    this.retype_length = DEFAULT_RETYPE_LENGTH;
 	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
    	componentName = new ComponentName(this.activity, AdminReceiver.class);
-   	r = new Random();
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
   }
   
-  private void popup() {
-	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
-	popview = mLayoutInflater.inflate(R.layout.pop_background, null);
-	pw = new PopupWindow(popview, LayoutParams.MATCH_PARENT,
-                         LayoutParams.MATCH_PARENT, true);
-	pw.setAnimationStyle(R.style.PopWindowAnimation);
-	View p = mLayoutInflater.inflate(R.layout.main, null);
-	pw.showAtLocation(p, Gravity.CENTER | Gravity.CENTER, 0, 0);
+  /**
+   * Constructor
+   * @param activity: the activity this locker bases on
+   * @param lock_count_down_time: how many milliseconds to wait before locking
+   * @param wait_for_input_time: how many milliseconds to wait after some input before starting to wait for locking
+   */
+  public ScreenLocker(Activity activity, int lock_count_down_time, int wait_for_input_time) {
+	this.activity = activity;
+	this.wait_for_input_time = wait_for_input_time;
+	this.lock_count_down_time = lock_count_down_time;
+	this.retype_length = DEFAULT_RETYPE_LENGTH;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
+  
+  /**
+   * Constructor
+   * @param activity: the activity this locker bases on
+   * @param retype_length: the length of the sequence needed to retype 
+   */
+  public ScreenLocker(Activity activity, int retype_length) {
+	this.activity = activity;
+	this.wait_for_input_time = DEFAULT_WAIT_FOR_INPUT_TIME;
+    this.lock_count_down_time = DEFAULT_LOCK_DOWN_COUNT_TIME;
+    this.retype_length = retype_length;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
+  
+  /**
+   * Constructor
+   * @param activity: the activity this locker bases on
+   * @param lock_count_down_time: how many milliseconds to wait before locking
+   * @param wait_for_input_time: how many milliseconds to wait after some input before starting to wait for locking
+   * @param retype_length: the length of the sequence needed to retype 
+   */
+  public ScreenLocker(Activity activity, int lock_count_down_time, int wait_for_input_time, int retype_length) {
+	this.activity = activity;
+	this.wait_for_input_time = wait_for_input_time;
+	this.lock_count_down_time = lock_count_down_time;
+	this.retype_length = retype_length;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
 
-	pop_relock = (TextView)popview.findViewById(R.id.relock_time);
-	
-	et = (EditText)popview.findViewById(R.id.pop_input);
-	tv = (TextView)popview.findViewById(R.id.unlock_sequence);
-	tv.setText(generateSeq());
-	pw.update();
-	et.addTextChangedListener(new TextWatcher() {
+  public void lock() {
+	popup();
+	setReceiver();
+	lock_count_down.start();
+  }
 
-		@Override
-		public void afterTextChanged(Editable arg0) {
-		  cdt.cancel();
-		  pop_relock.setText("Or it will be locked soon!");
-		  wait_for_input.cancel();
-		  wait_for_input.start();
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+  public void cancel_lock() {
+	wait_for_input.cancel();
+	lock_count_down.cancel();
+	popup_relock.setText("Or it will be locked soon!");
+	popup_window.dismiss();
+  }
+  
+  public void set_popup_description(String description) {
+	popup_description.setText(description);
+	popup_window.update();
+  }
+  
+  private void timers_init() {
+	lock_count_down = new CountDownTimer(lock_count_down_time, 1000) {
+	  @Override
+	  public void onTick(long millisUntilFinished) {
+		popup_relock.setText("Or it will be locked in "+ Long.toString(millisUntilFinished / 1000) +
+					           " seconds!");
+		popup_window.update();
+	  }
+	  @Override
+      public void onFinish() {
+		popup_relock.setText("Or it will be locked soon!"); 
+		popup_window.update();
+		sysLock();
+	  }
+	};
+	wait_for_input = new CountDownTimer(wait_for_input_time, 1000) {
+	  @Override
+      public void onFinish() {
+	    lock_count_down.start();
+	  }
+	  @Override
+	  public void onTick(long millisUntilFinished) {
+	    // TODO Auto-generated method stub
+      } 
+	};
+  }
+  
+  private void listeners_init() {
+	popup_input.addTextChangedListener(new TextWatcher() {
+	  @Override
+      public void afterTextChanged(Editable arg0) {
+	    lock_count_down.cancel();
+	    popup_relock.setText("Or it will be locked soon!");
+	    wait_for_input.cancel();
+	    wait_for_input.start();
+	  }
+	  @Override
+	  public void beforeTextChanged(CharSequence s, int start, int count,
+		  		                    int after) {
+	    // TODO Auto-generated method stub
+      }
+	  @Override
+	  public void onTextChanged(CharSequence s, int start, int before,
+			  					int count) {
+	    // TODO Auto-generated method stub	
+	  }
+	  
 	});
-	
-	Button lazy_button = (Button)popview.findViewById(R.id.lazy_button);
-	Button gary_lee_button = (Button)popview.findViewById(R.id.gary_lee_button);
-	OnClickListener listener = new OnClickListener() {
+	OnClickListener button_listener = new OnClickListener() {
 	  @Override
 	  public void onClick(View v) {
-   	    switch(v.getId()) {
-   	      case R.id.lazy_button:
-   	    	try_escape();
-   	    	break;
-   	      case R.id.gary_lee_button:
-   	    	cdt.cancel();
-   	    	pop_relock.setText("Or it will be locked soon!");
+ 	    switch(v.getId()) {
+	   	  case R.id.locker_pop_lazy_button:
+	   	  	try_escape();
+	       	break;
+	      case R.id.locker_pop_gary_lee_button:
+   	    	lock_count_down.cancel();
+   	    	popup_relock.setText("Or it will be locked soon!");
    	    	sysLock();
    	    	break;
    	    }
 	  }
 	};
-	lazy_button.setOnClickListener(listener);
-	gary_lee_button.setOnClickListener(listener);
+	lazy_button.setOnClickListener(button_listener);
+	gary_lee_button.setOnClickListener(button_listener);
+  }
+  
+  private void popup_init() {
+	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
+	popup_view = mLayoutInflater.inflate(R.layout.pop_background, null);
+	popup_window = new PopupWindow(popup_view, LayoutParams.MATCH_PARENT,
+                         LayoutParams.MATCH_PARENT, true);
+	popup_window.setAnimationStyle(R.style.PopWindowAnimation);
+
+	popup_description = (TextView)popup_view.findViewById(R.id.locker_pop_description_text);
+	popup_relock = (TextView)popup_view.findViewById(R.id.locker_pop_relock_time);
+	popup_input = (EditText)popup_view.findViewById(R.id.locker_pop_input);
+	popup_sequence = (TextView)popup_view.findViewById(R.id.locker_pop_unlock_sequence);
+	popup_sequence.setText(generateSeq());
+
+	lazy_button = (Button)popup_view.findViewById(R.id.locker_pop_lazy_button);
+	gary_lee_button = (Button)popup_view.findViewById(R.id.locker_pop_gary_lee_button);
+  }
+  
+  private void popup() {
+	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
+    View parent_view = mLayoutInflater.inflate(R.layout.main, null);
+	popup_window.showAtLocation(parent_view, Gravity.CENTER | Gravity.CENTER, 0, 0);
   }
   
   private void try_escape() {
-	String et_string = et.getText().toString();
-	String tv_string = tv.getText().toString(); 
+	String et_string = popup_input.getText().toString();
+	String tv_string = popup_sequence.getText().toString(); 
 	if (et_string.equals(tv_string)) {
-	  pw.dismiss();
-	  cdt.cancel();
+	  lock_count_down.cancel();
+	  popup_window.dismiss();
 	} else {
-      et.setText("");
+	  popup_sequence.setText(generateSeq());
+	  popup_input.setText("");
+	  popup_window.update();
 	}
   }
   
-  public void lock() {
-	popup();
-	setReceiver();
-	cdt = new CountDownTimer(10000, 1000) {
-	  public void onTick(long millisUntilFinished) {
-		pop_relock.setText("Or it will be locked in "+ Long.toString(millisUntilFinished / 1000) +
-				           " seconds!");
-		pw.update();
-      }
-
-	  public void onFinish() {
-		pop_relock.setText("Or it will be locked soon!"); 
-		pw.update();
-	    sysLock();
-	  }
-	};
-	wait_for_input = new CountDownTimer(5000, 1000) {
-
-	  @Override
-      public void onFinish() {
-	    cdt.start();
-	  }
-	  @Override
-	  public void onTick(long millisUntilFinished) {
-		// TODO Auto-generated method stub
-	  } 
-	};
-	cdt.start();
-  }
-
   private void setReceiver() {
 	IntentFilter filter = new IntentFilter(); 
 	filter.addAction(Intent.ACTION_USER_PRESENT); 
@@ -155,9 +258,9 @@ public class ScreenLocker {
 		  public void onReceive(final Context context, final Intent intent) {   
 		    String action = intent.getAction();   
 		    if(Intent.ACTION_USER_PRESENT.equals(action)) {
-		      cdt.start();
-		  	  tv.setText(generateSeq());
-		  	  pw.update();
+		      lock_count_down.start();
+		  	  popup_sequence.setText(generateSeq());
+		  	  popup_window.update();
 		    }
 	      }
 		};
@@ -183,9 +286,9 @@ public class ScreenLocker {
   }
   
   private String generateSeq() {
-	char[] result = new char[10];
-	for (int word_length = 0; word_length < 10; word_length++) {
-	  int g = r.nextInt(62);
+	char[] result = new char[retype_length];
+	for (int word_length = 0; word_length < retype_length; word_length++) {
+	  int g = string_generater.nextInt(62);
 	  if (g < 10) {
 	    result[word_length] = (char) (g + 48);
 	  } else if (g < 36) {

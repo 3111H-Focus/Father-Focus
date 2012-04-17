@@ -19,10 +19,11 @@
   <string name="dlg_detail">Detail</string>
   <string name="dlg_cancel">Cancel</string>
   <string name="create_new_list">New Task List</string>
-  <string name="pop_title">You still have much to do!</string>
-  <string name="pop_retype">Retype the below sequence to escape:</string>
-  <string name="pop_sequence">garyisachick</string>
-  <string name="pop_relock">Or it will be locked soon!</string>
-  <string name="lazy">You are lazier than Gary!</string>
-  <string name="gary_lee">You are Gary Lee!</string>
+  <string name="locker_pop_title">You still have much to do!</string>
+  <string name="locker_pop_description">You have not yet worked enough!</string>
+  <string name="locker_pop_retype">Retype the below sequence to escape:</string>
+  <string name="locker_pop_sequence">garyisachick</string>
+  <string name="locker_pop_relock">Or it will be locked soon!</string>
+  <string name="locker_pop_lazy">You are lazier than Gary!</string>
+  <string name="locker_pop_gary_lee">You are Gary Lee!</string>
 </resources>
