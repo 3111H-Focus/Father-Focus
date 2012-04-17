@@ -31,6 +31,9 @@ import android.widget.TextView;
  * 2. Use lock() to start the locking actions
  * 3. Use cancel_lock() to cancel the locking actions
  * 4. Use set_popup_description() to set the description in the pop-up window
+ * 5. Use set_candidate_strings() to set the candidate strings
+ * 6. Use change_to_all_random_generation() to change the method to 
+ *    all-random generation and make the candidate strings null
  */
 
 public class ScreenLocker {
@@ -53,6 +56,7 @@ public class ScreenLocker {
   private Button lazy_button;
   private Button gary_lee_button;
   private Random string_generater;
+  private String[] candidate_strings;
   private int retype_length;
 	
   /**
@@ -111,6 +115,72 @@ public class ScreenLocker {
   
   /**
    * Constructor
+   * Be aware that once the candidate_strings is given a non-null value,
+   * the string generated for output will be picked in the set
+   * @param activity: the activity this locker bases on
+   * @param candidate_strings: the strings as candidates for unlocking retype 
+   */
+  public ScreenLocker(Activity activity, String[] candidate_strings) {
+	this.activity = activity;
+	this.wait_for_input_time = DEFAULT_WAIT_FOR_INPUT_TIME;
+    this.lock_count_down_time = DEFAULT_LOCK_DOWN_COUNT_TIME;
+    this.retype_length = DEFAULT_RETYPE_LENGTH;
+    this.candidate_strings = candidate_strings;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
+  
+  /**
+   * Constructor
+   * Be aware that once the candidate_strings is given a non-null value,
+   * the string generated for output will be picked in the set
+   * @param activity: the activity this locker bases on
+   * @param retype_length: the length of the sequence needed to retype 
+   * @param candidate_strings: the strings as candidates for unlocking retype 
+   */
+  public ScreenLocker(Activity activity, int retype_length, String[] candidate_strings) {
+	this.activity = activity;
+	this.wait_for_input_time = DEFAULT_WAIT_FOR_INPUT_TIME;
+    this.lock_count_down_time = DEFAULT_LOCK_DOWN_COUNT_TIME;
+    this.retype_length = retype_length;
+    this.candidate_strings = candidate_strings;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
+  
+  /**
+   * Constructor
+   * Be aware that once the candidate_strings is given a non-null value,
+   * the string generated for output will be picked in the set
+   * @param activity: the activity this locker bases on
+   * @param lock_count_down_time: how many milliseconds to wait before locking
+   * @param wait_for_input_time: how many milliseconds to wait after some input before starting to wait for locking
+   * @param candidate_strings: the strings as candidates for unlocking retype 
+   */
+  public ScreenLocker(Activity activity, int lock_count_down_time, int wait_for_input_time, String[] candidate_strings) {
+	this.activity = activity;
+	this.wait_for_input_time = wait_for_input_time;
+	this.lock_count_down_time = lock_count_down_time;
+	this.retype_length = DEFAULT_RETYPE_LENGTH;
+    this.candidate_strings = candidate_strings;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
+  
+  /**
+   * Constructor
    * @param activity: the activity this locker bases on
    * @param lock_count_down_time: how many milliseconds to wait before locking
    * @param wait_for_input_time: how many milliseconds to wait after some input before starting to wait for locking
@@ -121,6 +191,31 @@ public class ScreenLocker {
 	this.wait_for_input_time = wait_for_input_time;
 	this.lock_count_down_time = lock_count_down_time;
 	this.retype_length = retype_length;
+	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+	componentName = new ComponentName(this.activity, AdminReceiver.class);
+   	string_generater = new Random();
+   	popup_init();
+   	timers_init();
+   	listeners_init();
+  }
+
+  /**
+   * Constructor
+   * Be aware that once the candidate_strings is given a non-null value,
+   * the string generated for output will be picked in the set
+   * @param activity: the activity this locker bases on
+   * @param lock_count_down_time: how many milliseconds to wait before locking
+   * @param wait_for_input_time: how many milliseconds to wait after some input before starting to wait for locking
+   * @param retype_length: the length of the sequence needed to retype 
+   * @param candidate_strings: the strings as candidates for unlocking retype 
+   */
+  public ScreenLocker(Activity activity, int lock_count_down_time, int wait_for_input_time, int retype_length,
+		              String[] candidate_strings) {
+	this.activity = activity;
+	this.wait_for_input_time = wait_for_input_time;
+	this.lock_count_down_time = lock_count_down_time;
+	this.retype_length = retype_length;
+	this.candidate_strings = candidate_strings;
 	dpm  = (DevicePolicyManager)this.activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
 	componentName = new ComponentName(this.activity, AdminReceiver.class);
    	string_generater = new Random();
@@ -145,6 +240,15 @@ public class ScreenLocker {
   public void set_popup_description(String description) {
 	popup_description.setText(description);
 	popup_window.update();
+  }
+  
+  public void set_candidate_strings(String[] candidate_strings) {
+	this.candidate_strings = candidate_strings;
+  }
+  
+  public void change_to_all_random_generation(int retype_length) {
+	this.candidate_strings = null;
+	this.retype_length = retype_length;
   }
   
   private void timers_init() {
@@ -215,7 +319,7 @@ public class ScreenLocker {
   }
   
   private void popup_init() {
-	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
+	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	popup_view = mLayoutInflater.inflate(R.layout.pop_background, null);
 	popup_window = new PopupWindow(popup_view, LayoutParams.MATCH_PARENT,
                          LayoutParams.MATCH_PARENT, true);
@@ -232,7 +336,7 @@ public class ScreenLocker {
   }
   
   private void popup() {
-	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
+	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View parent_view = mLayoutInflater.inflate(R.layout.main, null);
 	popup_window.showAtLocation(parent_view, Gravity.CENTER | Gravity.CENTER, 0, 0);
   }
@@ -286,6 +390,19 @@ public class ScreenLocker {
   }
   
   private String generateSeq() {
+	if (candidate_strings == null) {
+	  return allRandomGenerateSeq();
+	} else {
+	  return pickCandidateGenerateSeq();
+	}
+  }
+  
+  private String pickCandidateGenerateSeq() {
+    int g = string_generater.nextInt(candidate_strings.length);
+    return candidate_strings[g];
+  }
+  
+  private String allRandomGenerateSeq() {
 	char[] result = new char[retype_length];
 	for (int word_length = 0; word_length < retype_length; word_length++) {
 	  int g = string_generater.nextInt(62);
