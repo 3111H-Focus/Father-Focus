@@ -90,10 +90,14 @@ public class TimerFragment extends Fragment {
   //Methods for setting up the wheels
   private void initWheels() {
     TaskWheel = (WheelView) timerView.findViewById(R.id.wheel_two);
+    TaskWheel.setCyclic(false);
     TaskWheel.setVisibleItems(5);
     HourWheel = (WheelView) timerView.findViewById(R.id.wheel_three);
     MinuteWheel = (WheelView) timerView.findViewById(R.id.wheel_four);
     SecondWheel = (WheelView) timerView.findViewById(R.id.wheel_five);
+    HourWheel.setVisibleItems(1);
+    MinuteWheel.setVisibleItems(1);
+    SecondWheel.setVisibleItems(1);
     initTaskListWheel();
     updateTaskWheel();
     initializeTimeAdapters();
@@ -105,6 +109,7 @@ public class TimerFragment extends Fragment {
   private void initTaskListWheel() {
     TaskListWheel = (WheelView) timerView.findViewById(R.id.wheel_one);
     TaskListWheel.setVisibleItems(3);
+    TaskListWheel.setCyclic(false);
     updateTaskListData();
     TaskListWheel.addChangingListener(new OnWheelChangedListener() {
       public void onChanged(WheelView wheel, int oldValue, int newValue) {
@@ -164,6 +169,9 @@ public class TimerFragment extends Fragment {
       hrs[i] = "" + i;
     }
     hrWheelAdapter = new ArrayWheelAdapter<String>(getActivity(), hrs);
+    hrWheelAdapter.setTextSize(30);
+    minuteWheelAdapter.setTextSize(30);
+    secondWheelAdapter.setTextSize(30);
   }
 
 
