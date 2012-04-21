@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.graphics.Paint;
 
 //Current for testing
 public final class TaskDnDAdapter extends BaseAdapter implements
@@ -96,7 +97,7 @@ public final class TaskDnDAdapter extends BaseAdapter implements
    * @see android.widget.ListAdapter#getItemId(int)
    */
   public long getItemId(int position) {
-    return position;
+    return mTaskItems.get(position).taskId();
   }
 
   /**
@@ -119,7 +120,6 @@ public final class TaskDnDAdapter extends BaseAdapter implements
       // we want to bind data to.
       holder = new ViewHolder();
       holder.text = (TextView) convertView.findViewById(mIds[0]);
-
       convertView.setTag(holder);
     } else {
       // Get the ViewHolder back to get fast access to the TextView
@@ -129,7 +129,13 @@ public final class TaskDnDAdapter extends BaseAdapter implements
 
     // Bind the data efficiently with the holder.
     holder.text.setText(mTaskItems.get(position).taskName());
-
+    Paint paint = holder.text.getPaint();
+    paint.setAntiAlias(true);
+    if(mTaskItems.get(position).status() == TaskDbAdapter.TASKSTATUS_DONE) {
+      paint.setStrikeThruText(true);
+    }else{
+      paint.setStrikeThruText(false);
+    }
     return convertView;
   }
 
@@ -139,11 +145,10 @@ public final class TaskDnDAdapter extends BaseAdapter implements
 
   public void onRemove(int which) {
     //waiting for hook to database
-    /*
     if (which < 0 || which > mTaskItems.size())
       return;
-    mTaskItems.remove(which);
-    */
+    mTaskItems.get(which-1).status(TaskDbAdapter.TASKSTATUS_DONE);
+    mDbAdapter.updateTaskStatus(mTaskItems.get(which-1).taskId(),TaskDbAdapter.TASKSTATUS_DONE);
   }
 
   public void onDrop(int from, int to) {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hkust.comp3111h.focus.ui.EditTaskMoreControls
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/more_controls"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical" >
+</hkust.comp3111h.focus.ui.EditTaskMoreControls>

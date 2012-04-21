@@ -9,7 +9,7 @@ import hkust.comp3111h.focus.ui.QuickAddDialog;
 
 
 import hkust.comp3111h.focus.R;
-import hkust.comp3111h.focus.Adapter.PagerAdapter;
+import hkust.comp3111h.focus.Adapter.MainPagerAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.Adapter.TaskListSidebarAdapter;
 import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
@@ -60,8 +60,7 @@ import android.widget.PopupWindow.OnDismissListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-public class MainActivity extends FragmentActivity implements
-     ViewPager.OnPageChangeListener, MainMenuListener{
+public class MainActivity extends FocusBaseActivity {
   public static final String BROADCAST_REQUEST_EVENT_REFRESH = "hkust.comp3111h.focus.REQUEST_EVENT_REFRESH";
   // determine honecome or not
   static final int DIALOG_QUICK_ADD = 0;
@@ -70,7 +69,7 @@ public class MainActivity extends FragmentActivity implements
 
   private final Handler handler = new Handler();
   private ViewPager mViewPager;
-  private PagerAdapter mPagerAdapter;
+  private MainPagerAdapter mPagerAdapter;
   private ImageView mainMenu;
   private TextView listTitle;
   private View listsNav;
@@ -86,7 +85,6 @@ public class MainActivity extends FragmentActivity implements
   private boolean useLogo = false;
   private boolean showHomeUp = false;
   private boolean isShowingSidebar = false;
-  private TaskDbAdapter mDbAdapter;
   private List<Fragment> fragments;
 
   public void updateData() {
@@ -99,9 +97,6 @@ public class MainActivity extends FragmentActivity implements
   }
 
 
-  public TaskDbAdapter getDbAdapter() {
-    return mDbAdapter;
-  }
   /**
    * Called when the activity is first created Initialize Environment
    */
@@ -109,6 +104,7 @@ public class MainActivity extends FragmentActivity implements
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.pagerlayout); // Basically a easy linear layout
+    
 
     //****************************************************
     //************Initialize the action bar here**********
@@ -148,8 +144,6 @@ public class MainActivity extends FragmentActivity implements
     //***************************************************************
     //******end of action bar
     //**************************************************************
-    mDbAdapter = new TaskDbAdapter(this);
-    mDbAdapter.open();
     // Initialise ViewPager
     this.initialiseViewPager();
     initialiseTaskListSidebar();
@@ -209,7 +203,7 @@ public class MainActivity extends FragmentActivity implements
     fragments.add(Fragment.instantiate(this, TimerFragment.class.getName()));
     fragments
         .add(Fragment.instantiate(this, StatisticsFragment.class.getName()));
-    this.mPagerAdapter = new PagerAdapter(super.getSupportFragmentManager(),
+    this.mPagerAdapter = new MainPagerAdapter(super.getSupportFragmentManager(),
         fragments);
     this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
     this.mViewPager.setAdapter(this.mPagerAdapter);
@@ -244,16 +238,12 @@ public class MainActivity extends FragmentActivity implements
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
     Log.v("Activity result", "requestCode is" + requestCode);
-    if (resultCode == RESULT_CANCELED) {
-      Long rowId = data.getLongExtra(TaskDbAdapter.KEY_TASK_TID, 0);
-      if (!rowId.equals(new Long(0))) {
-        mDbAdapter.deleteTask(rowId);
-      }
+    if(requestCode == TaskManageFragment.ACTIVITY_EDIT_TASK && resultCode != RESULT_CANCELED) {
+
     }
-    if (requestCode == 0) {
       ((TaskManageFragment) mPagerAdapter.getItem(0)).updateList();
-    }
   }
 
   private void createMainMenuPopover() {
@@ -280,70 +270,7 @@ public class MainActivity extends FragmentActivity implements
       mainMenuPopover.dismiss();
     }
   }
-
-  /**
-   * General function to setup the popover
-   */
-  private void setupPopoverWithFragment(
-      FragmentPopover popover,
-      Fragment frag, 
-      LayoutParams params) {
-    if(popover != null) {
-      Log.d("MainAcitivity","Fragment is "+frag.toString());
-      View view = frag.getView();
-      Log.d("MainActivity","The view:"+view);
-      if(view!=null) {
-        FrameLayout parent = (FrameLayout) view.getParent();
-        if(parent!=null) {
-          parent.removeView(view);
-        }
-        if(params == null) {
-          popover.setContent(view);
-        }else {
-          Log.d("MainActivity", "Setting content");
-          popover.setContent(view,params);
-        }
-      }
-    }
-  }
-
-  protected Fragment setupFragment(String tag, int container, Class<? extends Fragment> cls) {
-    FragmentManager fm = getSupportFragmentManager();
-    Fragment fragment = fm.findFragmentByTag(tag);
-    if(fragment == null) {
-      try{
-        fragment = cls.newInstance();
-      } catch (InstantiationException e) {
-        return null;
-      } catch (IllegalAccessException e) {
-        return null;
-      }
-
-      FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-      if(container==0) {
-        ft.add(fragment, tag);
-      } else {
-        ft.replace(container, fragment, tag);
-      }
-      ft.commit();
-      
-    }
-    return fragment;
-  }
-  //Life cycle handling 
-  
-
   @Override
-  public void mainMenuItemSelected(int item, Intent customIntent) {
-    // TODO implmenent the main menu
-  }
-
-
-  public void onPageScrolled(int position, float positionOffset,
-      int positionOffsetPixels) {
-    // TODO Auto-generated method stub
-  }
-
   public void onPageSelected(int position) {
     // TODO Auto-generated method stub
     if(position==1) {
@@ -352,7 +279,5 @@ public class MainActivity extends FragmentActivity implements
     }
   }
 
-  public void onPageScrollStateChanged(int state) {
-    // TODO Auto-generated method stub
-  }
+
 }

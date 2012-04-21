@@ -2,7 +2,7 @@ package hkust.comp3111h.focus.ui;
 
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TaskItem;
-import hkust.comp3111h.focus.Activity.MainActivity;
+import hkust.comp3111h.focus.Activity.FocusBaseActivity;
 
 import android.app.Dialog;
 import android.app.Activity;
@@ -58,12 +58,12 @@ public class QuickAddDialog extends Dialog {
     Log.d("QuickAddDialog", "Adding Task");
     TaskListItem tlist = mFragment.getActiveTaskList();
     if(tlist==null) {
-      tlist = ((MainActivity)mActivity).getDbAdapter().fetchTaskListObj(1);
+      tlist = ((FocusBaseActivity)mActivity).getDbAdapter().fetchTaskListObj(1);
     }
     TaskItem newTask = new TaskItem();
     newTask.taskListId(tlist.taskListId());
     newTask.taskName(tName);
     newTask.taskType("Long Term");
-    ((MainActivity)mActivity).getDbAdapter().createTask(newTask);
+    ((FocusBaseActivity)mActivity).getDbAdapter().createTask(newTask);
   }
 }

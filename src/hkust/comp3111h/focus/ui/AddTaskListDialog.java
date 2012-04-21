@@ -2,6 +2,7 @@ package hkust.comp3111h.focus.ui;
 
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.Activity.FocusBaseActivity;
 import hkust.comp3111h.focus.Activity.MainActivity;
 
 import android.app.Dialog;
@@ -53,7 +54,7 @@ public class AddTaskListDialog extends Dialog {
   void quickAddTaskList(String tlName) {
     TaskListItem newTaskList = new TaskListItem();
     newTaskList.taskListName(tlName);
-    long tListId = ((MainActivity)mActivity).getDbAdapter().createTaskList(tlName);
+    long tListId = ((FocusBaseActivity)mActivity).getDbAdapter().createTaskList(tlName);
     newTaskList.taskListId(tListId);
     mFragment.setActiveTaskList(newTaskList);
   }

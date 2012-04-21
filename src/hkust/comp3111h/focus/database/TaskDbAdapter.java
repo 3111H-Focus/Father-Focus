@@ -627,9 +627,8 @@ public class TaskDbAdapter {
    */
   public TaskItem fetchTaskObj(long taskId) throws SQLException {
     Cursor cursor = fetchTask(taskId);
-
     Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
-    Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
+    //Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
     if(cursor.moveToFirst()){
       TaskItem item = taskObjFromCursor(cursor);
       cursor.close();
@@ -641,6 +640,7 @@ public class TaskDbAdapter {
       return item;
     }
   }
+
   
   /**
    * fetch tasks with the specified status. 
@@ -648,8 +648,16 @@ public class TaskDbAdapter {
    * @param status
    * @return
    */
-  public Cursor fetchAllTasksByStatus(int status){
-    return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status, null, null, null, null, null);
+  public Cursor fetchAllTasksByStatus(int status,boolean bySequence){
+    if(bySequence){
+      return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status, null, null, null, null, KEY_TASK_TSEQUENCE);
+    } else {
+      return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status, null, null, null, null, null);
+    }
+
+  }
+  public Cursor fetchAllTasksByStatus(int status) {
+    return fetchAllTasksByStatus(status, true);
   }
   
   /**

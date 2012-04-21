@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 public class MainTestActivity extends ListActivity {
 
-  String classes[] = { "Activity.MainActivity", "test.TestUserTable",
+  String classes[] = { "Activity.MainActivity","Activity.EditTaskActivity", "test.TestUserTable",
       "test.TaskDbAdapterTest", "test.DBTestDragAndDrop", "TBA", "TBA", "TBA" };
 
   @Override

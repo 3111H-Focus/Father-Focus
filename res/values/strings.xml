@@ -19,4 +19,14 @@
   <string name="dlg_detail">Detail</string>
   <string name="dlg_cancel">Cancel</string>
   <string name="create_new_list">New Task List</string>
+  <string name="task_edit">Edit</string>
+  <string name="TE_new_task">New Task</string>
+  <string name="TE_edit_task">Edit Task</string>
+  <string name="TE_menu_save">Save Changes</string>
+  <string name="TE_menu_discard">Discard</string>
+  <string name="TE_menu_delete">Delete Task</string>
+  <string name="TE_tab_detail">Details</string>
+  <string name="TE_tab_activity">Activities</string>
+  <string name="TE_title_hint">Task Name</string>
+
 </resources>

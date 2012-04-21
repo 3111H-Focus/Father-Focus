@@ -10,6 +10,7 @@ import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TaskItem;
 import hkust.comp3111h.focus.Activity.MainActivity;
+import hkust.comp3111h.focus.Activity.FocusBaseActivity;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import android.graphics.Point;
@@ -32,6 +35,15 @@ public class TaskManageFragment extends Fragment {
   private TaskDnDAdapter mAdapter;
   private DnDListView mListView;
   private TaskListItem activeTaskList; 
+
+  /**
+   * Activities
+   */
+  public static final int ACTIVITY_EDIT_TASK = 0;
+
+  public interface OnTaskListItemClickedListener {
+    public void onTaskListItemClicked(long taskId);
+  }
 
   public void updateList() {
     Log.v("Fragment", "updating");
@@ -66,6 +78,7 @@ public class TaskManageFragment extends Fragment {
     mAdapter.update();
   }
 
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     if (container == null) {
@@ -79,6 +92,13 @@ public class TaskManageFragment extends Fragment {
     mListView.setAdapter(mAdapter);
     mListView.setDropListener(mDropListener);
     mListView.setRemoveListener(mRemoveListener);
+    mListView.setOnItemClickListener(new OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view,
+        int position, long id) {
+        ((FocusBaseActivity)getActivity()).onTaskListItemClicked(id);
+      }
+    });
 
     return layout;
   }
