@@ -12,8 +12,10 @@ import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskItem;
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TimeItem;
+import hkust.comp3111h.focus.Activity.FocusBaseActivity;
+import hkust.comp3111h.focus.Adapter.TaskWheelViewAdapter;
+import hkust.comp3111h.focus.Adapter.TaskListWheelAdapter;
 import hkust.comp3111h.focus.locker.ScreenLocker;
-
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,8 +70,8 @@ public class TimerFragment extends Fragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     scrolling = true;
-    mDbAdapter = ((MainActivity)getActivity()).getDbAdapter();
-    screen_locker = new ScreenLocker(getActivity());
+    mDbAdapter = ((FocusBaseActivity)getActivity()).getDbAdapter();
+    
   }
 
   @Override

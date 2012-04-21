@@ -11,7 +11,7 @@ import hkust.comp3111h.focus.R;
 /**
  * The PagerAdapter serves the fragment when paging
  */
-public class PagerAdapter extends FragmentPagerAdapter implements TitleProvider {
+public class MainPagerAdapter extends FragmentPagerAdapter implements TitleProvider {
   private List<Fragment> mFragments;
 
   /**
@@ -20,7 +20,7 @@ public class PagerAdapter extends FragmentPagerAdapter implements TitleProvider 
    * @param fm
    * @param fragments
    */
-  public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+  public MainPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
     super(fm);
     mFragments = fragments;
   }
