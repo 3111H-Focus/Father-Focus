@@ -95,6 +95,9 @@
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@android:color/black</item>
   </style>
+  <style name="PopWindowAnimation">  
+    <item name="android:windowEnterAnimation">@anim/popup_animation</item>  
+  </style>
   <!--======================EditTaskActivity====================-->
   <style name="EditScroll">
     <item name="android:background">@color/edit_scroll_bg</item>
