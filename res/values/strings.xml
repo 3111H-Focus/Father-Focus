@@ -19,6 +19,15 @@
   <string name="dlg_detail">Detail</string>
   <string name="dlg_cancel">Cancel</string>
   <string name="create_new_list">New Task List</string>
+
+  <string name="locker_pop_title">You still have much to do!</string>
+  <string name="locker_pop_description">You have not yet worked enough!</string>
+  <string name="locker_pop_retype">Retype the below sequence to escape:</string>
+  <string name="locker_pop_sequence">garyisachick</string>
+  <string name="locker_pop_relock">Or it will be locked soon!</string>
+  <string name="locker_pop_lazy">You are lazier than Gary!</string>
+  <string name="locker_pop_gary_lee">You are Gary Lee!</string>
+
   <string name="task_edit">Edit</string>
   <string name="TE_new_task">New Task</string>
   <string name="TE_edit_task">Edit Task</string>
@@ -28,5 +37,6 @@
   <string name="TE_tab_detail">Details</string>
   <string name="TE_tab_activity">Activities</string>
   <string name="TE_title_hint">Task Name</string>
+
 
 </resources>
