@@ -1,7 +1,6 @@
 package hkust.comp3111h.focus.Activity;
 
 import hkust.comp3111h.focus.R;
-import hkust.comp3111h.focus.Adapter.PagerAdapter;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
