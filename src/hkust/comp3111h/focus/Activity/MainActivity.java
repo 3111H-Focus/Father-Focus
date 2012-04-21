@@ -5,60 +5,49 @@
  * Using the library of ActionBarSherlock
  */
 package hkust.comp3111h.focus.Activity;
-import hkust.comp3111h.focus.ui.QuickAddDialog;
-
-
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Adapter.MainPagerAdapter;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.Adapter.TaskListSidebarAdapter;
-import hkust.comp3111h.focus.Adapter.TaskDnDAdapter;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.database.TaskListItem;
+import hkust.comp3111h.focus.ui.AddTaskListDialog;
+import hkust.comp3111h.focus.ui.FragmentPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover;
 import hkust.comp3111h.focus.ui.MainMenuPopover.MainMenuListener;
+import hkust.comp3111h.focus.ui.QuickAddDialog;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
 import hkust.comp3111h.focus.ui.TitlePageIndicator;
-import hkust.comp3111h.focus.ui.FragmentPopover;
-import hkust.comp3111h.focus.database.TaskListItem;
-import hkust.comp3111h.focus.database.TaskItem;
-import hkust.comp3111h.focus.ui.AddTaskListDialog;
-
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.util.Log;
 import android.app.Dialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBar;
-import android.support.v4.app.ActionBar.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.Menu;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItem;
-import android.support.v4.view.MenuItem.OnMenuItemClickListener;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.PopupWindow.OnDismissListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow.OnDismissListener;
+import android.widget.TextView;
 
 public class MainActivity extends FocusBaseActivity {
   public static final String BROADCAST_REQUEST_EVENT_REFRESH = "hkust.comp3111h.focus.REQUEST_EVENT_REFRESH";
@@ -86,7 +75,7 @@ public class MainActivity extends FocusBaseActivity {
   private boolean showHomeUp = false;
   private boolean isShowingSidebar = false;
   private List<Fragment> fragments;
-
+  
   public void updateData() {
     ((TaskManageFragment)(fragments.get(0))).updateList();
     updateSidebarData();
@@ -149,7 +138,7 @@ public class MainActivity extends FocusBaseActivity {
     initialiseTaskListSidebar();
     createMainMenuPopover();
   }
-
+  
   private void setListsSidebarSelected(boolean selected) {
     isShowingSidebar = selected;
     int oldTextColor = listTitle.getTextColors().getDefaultColor();
