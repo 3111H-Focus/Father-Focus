@@ -12,7 +12,7 @@ import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskItem;
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TimeItem;
-import hkust.comp3111h.focus.Activity.MainActivity;
+import hkust.comp3111h.focus.Activity.FocusBaseActivity;
 import hkust.comp3111h.focus.Adapter.TaskWheelViewAdapter;
 import hkust.comp3111h.focus.Adapter.TaskListWheelAdapter;
 
@@ -71,7 +71,8 @@ public class TimerFragment extends Fragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     scrolling = true;
-    mDbAdapter = ((MainActivity)getActivity()).getDbAdapter();
+    mDbAdapter = ((FocusBaseActivity)getActivity()).getDbAdapter();
+    
   }
 
   @Override
