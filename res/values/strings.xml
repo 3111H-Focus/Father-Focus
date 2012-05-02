@@ -37,6 +37,10 @@
   <string name="TE_tab_detail">Details</string>
   <string name="TE_tab_activity">Activities</string>
   <string name="TE_title_hint">Task Name</string>
+  <string name="TE_Due">Due Date</string>
+  <string name="TE_not_spec">Not specified</string>
 
-
+  <string name="hint">Touch the first or last day to go to last or next month</string>
+  <string name="DLG_OK">OK</string>
+  <string name="TE_when_label">Due Date</string>
 </resources>

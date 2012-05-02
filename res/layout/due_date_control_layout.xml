@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hkust.comp3111h.focus.ui.DateAndTimePicker
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/date_and_time"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical"/>

@@ -1,10 +1,13 @@
 package hkust.comp3111h.focus.Activity;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 import android.util.AttributeSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -35,6 +38,9 @@ import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TaskItem;
 import hkust.comp3111h.focus.ui.TabPageIndicator;
+import hkust.comp3111h.focus.ui.TaskTitleControlSet;
+import hkust.comp3111h.focus.ui.DueDateControlSet;
+import hkust.comp3111h.focus.util.TaskEditControlSet;
 
 public final class EditTaskFragment extends Fragment {
   private final int MENU_DISCARD_ID = R.string.TE_menu_discard;
@@ -44,6 +50,7 @@ public final class EditTaskFragment extends Fragment {
 
 
   private EditText title;
+  private Dialog dueDialog;
 
   /**
    * Task ID
@@ -55,6 +62,10 @@ public final class EditTaskFragment extends Fragment {
   public static final String TOKEN_VALUES = "v";
 
   private TaskItem taskInEdit;
+  /**
+   * Make use of polynophism, keep track on the sets 
+   */
+  private final List<TaskEditControlSet> controls = Collections.synchronizedList(new ArrayList<TaskEditControlSet>());
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -90,11 +101,31 @@ public final class EditTaskFragment extends Fragment {
   private void initUIComponents() {
     LinearLayout basicControls = (LinearLayout) getView().findViewById(
         R.id.basic_controls);
-    title =(EditText) getView().findViewById(R.id.title);
-    if(taskInEdit!=null) {
-      title.setText(taskInEdit.taskName());
+    LinearLayout titleControls = (LinearLayout) getView().findViewById(
+        R.id.title_controls);
+    /*
+    LinearLayout dueDateDialogView = (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.due_date_dialog,null);
+    constructDueDateDialog(dueDateDialogView);
+    */
+    TaskTitleControlSet editTitle = new TaskTitleControlSet(getActivity(),
+        R.layout.task_edit_title_layout, R.id.title);
+    title = (EditText) editTitle.getView().findViewById(R.id.title);
+    controls.add(editTitle);
+    titleControls.addView(editTitle.getDisplayView(), 0, 
+        new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1.0f));
+    DueDateControlSet dueDateControl = new DueDateControlSet(
+        getActivity(), R.layout.due_date_control_layout,
+        R.layout.control_set_base_layout);
+    controls.add(dueDateControl);
+    basicControls.addView(dueDateControl.getDisplayView());
+  }
+
+  private void populateField() {
+    for(TaskEditControlSet controlSet: controls) {
+      controlSet.initTask(taskInEdit);
     }
   }
+
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -130,6 +161,11 @@ public final class EditTaskFragment extends Fragment {
     params.height = totalHeight;
     view.setLayoutParams(params);
     view.requestLayout();
+  }
+  @Override 
+  public void onResume() {
+    super.onResume();
+    populateField();
   }
 }
 
