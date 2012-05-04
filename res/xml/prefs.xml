@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="lockScreen"
+        android:defaultValue="false"
+        android:summary="Lock screen when timer starts. "
+        android:title="Lock Screen" />
+
+    <ListPreference
+        android:entries="@array/unlockTimeStringList"
+        android:entryValues="@array/unlockTimeValuesList"
+        android:key="unlockTimeList"
+        android:summary="After the specified time, stop locking the screen so you have more rest. "
+        android:title="Lock Activation time" >
+    </ListPreference>
+
+</PreferenceScreen>
