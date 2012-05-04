@@ -1,6 +1,7 @@
 package hkust.comp3111h.focus.Activity;
 
 import hkust.comp3111h.focus.R;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
