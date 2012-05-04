@@ -4,21 +4,23 @@
 
 package hkust.comp3111h.focus.ui;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-
-import java.util.ArrayList;
-
 import hkust.comp3111h.focus.R;
 import hkust.comp3111h.focus.Activity.FocusBaseActivity;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 import hkust.comp3111h.focus.database.TimeItem;
+
+import java.util.ArrayList;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 public class StatisticsFragment extends Fragment {
   TaskDbAdapter mDbAdapter;
@@ -39,6 +41,9 @@ public class StatisticsFragment extends Fragment {
     }
     LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.statisfrag, container,
         false);
+    Bitmap b = Bitmap.createBitmap(1000, 1000, Config.ARGB_8888);
+    Canvas c = new Canvas(b);
+    c.drawColor(Color.BLACK);
     return layout;
   }
   
