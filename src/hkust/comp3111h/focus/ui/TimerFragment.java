@@ -61,6 +61,7 @@ public class TimerFragment extends Fragment {
   boolean isTimerStart = false;
   
   ScreenLocker screen_locker;
+  boolean use_lock = true;
 
 /*=====================================================
  * Initializations
@@ -71,7 +72,7 @@ public class TimerFragment extends Fragment {
     super.onCreate(savedInstanceState);
     scrolling = true;
     mDbAdapter = ((FocusBaseActivity)getActivity()).getDbAdapter();
-    
+    screen_locker = new ScreenLocker(getActivity());
   }
 
   @Override
@@ -187,11 +188,18 @@ public class TimerFragment extends Fragment {
       @Override
       public synchronized void onClick(View v) {
         if (!isTimerStart) {
-          ScreenLocker screen_locker = new ScreenLocker(getActivity());
-          screen_locker.lock();
-          isTimerStart = true;
-          startTimer();
-          setUI4Timer(true);
+          if (!use_lock) {
+            isTimerStart = true;
+            startTimer();
+            setUI4Timer(true);  
+          } else if (screen_locker.checkPolicy()) {
+            isTimerStart = true;
+            startTimer();
+            setUI4Timer(true); 
+            screen_locker.lock();      	  
+          } else {
+            screen_locker.setPolicy();  
+          }
         } else {
           isTimerStart = false;
           stopTimer();
