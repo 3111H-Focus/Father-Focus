@@ -6,9 +6,9 @@
 
     <!-- Permissions setting up -->
     <!-- for notification -->
-    <use-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!--for synchronization -->
-    <use-permission android:name="android.permission.INTENET"/>
+    <uses-permission android:name="android.permission.INTENET"/>
     <!-- for google calendar integration -->
     <use-permission android:name="android.permission.WRITE_CALENDAR"/>
     <use-permission android:name="android.permission.READ_CALENDAR"/>
