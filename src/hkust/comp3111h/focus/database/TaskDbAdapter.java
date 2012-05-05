@@ -866,12 +866,13 @@ public class TaskDbAdapter {
    * @return successfully updated or not.
    */
   public boolean updateTask(long taskId, String taskType, String taskName,
-      int status, String dueDate) {
+      int status, String dueDate, long taskListId) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASK_TYPE, taskType);
     updatedInfo.put(KEY_TASK_NAME, taskName);
     updatedInfo.put(KEY_TASK_STATUS, status);
     updatedInfo.put(KEY_TASK_DUEDATE, dueDate);
+    updatedInfo.put(KEY_TASKLIST_TLID,taskListId);
 
     return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "=" + taskId,
         null) > 0;

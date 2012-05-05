@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+  <ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="100"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip"
+    android:background="@color/white">
+    <LinearLayout
+      android:id="@+id/datetime_body"
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+      <hkust.comp3111h.focus.ui.CalendarView
+        android:id="@+id/calendar"
+        android:layout_width="fill_parent"
+        android:layout_height="250dip"
+        android:layout_weight="1" />
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <LinearLayout
+          android:id="@+id/date_shortcuts"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:layout_marginTop="5dip"
+          android:layout_marginRight="5dip"
+          android:layout_weight="1"
+          android:orientation="vertical"/>
+      </LinearLayout>
+    </LinearLayout>
+  </ScrollView>
+</merge>
+
+

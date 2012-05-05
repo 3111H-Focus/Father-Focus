@@ -3,10 +3,13 @@ package hkust.comp3111h.focus.ui;
 import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.database.TaskItem;
 import hkust.comp3111h.focus.Activity.FocusBaseActivity;
+import hkust.comp3111h.focus.Activity.MainActivity;
+import hkust.comp3111h.focus.Activity.EditTaskActivity;
 
 import android.app.Dialog;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.WindowManager.LayoutParams;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +37,7 @@ public class QuickAddDialog extends Dialog {
     taskNameEdit = (EditText)findViewById(R.id.quickAddText);
     addButton = (ImageButton)findViewById(R.id.quick_add_button);
     cancelBtn = (Button)findViewById(R.id.cancel_button);
-    //detailBtn = (Button)findViewById(R.id.detail_button);
+    detailBtn = (Button)findViewById(R.id.detail_button);
     addButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -53,10 +56,21 @@ public class QuickAddDialog extends Dialog {
         dismiss();
       }
     });
+    detailBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(mActivity, EditTaskActivity.class);
+        mActivity.startActivityForResult(intent, TaskManageFragment.ACTIVITY_EDIT_TASK);
+        cancelBtn.performClick();
+      }
+    });
   }
   void quickAddTask(String tName) {
     Log.d("QuickAddDialog", "Adding Task");
     TaskListItem tlist = mFragment.getActiveTaskList();
+    if(tName == null || tName.length() == 0) {
+      return;
+    }
     if(tlist==null) {
       tlist = ((FocusBaseActivity)mActivity).getDbAdapter().fetchTaskListObj(1);
     }
