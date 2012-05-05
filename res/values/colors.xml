@@ -26,4 +26,5 @@
   <color name="white">#FFFFFF</color>
   <color name="editBackground">#101010</color>
   <color name="edit_scroll_bg">#dddddd</color>
+  <color name="task_edit_deadline_gray">#FF777777</color>
 </resources>
