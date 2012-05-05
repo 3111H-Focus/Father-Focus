@@ -24,7 +24,11 @@ public class TaskTitleControlSet extends TaskEditControlSet {
  }
  @Override
  protected void initTask(){
-   editText.setTextKeepState(task.taskName());
+   if(task.taskName()!=null) {
+     editText.setTextKeepState(task.taskName());
+   }else{
+     editText.setTextKeepState("");
+   }
  }
  @Override
  protected String writeDataAfterInit(TaskItem task) {

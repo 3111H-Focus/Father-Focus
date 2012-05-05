@@ -7,5 +7,3 @@
   android:paddingLeft="10dip"
   android:gravity="center_vertical"
   style="@style/TextAppearance.ActionBar_Header"/>
-  
-

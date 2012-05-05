@@ -40,5 +40,8 @@ public class TaskListItem implements Comparable<TaskListItem> {
   public int compareTo(TaskListItem other) {
     return (int)(mTaskListSequence - other.taskListSequence());
   }
-
+  @Override
+  public String toString() {
+    return mTaskListName;
+  }
 }

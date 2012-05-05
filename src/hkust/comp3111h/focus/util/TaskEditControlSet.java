@@ -7,6 +7,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 
 import hkust.comp3111h.focus.database.TaskItem;
+import hkust.comp3111h.focus.database.TaskDbAdapter;
+import hkust.comp3111h.focus.Activity.FocusBaseActivity;
 /**
  * The base class for all the control set class 
  * In task Edit Fragment
@@ -18,6 +20,7 @@ public abstract class TaskEditControlSet {
   private View view;
   protected TaskItem task;
   protected boolean initialized = false;
+  protected TaskDbAdapter mDbAdapter;
 
   /**
    * @param activity
@@ -26,6 +29,8 @@ public abstract class TaskEditControlSet {
   public TaskEditControlSet(Activity activity, int viewLayout) {
     this.activity = activity;
     this.viewLayout = viewLayout;
+    mDbAdapter = ((FocusBaseActivity)activity).getDbAdapter();
+    
     if(viewLayout == -1) 
       initialized = true;
   }

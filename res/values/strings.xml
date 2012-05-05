@@ -43,4 +43,6 @@
   <string name="hint">Touch the first or last day to go to last or next month</string>
   <string name="DLG_OK">OK</string>
   <string name="TE_when_label">Due Date</string>
+  <string name="TE_lists_label">Lists</string>
+  <string name="TE_lists_label_long">Set List for a Task</string>
 </resources>
