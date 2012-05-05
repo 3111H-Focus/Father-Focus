@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 /**
+ * STILL CONTAIN BUGS IN STRANGE LOCKING!
  * The ScreenLocker class used to lock the screen
  * @author Gary Cheung
  * 1. Use one of the constructors to initiate the ScreenLocker
@@ -34,6 +36,8 @@ import android.widget.TextView;
  * 5. Use set_candidate_strings() to set the candidate strings
  * 6. Use change_to_all_random_generation() to change the method to 
  *    all-random generation and make the candidate strings null
+ * 7. User has to activate the manager, using aciveManager(), to use the lock() function,
+ *    or the lock() function will return without doing anything.
  */
 
 public class ScreenLocker {
@@ -58,6 +62,7 @@ public class ScreenLocker {
   private Random string_generater;
   private String[] candidate_strings;
   private int retype_length;
+  private BroadcastReceiver mBatInfoReceiver;
 	
   /**
    * The basic constructor
@@ -223,8 +228,20 @@ public class ScreenLocker {
    	timers_init();
    	listeners_init();
   }
-
+  
+  public boolean checkPolicy() {
+	return dpm.isAdminActive(componentName);
+  }
+  
+  public void setPolicy() {
+	activeManage();
+  }
+  
   public void lock() {
+	boolean active = dpm.isAdminActive(componentName);
+	if (!active) {
+		return;
+	}
 	popup();
 	setReceiver();
 	lock_count_down.start();
@@ -235,6 +252,7 @@ public class ScreenLocker {
 	lock_count_down.cancel();
 	popup_relock.setText("Or it will be locked soon!");
 	popup_window.dismiss();
+	activity.unregisterReceiver(mBatInfoReceiver);
   }
   
   public void set_popup_description(String description) {
@@ -252,11 +270,13 @@ public class ScreenLocker {
   }
   
   private void timers_init() {
+	Log.d("Locker", "timer_init");
 	lock_count_down = new CountDownTimer(lock_count_down_time, 1000) {
 	  @Override
 	  public void onTick(long millisUntilFinished) {
 		popup_relock.setText("Or it will be locked in "+ Long.toString(millisUntilFinished / 1000) +
 					           " seconds!");
+		Log.d("Locker", this.toString() + "@@@Tick" + millisUntilFinished);
 		popup_window.update();
 	  }
 	  @Override
@@ -282,9 +302,10 @@ public class ScreenLocker {
 	popup_input.addTextChangedListener(new TextWatcher() {
 	  @Override
       public void afterTextChanged(Editable arg0) {
+		wait_for_input.cancel();
 	    lock_count_down.cancel();
+	    Log.d("Locker", "LCD_Canceled");
 	    popup_relock.setText("Or it will be locked soon!");
-	    wait_for_input.cancel();
 	    wait_for_input.start();
 	  }
 	  @Override
@@ -307,8 +328,10 @@ public class ScreenLocker {
 	   	  	try_escape();
 	       	break;
 	      case R.id.locker_pop_gary_lee_button:
+	    	wait_for_input.cancel();
    	    	lock_count_down.cancel();
    	    	popup_relock.setText("Or it will be locked soon!");
+   	    	popup_window.update();
    	    	sysLock();
    	    	break;
    	    }
@@ -345,8 +368,10 @@ public class ScreenLocker {
 	String et_string = popup_input.getText().toString();
 	String tv_string = popup_sequence.getText().toString(); 
 	if (et_string.equals(tv_string)) {
+	  wait_for_input.cancel();
 	  lock_count_down.cancel();
 	  popup_window.dismiss();
+	  activity.unregisterReceiver(mBatInfoReceiver);
 	} else {
 	  popup_sequence.setText(generateSeq());
 	  popup_input.setText("");
@@ -357,12 +382,13 @@ public class ScreenLocker {
   private void setReceiver() {
 	IntentFilter filter = new IntentFilter(); 
 	filter.addAction(Intent.ACTION_USER_PRESENT); 
-	final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {   
+	mBatInfoReceiver = new BroadcastReceiver() {   
 	      @Override   
 		  public void onReceive(final Context context, final Intent intent) {   
 		    String action = intent.getAction();   
 		    if(Intent.ACTION_USER_PRESENT.equals(action)) {
 		      lock_count_down.start();
+		      Log.d("Locker", "AUP_Called");
 		  	  popup_sequence.setText(generateSeq());
 		  	  popup_window.update();
 		    }
@@ -379,14 +405,7 @@ public class ScreenLocker {
   }
   
   private void sysLock(){
-    boolean active = dpm.isAdminActive(componentName);
-    if (!active) {
-      activeManage();
-      dpm.lockNow();
-    }
-    if (active) {
-      dpm.lockNow();
-	}
+    dpm.lockNow();
   }
   
   private String generateSeq() {
@@ -414,6 +433,6 @@ public class ScreenLocker {
 		result[word_length] = (char) (g + 61);
 	  }
 	}
-	return new String(result);
+	return (new String(result));
   }
 }

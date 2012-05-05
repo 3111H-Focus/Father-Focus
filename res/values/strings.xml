@@ -25,8 +25,8 @@
   <string name="locker_pop_retype">Retype the below sequence to escape:</string>
   <string name="locker_pop_sequence">garyisachick</string>
   <string name="locker_pop_relock">Or it will be locked soon!</string>
-  <string name="locker_pop_lazy">You are lazier than Gary!</string>
-  <string name="locker_pop_gary_lee">You are Gary Lee!</string>
+  <string name="locker_pop_lazy">Escape...</string>
+  <string name="locker_pop_gary_lee">Continue to work!</string>
 
   <string name="task_edit">Edit</string>
   <string name="TE_new_task">New Task</string>
