@@ -41,9 +41,6 @@ public class StatisticsFragment extends Fragment {
     }
     LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.statisfrag, container,
         false);
-    Bitmap b = Bitmap.createBitmap(1000, 1000, Config.ARGB_8888);
-    Canvas c = new Canvas(b);
-    c.drawColor(Color.BLACK);
     return layout;
   }
   

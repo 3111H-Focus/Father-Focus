@@ -1330,7 +1330,7 @@ public class TaskDbAdapter {
           end = new DateTime();
         }
 
-        duration.plus(new Duration(start, end));
+        duration = duration.plus(new Duration(start, end));
       }
     }
     mCursor.close();

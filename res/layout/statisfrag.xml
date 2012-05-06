@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width = "fill_parent"
-  android:layout_height = "wrap_content">
-  <ListView
-    android:id="@+id/statisList"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-  </ListView>
+ xmlns:android="http://schemas.android.com/apk/res/android"
+ android:orientation="vertical"
+ android:layout_width = "fill_parent"
+ android:layout_height = "wrap_content">
+ <LinearLayout 
+  android:gravity="center"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent" 
+  android:layout_height="wrap_content" 
+  android:layout_gravity="center"
+  android:layout_weight="1">
+  <ImageView
+   android:layout_width="90dip"
+   android:layout_height="62dip"
+   android:src="@drawable/chick_gary"
+   android:scaleType="centerInside"/>
+   <TextView
+    android:text="@string/locker_pop_title"
+    android:textSize="12pt"
+    android:textColor="#FFFFFFCE"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+ </LinearLayout>
+ <hkust.comp3111h.focus.ui.StatisticView
+  android:id="@+id/statisview"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"/>
 </LinearLayout>
