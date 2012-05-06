@@ -719,7 +719,6 @@ public class WheelView extends View {
     if (!isEnabled() || getViewAdapter() == null) {
       return true;
     }
-
     switch (event.getAction()) {
       //Nothing to do, let the parent to handle
       case MotionEvent.ACTION_MOVE:
