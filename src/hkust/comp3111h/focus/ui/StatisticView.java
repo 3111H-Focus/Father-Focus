@@ -19,6 +19,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -150,6 +151,7 @@ public class StatisticView extends View {
   public void onDraw(Canvas canvas) {
 	super.onDraw(canvas);
     drawPie(canvas);
+    update_status();
   }
   
   private void initInformation() {
@@ -231,7 +233,6 @@ public class StatisticView extends View {
 		  sweep_angle += 360;
 		}
 	  }
-	  Log.d("Stat", "start_angle is " + start_angle);
       canvas.drawArc(rect, moving_angle, sweep_angle, true, mPaint);
 	  canvas.drawArc(rect, moving_angle, sweep_angle, true, strokePaint);
 	  current_pair.set_angles(moving_angle, moving_angle + sweep_angle);
@@ -326,15 +327,7 @@ public class StatisticView extends View {
     	  last_y = pressed_y;
     	  break;
         case MotionEvent.ACTION_UP:
-          float angle_chosen = 270 - start_angle;
-          angle_chosen = (angle_chosen >= 0)? angle_chosen : angle_chosen + 360;
-          for (int find_id = 0; find_id < information_pairs.size(); find_id++) {
-        	InformationPair current_pair = information_pairs.get(find_id);
-        	if (current_pair.start_angle <= angle_chosen && current_pair.end_angle >= angle_chosen) {
-              update_status(current_pair);
-        	  break;
-        	}
-          }
+          invalidate();
           break;
         }
       } /*else {
@@ -349,6 +342,16 @@ public class StatisticView extends View {
 	this.setMeasuredDimension(parentWidth, parentWidth);
   }
   
+  private void update_status() {
+    for (int find_id = 0; find_id < information_pairs.size(); find_id++) {
+      InformationPair current_pair = information_pairs.get(find_id);
+      if ((current_pair.start_angle <= 270 && current_pair.end_angle >= 270) ||
+    	   current_pair.start_angle <= 630 && current_pair.end_angle >= 630) {
+        update_status(current_pair);
+    	break;
+      }
+    }
+  }
   private void update_status(InformationPair chosen_pair) {
 	long id = chosen_pair.task_id;
 	int color = chosen_pair.color;
@@ -376,11 +379,10 @@ public class StatisticView extends View {
 	
 	TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
 	TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
-	TaskColorIndicatorView indicator = (TaskColorIndicatorView)((MainActivity)getContext())
-																.getPagerAdapter().getItem(2).getView()
-																.findViewById(R.id.taskcolorindicator);
-	Log.d("StatisticView",""+indicator);
-	//indicator.setColor(color);
+	TaskColorIndicatorView indicator = (TaskColorIndicatorView)((Activity)getContext())
+															   .findViewById(R.id.taskcolorindicator);
+	
+	indicator.setColor(color);
 	name_view.setText(name);
 	time_view.setText("Time: " + days + "d " + hours + "h " +
 					  minutes + "m " + seconds + "s");
