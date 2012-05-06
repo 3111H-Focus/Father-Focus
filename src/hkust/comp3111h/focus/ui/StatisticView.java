@@ -125,11 +125,13 @@ public class StatisticView extends View {
 	if (id == 0) {
 	  cursor = db.fetchAllTaskLists();
 	  information_pairs = new Vector<InformationPair>();
+	  cursor_is_all = true;
 	  initInformation();
 	  start_angle = 0;
 	} else {
 	  cursor = db.fetchAllTasksInList(id, false);
       information_pairs = new Vector<InformationPair>();
+	  cursor_is_all = false;
 	  initInformation();
       start_angle = 0;
 	}
@@ -202,6 +204,7 @@ public class StatisticView extends View {
 	strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
 	long sum_milliseconds = sum_of_durations.getMillis();
 	if (sum_milliseconds == 0) {
+	  canvas.drawArc(rect, 0, 360, true, strokePaint);
 	  return;
 	}
 	boolean warn_angle = false;
@@ -215,7 +218,7 @@ public class StatisticView extends View {
 	  }
 	  if (draw_i == information_pairs.size() - 1) {
 		sweep_angle = start_angle - moving_angle;
-		if (sweep_angle < 0) {
+		if (sweep_angle <= 0) {
 		  sweep_angle += 360;
 		}
 	  }

@@ -34,7 +34,7 @@ public class TaskColorIndicatorView extends View {
 	
   public TaskColorIndicatorView(Context context, AttributeSet attrs) {
     super(context);
-	color = 0xff000000;
+	color = GoodColor.BRIGHTCOLOR[0];
     mPaint = new Paint();
     mPaint.setColor(color);
 	mPaint.setAntiAlias(true);
@@ -64,12 +64,16 @@ public class TaskColorIndicatorView extends View {
   @Override
   public void onDraw(Canvas canvas) {
 	super.onDraw(canvas);
-	int window_width = this.getWidth();
-	int window_height = this.getHeight();
+	float window_width = this.getWidth();
+	float window_height = this.getHeight();
+	float radius = (window_width > window_height)? window_height * 40 / 100 : window_width * 40 / 100;
 	mPaint.setColor(color);
-	canvas.drawRoundRect(new RectF(0, 0, window_width, window_height), window_width / 10, window_height / 10, mPaint);
-	canvas.drawRoundRect(new RectF(0, 0, window_width, window_height), 
-			             window_width / 10, window_height / 10, strokePaint);
+	canvas.drawCircle(window_width / 2, window_height / 2, radius, mPaint);
+	canvas.drawCircle(window_width / 2, window_height / 2, radius, strokePaint);
+	canvas.drawCircle(0, window_height, radius, mPaint);
+	canvas.drawCircle(0, 0, radius, mPaint);
+	canvas.drawCircle(window_width, 0, radius, mPaint);
+	canvas.drawCircle(window_width, window_height, radius, mPaint);
   } 
 	
   @Override 
