@@ -74,7 +74,8 @@ public class TimerFragment extends Fragment {
     super.onCreate(savedInstanceState);
     scrolling = true;
     mDbAdapter = ((FocusBaseActivity)getActivity()).getDbAdapter();
-    screen_locker = new ScreenLocker(getActivity());
+    String[] mTestArray = getActivity().getResources().getStringArray(R.array.procrastinator);    
+    screen_locker = new ScreenLocker(getActivity(), mTestArray);
   }
 
   @Override
@@ -200,7 +201,7 @@ public class TimerFragment extends Fragment {
             isTimerStart = true;
             startTimer();
             setUI4Timer(true); 
-            screen_locker.lock();      	  
+            screen_locker.lock();         
           } else {
             screen_locker.setPolicy();  
           }

@@ -24,11 +24,11 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
-
         <!-- ====================  Activities  ============== -->
         <activity
-            android:name="hkust.comp3111h.focus.test.MainTestActivity"
+            android:name="hkust.comp3111h.focus.Activity.MainActivity"
             android:label="@string/app_name" 
+            android:theme="@style/Theme.Father_Focus"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,17 +38,12 @@
         </activity>
         <activity
             android:name="hkust.comp3111h.focus.Activity.PrefsActivity"
+            android:theme="@style/Theme.Father_Focus"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="hkust.comp3111h.focus.Activity.PREFSACTIVITY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="hkust.comp3111h.focus.Activity.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Father_Focus"
-            android:screenOrientation="portrait">
         </activity>
         <activity
           android:name="hkust.comp3111h.focus.Activity.EditTaskActivity"

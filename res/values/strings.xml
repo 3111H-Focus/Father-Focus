@@ -20,13 +20,13 @@
   <string name="dlg_cancel">Cancel</string>
   <string name="create_new_list">New Task List</string>
 
-  <string name="locker_pop_title">You still have much to do!</string>
-  <string name="locker_pop_description">You have not yet worked enough!</string>
-  <string name="locker_pop_retype">Retype the below sequence to escape:</string>
+  <string name="locker_pop_title">What\'s there distracting you?</string>
+  <string name="locker_pop_description">You haven\'t done enough yet!</string>
+  <string name="locker_pop_retype">Retype the sentence to escape:</string>
   <string name="locker_pop_sequence">garyisachick</string>
   <string name="locker_pop_relock">Or it will be locked soon!</string>
-  <string name="locker_pop_lazy">Escape...</string>
-  <string name="locker_pop_gary_lee">Continue to work!</string>
+  <string name="locker_pop_lazy">I wish I never do this again.</string>
+  <string name="locker_pop_gary_lee">I\'m sooooo self-controlled. </string>
 
   <string name="task_edit">Edit</string>
   <string name="TE_new_task">New Task</string>
@@ -46,6 +46,6 @@
   <string name="TE_lists_label">Lists</string>
   <string name="TE_lists_label_long">Set List for a Task</string>
   
-  <string name="Stat_Name">Welcome to statistic!</string>
-  <string name="Stat_Time">To see how much you have done...</string>
+  <string name="Stat_Title"></string>
+  <string name="Stat_Desc"></string>
 </resources>

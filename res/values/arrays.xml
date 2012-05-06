@@ -24,5 +24,13 @@
         <item>35</item>
         <item>40</item>
     </string-array>
+    <string-array name="procrastinator">
+        <item>Never leave that till tomorrow which you can do today. </item>
+        <item>Victory belongs to the most perserving.</item>
+        <item>A small leak can sink a great ship.</item>
+        <item>Sleeping is giving in.</item>
+        <item>Stay focused and get A+</item>
+        <item>You may delay, but time will not.</item>
+    </string-array>
 
 </resources>
