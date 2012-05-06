@@ -259,6 +259,7 @@ public class StatisticView extends View {
 	  int radius = (window_width > window_height)? window_height * 48 / 100 : window_width * 48 / 100;
       switch (action) {
         case MotionEvent.ACTION_DOWN:
+           this.getParent().requestDisallowInterceptTouchEvent(true);
       	  if (Math.sqrt((pressed_x - window_width / 2) * (pressed_x - window_width / 2) + 
 					    (pressed_y - window_height/ 2) * (pressed_y - window_height / 2)) > radius) {
       		return false;
@@ -268,20 +269,21 @@ public class StatisticView extends View {
           last_y = pressed_y;
           break;
         case MotionEvent.ACTION_MOVE:
-    	  double OtoLast = Math.sqrt((last_x - window_width / 2) * (last_x - window_width / 2) + 
-    		  			 		     (last_y - window_height/ 2) * (last_y - window_height / 2));
-    	  double OtoPressed = Math.sqrt((pressed_x - window_width / 2) * (pressed_x - window_width / 2) + 
-		 		   					    (pressed_y - window_height/ 2) * (pressed_y - window_height / 2));
-    	  double PresstoLast = Math.sqrt((last_x - pressed_x) * (last_x - pressed_x) + 
-	   		      	                     (last_y - pressed_y) * (last_y - pressed_y));
+          this.getParent().requestDisallowInterceptTouchEvent(true);
+          double OtoLast = Math.sqrt((last_x - window_width / 2) * (last_x - window_width / 2) + 
+                           (last_y - window_height/ 2) * (last_y - window_height / 2));
+          double OtoPressed = Math.sqrt((pressed_x - window_width / 2) * (pressed_x - window_width / 2) + 
+                          (pressed_y - window_height/ 2) * (pressed_y - window_height / 2));
+          double PresstoLast = Math.sqrt((last_x - pressed_x) * (last_x - pressed_x) + 
+                                       (last_y - pressed_y) * (last_y - pressed_y));
     	  if (OtoPressed == 0 || OtoLast == 0 || PresstoLast == 0) {
     	    break;
     	  }
-    	  double cosPressLast = (OtoLast * OtoLast + OtoPressed * OtoPressed - PresstoLast * PresstoLast) /
-    				   (2 * OtoLast * OtoPressed);
-    	  double cosPressedO = (pressed_x - window_width) / OtoPressed;
-    	  double cosLastO = (last_x - window_width) / OtoLast;
-    	  double angle_changed = Math.acos(cosPressLast) * 180 / Math.PI;
+          double cosPressLast = (OtoLast * OtoLast + OtoPressed * OtoPressed - PresstoLast * PresstoLast) /
+                 (2 * OtoLast * OtoPressed);
+          double cosPressedO = (pressed_x - window_width) / OtoPressed;
+          double cosLastO = (last_x - window_width) / OtoLast;
+          double angle_changed = Math.acos(cosPressLast) * 180 / Math.PI;
         
     	  if (last_y == window_height / 2 && pressed_y == window_height / 2) {
     	    break;
