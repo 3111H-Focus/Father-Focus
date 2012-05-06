@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="shortcut_labels">
-    <item>No deadline</item>
-    <item>Today</item>
-    <item>Tomorrow</item>
-    <item>Next Week</item>
-    <item>Next Month</item>
-	</string-array>
+
+    <string-array name="shortcut_labels">
+        <item>No deadline</item>
+        <item>Today</item>
+        <item>Tomorrow</item>
+        <item>Next Week</item>
+        <item>Next Month</item>
+    </string-array>
+    <string-array name="unlockTimeStringList">
+        <item>Never lock screen</item>
+        <item>20 mins</item>
+        <item>25 mins</item>
+        <item>30 mins</item>
+        <item>35 mins</item>
+        <item>40 mins</item>
+    </string-array>
+    <string-array name="unlockTimeValuesList">
+        <item>0</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+    </string-array>
+
 </resources>
