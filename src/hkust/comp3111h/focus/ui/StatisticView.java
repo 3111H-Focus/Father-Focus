@@ -202,48 +202,48 @@ public class StatisticView extends View {
   }
   
   private void drawPie(Canvas canvas) {
-	int window_width = this.getWidth();
-	int window_height = this.getHeight();
-	int radius = (window_width > window_height)? window_height * 48 / 100 : window_width * 48 / 100;
-	mPaint.setAntiAlias(true);
-	mPaint.setStyle(Paint.Style.FILL);
-	RectF rect = new RectF(window_width / 2 - radius, window_height / 2 - radius,
-						   window_width / 2 + radius, window_height / 2 + radius);
-	strokePaint.setColor(Color.BLACK);
-	strokePaint.setAntiAlias(true);
-	strokePaint.setStyle(Paint.Style.STROKE);
-	strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
-	long sum_milliseconds = sum_of_durations.getMillis();
-	if (sum_milliseconds == 0) {
-	  canvas.drawArc(rect, 0, 360, true, strokePaint);
-	  return;
-	}
-	boolean warn_angle = false;
-	float moving_angle = start_angle;
-	for (int draw_i = 0; draw_i < information_pairs.size(); draw_i++) {
-	  InformationPair current_pair = information_pairs.get(draw_i);
-	  mPaint.setColor(current_pair.color);
-	  float sweep_angle = 360 * current_pair.duration.getMillis() / sum_milliseconds;
-	  if (sweep_angle < WARNINGANGLE) {
-		warn_angle = true;
-	  }
-	  if (draw_i == information_pairs.size() - 1) {
-		sweep_angle = start_angle - moving_angle;
-		if (sweep_angle <= 0) {
-		  sweep_angle += 360;
-		}
-	  }
-      canvas.drawArc(rect, moving_angle, sweep_angle, true, mPaint);
-	  canvas.drawArc(rect, moving_angle, sweep_angle, true, strokePaint);
-	  current_pair.set_angles(moving_angle, moving_angle + sweep_angle);
-	  moving_angle += sweep_angle;
-	  if (moving_angle >= 360) {
-		moving_angle %= 360;
-	  }
-	}
-	if (warn_angle) {
-	  // To do
-	}
+    int window_width = this.getWidth();
+    int window_height = this.getHeight();
+    int radius = (window_width > window_height)? window_height * 48 / 100 : window_width * 48 / 100;
+    mPaint.setAntiAlias(true);
+    mPaint.setStyle(Paint.Style.FILL);
+    RectF rect = new RectF(window_width / 2 - radius, window_height / 2 - radius,
+                 window_width / 2 + radius, window_height / 2 + radius);
+    strokePaint.setColor(Color.BLACK);
+    strokePaint.setAntiAlias(true);
+    strokePaint.setStyle(Paint.Style.STROKE);
+    strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
+    long sum_milliseconds = sum_of_durations.getMillis();
+    if (sum_milliseconds == 0) {
+      canvas.drawArc(rect, 0, 360, true, strokePaint);
+      return;
+    }
+    boolean warn_angle = false;
+    float moving_angle = start_angle;
+    for (int draw_i = 0; draw_i < information_pairs.size(); draw_i++) {
+      InformationPair current_pair = information_pairs.get(draw_i);
+      mPaint.setColor(current_pair.color);
+      float sweep_angle = 360 * current_pair.duration.getMillis() / sum_milliseconds;
+      if (sweep_angle < WARNINGANGLE) {
+      warn_angle = true;
+      }
+      if (draw_i == information_pairs.size() - 1) {
+      sweep_angle = start_angle - moving_angle;
+      if (sweep_angle <= 0) {
+        sweep_angle += 360;
+      }
+      }
+        canvas.drawArc(rect, moving_angle, sweep_angle, true, mPaint);
+      canvas.drawArc(rect, moving_angle, sweep_angle, true, strokePaint);
+      current_pair.set_angles(moving_angle, moving_angle + sweep_angle);
+      moving_angle += sweep_angle;
+      if (moving_angle >= 360) {
+      moving_angle %= 360;
+      }
+    }
+    if (warn_angle) {
+      // To do
+    }
   }
 
   @Override
@@ -340,8 +340,8 @@ public class StatisticView extends View {
   
   @Override 
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-	int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-	this.setMeasuredDimension(parentWidth, parentWidth);
+    int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+    this.setMeasuredDimension(parentWidth, parentWidth);
   }
   
   private void update_status() {
@@ -350,58 +350,58 @@ public class StatisticView extends View {
       if ((current_pair.start_angle <= 270 && current_pair.end_angle >= 270) ||
     	   current_pair.start_angle <= 630 && current_pair.end_angle >= 630) {
         update_status(current_pair);
-    	break;
+        break;
       }
     }
   }
   private void update_status(InformationPair chosen_pair) {
-	long id = chosen_pair.task_id;
-	int color = chosen_pair.color;
-	String name;
-	if (cursor_is_all) {
-	  Cursor c = db.fetchTaskList(id);
-	  c.moveToFirst();
-	  name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME));
-	  name = "Target tasklist: " + name;
-	} else {
+    long id = chosen_pair.task_id;
+    int color = chosen_pair.color;
+    String name;
+    if (cursor_is_all) {
+      Cursor c = db.fetchTaskList(id);
+      c.moveToFirst();
+      name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME));
+      name = "Target tasklist: " + name;
+    } else {
       Cursor c = db.fetchTask(id);
       c.moveToFirst();
       name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME));
       name = "Target task: " + name;
-	}
+    }
 	
-	Duration duration = chosen_pair.duration;
-	long days = duration.getStandardDays();
-	long hours = duration.getStandardHours();
-	long minutes = duration.getStandardMinutes();
-	long seconds = duration.getStandardSeconds();
-	seconds -= minutes * 60;
-	minutes -= hours * 60;
-	hours -= days * 24;
-	
-	TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
-	TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
-	TaskColorIndicatorView indicator = (TaskColorIndicatorView)((Activity)getContext())
-															   .findViewById(R.id.taskcolorindicator);
-	
-	indicator.setColor(color);
-	name_view.setText(name);
-	time_view.setText("Time: " + days + "d " + hours + "h " +
-					  minutes + "m " + seconds + "s");
+    Duration duration = chosen_pair.duration;
+    long days = duration.getStandardDays();
+    long hours = duration.getStandardHours();
+    long minutes = duration.getStandardMinutes();
+    long seconds = duration.getStandardSeconds();
+    seconds -= minutes * 60;
+    minutes -= hours * 60;
+    hours -= days * 24;
+    
+    TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
+    TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
+    TaskColorIndicatorView indicator = (TaskColorIndicatorView)((Activity)getContext())
+                                   .findViewById(R.id.taskcolorindicator);
+    
+    indicator.setColor(color);
+    name_view.setText(name);
+    time_view.setText("Time: " + days + "d " + hours + "h " +
+              minutes + "m " + seconds + "s");
   }
   
   private int random_a_color() {
-	InformationPair query;
-	int color;
-	if (information_pairs.size() >= GoodColor.BRIGHTCOLOR.length) {
-	  Log.i("Color", "Not enough color!");
-	  return 0xffffff;
-	}
-	do {
-	  int color_index = random.nextInt(GoodColor.BRIGHTCOLOR.length);
-	  color = GoodColor.BRIGHTCOLOR[color_index];
-	  query = new InformationPair(color, 0, null);
-	} while (information_pairs.indexOf(query) != -1);
-	return color;
+    InformationPair query;
+    int color;
+    if (information_pairs.size() >= GoodColor.BRIGHTCOLOR.length) {
+      Log.i("Color", "Not enough color!");
+      return 0xffffff;
+    }
+    do {
+      int color_index = random.nextInt(GoodColor.BRIGHTCOLOR.length);
+      color = GoodColor.BRIGHTCOLOR[color_index];
+      query = new InformationPair(color, 0, null);
+    } while (information_pairs.indexOf(query) != -1);
+    return color;
   }
 }
