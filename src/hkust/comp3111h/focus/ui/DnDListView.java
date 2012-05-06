@@ -194,6 +194,10 @@ public class DnDListView extends ListView {
           //Drag
         case MotionEvent.ACTION_MOVE:
           drag(0, y);// replace 0 with x if desired
+          int hoverPosition = pointToPosition(x,y);
+          if(hoverPosition >= 0 ) {
+            doExpansion(hoverPosition);
+          }
           break;
         case MotionEvent.ACTION_CANCEL:
         case MotionEvent.ACTION_UP:
@@ -210,6 +214,7 @@ public class DnDListView extends ListView {
               && mEndPosition != INVALID_POSITION) {
             mDropListener.onDrop(mStartPosition, mEndPosition);
           }
+          resetViews();
 
           break;
       }
@@ -313,6 +318,7 @@ public class DnDListView extends ListView {
         break;
     }
   }
+
   @Override
   protected void onScrollChanged(int l, int t, int oldl, int oldt) {
     super.onScrollChanged(l, t, oldl, oldt);
@@ -395,7 +401,6 @@ public class DnDListView extends ListView {
     // Create a copy of the drawing cache so that it does not get recycled
     // by the framework when the list tries to clean up memory
     Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
-
     WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
     mWindowParams.gravity = Gravity.TOP;
     mWindowParams.x = 0;
@@ -432,6 +437,48 @@ public class DnDListView extends ListView {
       wm.removeView(mDragView);
       mDragView.setImageDrawable(null);
       mDragView = null;
+    }
+  }
+  private void doExpansion(int draggingItemHoverPosition) {
+    int expandItemViewIndex = draggingItemHoverPosition - getFirstVisiblePosition();
+    /*
+    if(draggingItemHoverPosition >= mStartPosition) {
+      expandItemViewIndex++;
+    }
+    */
+    View draggingItemOriginalView = getChildAt(
+        mStartPosition -getFirstVisiblePosition());
+    int originHeight = draggingItemOriginalView.getHeight();
+    for(int i=0;; i++) {
+      View itemView = getChildAt(i);
+      if(itemView == null) {
+        break;
+      }
+      ViewGroup.LayoutParams params = itemView.getLayoutParams();
+      int height = LayoutParams.WRAP_CONTENT;
+      if(itemView.equals(draggingItemOriginalView)) {
+        height = 1;
+      } else if(i== expandItemViewIndex) {
+        height = 100;
+      }
+      params.height = height;
+      itemView.setLayoutParams(params);
+    }
+
+  }
+  private void resetViews() {
+    for(int i=0; ;i++) {
+      View v = getChildAt(i);
+      if(v==null) {
+        layoutChildren();
+        v = getChildAt(i);
+        if(v==null) {
+          break;
+        }
+      }
+      ViewGroup.LayoutParams params = v.getLayoutParams();
+      params.height = LayoutParams.WRAP_CONTENT;
+      v.setLayoutParams(params);
     }
   }
 

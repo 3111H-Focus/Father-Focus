@@ -35,6 +35,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 
 public class TimerFragment extends Fragment {
   // scrolling flag
@@ -61,7 +64,6 @@ public class TimerFragment extends Fragment {
   boolean isTimerStart = false;
   
   ScreenLocker screen_locker;
-  boolean use_lock = true;
 
 /*=====================================================
  * Initializations
@@ -188,6 +190,8 @@ public class TimerFragment extends Fragment {
       @Override
       public synchronized void onClick(View v) {
         if (!isTimerStart) {
+          SharedPreferences userPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
+          boolean use_lock=userPref.getBoolean("lockScreen", false);
           if (!use_lock) {
             isTimerStart = true;
             startTimer();

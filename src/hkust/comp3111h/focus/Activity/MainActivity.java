@@ -99,8 +99,12 @@ public class MainActivity extends FocusBaseActivity {
     mainMenu.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        Intent iPrefs = new Intent("hkust.comp3111h.focus.Activity.PREFSACTIVITY");
+        startActivity(iPrefs);
+        /*
         mainMenu.setSelected(true);
         mainMenuPopover.show(v);
+        */
       }
     });
 
