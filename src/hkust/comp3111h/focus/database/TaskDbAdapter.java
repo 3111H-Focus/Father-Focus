@@ -26,11 +26,6 @@ public class TaskDbAdapter {
   // *******************DECLARATION OF CONSTANT
   // STRINGS*****************************
 
-  // User Table Key info
-  public static final String KEY_USER_USERID = "uId";
-  public static final String KEY_USER_USERNAME = "username";
-  public static final String KEY_USER_PASSWORD = "password";
-
   // TaskList Table Key info
   public static final String KEY_TASKLIST_TLID = "taskListId";
   public static final String KEY_TASKLIST_TLNAME = "taskListName";
@@ -67,7 +62,6 @@ public class TaskDbAdapter {
 
   // Definition of database and table info.
   private static final String DATABASE_NAME = "data";
-  private static final String TABLE_USER = "user";
   private static final String TABLE_TASKLIST = "taskList";
   private static final String TABLE_TASK = "task";
   private static final String TABLE_TIME = "time";
@@ -79,10 +73,6 @@ public class TaskDbAdapter {
   private static final int DATABASE_VERSION = 1;
 
   // SQL commands for creating the tables.
-  private static final String DATABASE_CREATE_USER = "CREATE TABLE "
-      + TABLE_USER + " (" + KEY_USER_USERID + " INTEGER PRIMARY KEY, "
-      + KEY_USER_USERNAME + " TEXT NOT NULL, " + KEY_USER_PASSWORD
-      + " TEXT NOT NULL" + ");";
 
   private static final String DATABASE_CREATE_TASKLIST = "CREATE TABLE "
       + TABLE_TASKLIST + " (" + KEY_TASKLIST_TLID + " INTEGER PRIMARY KEY, "
@@ -106,8 +96,6 @@ public class TaskDbAdapter {
       + KEY_TASK_TID + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   // SQL commands to destroy the tables.
-  private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
-      + TABLE_USER;
   private static final String DATABASE_DESTROY_TASKLIST = "DROP TABLE IF EXISTS "
       + TABLE_TASKLIST;
   private static final String DATABASE_DESTROY_TASK = "DROP TABLE IF EXISTS "
@@ -136,8 +124,6 @@ public class TaskDbAdapter {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-      Log.i(TAG, DATABASE_CREATE_USER);
-      db.execSQL(DATABASE_CREATE_USER);
       Log.i(TAG, DATABASE_CREATE_TASKLIST);
       db.execSQL(DATABASE_CREATE_TASKLIST);
       Log.i(TAG, DATABASE_CREATE_TASK);
@@ -151,7 +137,6 @@ public class TaskDbAdapter {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
       Log.w("TaskDbAdapter", "Upgrading database from version " + oldVersion
           + " to " + newVersion + ", destroying all data.");
-      db.execSQL(DATABASE_DESTROY_USER);
       db.execSQL(DATABASE_DESTROY_TASKLIST);
       db.execSQL(DATABASE_DESTROY_TASK);
       db.execSQL(DATABASE_DESTROY_TIME);
@@ -199,87 +184,6 @@ public class TaskDbAdapter {
   public void close() {
     mDbHelper.close();
   }
-
-  // *******************METHODS FOR USER********************
-
-  /**
-   * Create a user and insert the record into table userTable.
-   * 
-   * @param userId
-   * @param username
-   * @param password
-   * @return true if successfully inserted, false if not.
-   */
-  public long createUser(String username, String password) {
-    ContentValues initialValues = new ContentValues();
-    initialValues.put(KEY_USER_USERNAME, username);
-    initialValues.put(KEY_USER_PASSWORD, password);
-
-    return mDb.insert(TABLE_USER, null, initialValues);
-  }
-
-  /**
-   * Fetch a user's info given the userId.
-   * 
-   * @param userId
-   * @return the Cursor pointing to the record.
-   * @throws SQLException
-   */
-  public Cursor fetchUser(long userId) throws SQLException {
-    Cursor mCursor = mDb.query(true, TABLE_USER, null, KEY_USER_USERID + "="
-        + userId, null, null, null, null, null);
-    if (mCursor != null) {
-      mCursor.moveToFirst();
-    }
-    return mCursor;
-  }
-
-  /**
-   * Fetch all information stored in the user table.
-   * 
-   * @return the Cursor pointing at all the records.
-   */
-  public Cursor fetchAllUsers() {
-    return mDb.query(TABLE_USER, null, null, null, null, null, null);
-  }
-
-  /**
-   * Delete a user given the userId.
-   * 
-   * @param userId
-   * @return successfully deleted or not.
-   */
-  public boolean deleteUser(long userId) {
-    return mDb.delete(TABLE_USER, KEY_USER_USERID + "=" + userId, null) > 0;
-  }
-
-  /**
-   * Update a user's information given the userId
-   * 
-   * @param userId
-   * @param username
-   * @param password
-   * @return successfully updated or not.
-   */
-  public boolean updateUser(long userId, String username, String password) {
-    ContentValues updatedInfo = new ContentValues();
-    updatedInfo.put(KEY_USER_USERNAME, username);
-    updatedInfo.put(KEY_USER_PASSWORD, password);
-
-    return mDb.update(TABLE_USER, updatedInfo, KEY_USER_USERID + "=" + userId,
-        null) > 0;
-  }
-
-  /**
-   * Get the schema, i.e, names of all columns in the user table.
-   * 
-   * @return array of string containing all the attributes in the user table.
-   */
-  public String[] getUserSchema() {
-    return new String[] { KEY_USER_USERID, KEY_USER_USERNAME, KEY_USER_PASSWORD };
-  }
-
-  // *******************END METHODS FOR USER********************
 
   // *******************METHODS FOR TASKLIST********************
 
