@@ -242,6 +242,9 @@ public class ScreenLocker {
 	if (!active) {
 		return;
 	}
+	popup_sequence.setText(generateSeq());
+	popup_input.setText("");
+	popup_window.update();
 	popup();
 	setReceiver();
 	lock_count_down.start();
@@ -276,7 +279,6 @@ public class ScreenLocker {
 	  public void onTick(long millisUntilFinished) {
 		popup_relock.setText("Or it will be locked in "+ Long.toString(millisUntilFinished / 1000) +
 					           " seconds!");
-		Log.d("Locker", this.toString() + "@@@Tick" + millisUntilFinished);
 		popup_window.update();
 	  }
 	  @Override
