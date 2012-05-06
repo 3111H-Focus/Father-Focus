@@ -1281,7 +1281,7 @@ public class TaskDbAdapter {
             .getColumnIndex(KEY_TIME_ENDTIME));
         DateTime startTime = DateTime.parse(startTimeStr);
         DateTime endTime = DateTime.parse(endTimeStr);
-        duration.plus(new Duration(startTime, endTime));
+        duration = duration.plus(new Duration(startTime, endTime));
 
         mCursor.close();
         return duration;
@@ -1291,7 +1291,7 @@ public class TaskDbAdapter {
             .getColumnIndex(KEY_TIME_STARTTIME));
         DateTime startTime = DateTime.parse(startTimeStr);
         DateTime endTime = new DateTime();
-        duration.plus(new Duration(startTime, endTime));
+        duration = duration.plus(new Duration(startTime, endTime));
 
         mCursor.close();
         return duration;
