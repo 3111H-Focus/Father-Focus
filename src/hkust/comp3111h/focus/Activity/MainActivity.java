@@ -13,16 +13,17 @@ import hkust.comp3111h.focus.database.TaskListItem;
 import hkust.comp3111h.focus.ui.AddTaskListDialog;
 import hkust.comp3111h.focus.ui.MainMenuPopover;
 import hkust.comp3111h.focus.ui.QuickAddDialog;
+import hkust.comp3111h.focus.ui.StatisticView;
 import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
 import hkust.comp3111h.focus.ui.TitlePageIndicator;
-import hkust.comp3111h.focus.ui.StatisticView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -281,6 +282,11 @@ public class MainActivity extends FocusBaseActivity {
     if (position == 1) {
       Log.d("MainActivity", "ViewPager Changed to" + position);
       ((TimerFragment) (fragments.get(1))).updateWheelData();
+    } else if (position == 2) {
+      StatisticView stat_view = (StatisticView) findViewById(R.id.statisview);
+      stat_view.arrive();
+      stat_view.initInformation();
+      stat_view.invalidate();
     }
   }
 

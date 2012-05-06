@@ -17,7 +17,7 @@
    android:layout_width="66dip"
    android:layout_height="66dip"/>
   <LinearLayout 
-   android:paddingTop="3dip"
+   android:paddingTop="5dip"
    android:gravity="left"
    android:orientation="vertical"
    android:layout_width="wrap_content" 
@@ -26,7 +26,7 @@
    <TextView
     android:id="@+id/stat_task_name"
     android:text="@string/Stat_Title"
-    android:textSize="10pt"
+    android:textSize="8pt"
     android:textColor="#FF000000"
     android:textStyle="bold"
     android:layout_width="wrap_content"
@@ -34,12 +34,24 @@
    <TextView
     android:id="@+id/stat_task_time"
     android:text="@string/Stat_Desc"
-    android:textSize="10pt"
+    android:textSize="8pt"
     android:textColor="#FF000000"
     android:textStyle="bold"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
   </LinearLayout>
+ </LinearLayout>
+ <LinearLayout 
+  android:gravity="center" 
+  android:orientation="horizontal" 
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:layout_gravity="center">
+  <ImageView 
+   android:layout_width="45dip"
+   android:layout_height="45dip"
+   android:src="@drawable/stat_down_arrow"
+   android:scaleType="centerInside"/>
  </LinearLayout>
  <hkust.comp3111h.focus.ui.StatisticView
   android:id="@+id/statisview"
