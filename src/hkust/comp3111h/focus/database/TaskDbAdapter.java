@@ -26,11 +26,6 @@ public class TaskDbAdapter {
   // *******************DECLARATION OF CONSTANT
   // STRINGS*****************************
 
-  // User Table Key info
-  public static final String KEY_USER_USERID = "uId";
-  public static final String KEY_USER_USERNAME = "username";
-  public static final String KEY_USER_PASSWORD = "password";
-
   // TaskList Table Key info
   public static final String KEY_TASKLIST_TLID = "taskListId";
   public static final String KEY_TASKLIST_TLNAME = "taskListName";
@@ -67,7 +62,6 @@ public class TaskDbAdapter {
 
   // Definition of database and table info.
   private static final String DATABASE_NAME = "data";
-  private static final String TABLE_USER = "user";
   private static final String TABLE_TASKLIST = "taskList";
   private static final String TABLE_TASK = "task";
   private static final String TABLE_TIME = "time";
@@ -79,10 +73,6 @@ public class TaskDbAdapter {
   private static final int DATABASE_VERSION = 1;
 
   // SQL commands for creating the tables.
-  private static final String DATABASE_CREATE_USER = "CREATE TABLE "
-      + TABLE_USER + " (" + KEY_USER_USERID + " INTEGER PRIMARY KEY, "
-      + KEY_USER_USERNAME + " TEXT NOT NULL, " + KEY_USER_PASSWORD
-      + " TEXT NOT NULL" + ");";
 
   private static final String DATABASE_CREATE_TASKLIST = "CREATE TABLE "
       + TABLE_TASKLIST + " (" + KEY_TASKLIST_TLID + " INTEGER PRIMARY KEY, "
@@ -106,8 +96,6 @@ public class TaskDbAdapter {
       + KEY_TASK_TID + ") ON UPDATE CASCADE ON DELETE CASCADE " + ");";
 
   // SQL commands to destroy the tables.
-  private static final String DATABASE_DESTROY_USER = "DROP TABLE IF EXISTS "
-      + TABLE_USER;
   private static final String DATABASE_DESTROY_TASKLIST = "DROP TABLE IF EXISTS "
       + TABLE_TASKLIST;
   private static final String DATABASE_DESTROY_TASK = "DROP TABLE IF EXISTS "
@@ -136,8 +124,6 @@ public class TaskDbAdapter {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-      Log.i(TAG, DATABASE_CREATE_USER);
-      db.execSQL(DATABASE_CREATE_USER);
       Log.i(TAG, DATABASE_CREATE_TASKLIST);
       db.execSQL(DATABASE_CREATE_TASKLIST);
       Log.i(TAG, DATABASE_CREATE_TASK);
@@ -151,7 +137,6 @@ public class TaskDbAdapter {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
       Log.w("TaskDbAdapter", "Upgrading database from version " + oldVersion
           + " to " + newVersion + ", destroying all data.");
-      db.execSQL(DATABASE_DESTROY_USER);
       db.execSQL(DATABASE_DESTROY_TASKLIST);
       db.execSQL(DATABASE_DESTROY_TASK);
       db.execSQL(DATABASE_DESTROY_TIME);
@@ -200,87 +185,6 @@ public class TaskDbAdapter {
     mDbHelper.close();
   }
 
-  // *******************METHODS FOR USER********************
-
-  /**
-   * Create a user and insert the record into table userTable.
-   * 
-   * @param userId
-   * @param username
-   * @param password
-   * @return true if successfully inserted, false if not.
-   */
-  public long createUser(String username, String password) {
-    ContentValues initialValues = new ContentValues();
-    initialValues.put(KEY_USER_USERNAME, username);
-    initialValues.put(KEY_USER_PASSWORD, password);
-
-    return mDb.insert(TABLE_USER, null, initialValues);
-  }
-
-  /**
-   * Fetch a user's info given the userId.
-   * 
-   * @param userId
-   * @return the Cursor pointing to the record.
-   * @throws SQLException
-   */
-  public Cursor fetchUser(long userId) throws SQLException {
-    Cursor mCursor = mDb.query(true, TABLE_USER, null, KEY_USER_USERID + "="
-        + userId, null, null, null, null, null);
-    if (mCursor != null) {
-      mCursor.moveToFirst();
-    }
-    return mCursor;
-  }
-
-  /**
-   * Fetch all information stored in the user table.
-   * 
-   * @return the Cursor pointing at all the records.
-   */
-  public Cursor fetchAllUsers() {
-    return mDb.query(TABLE_USER, null, null, null, null, null, null);
-  }
-
-  /**
-   * Delete a user given the userId.
-   * 
-   * @param userId
-   * @return successfully deleted or not.
-   */
-  public boolean deleteUser(long userId) {
-    return mDb.delete(TABLE_USER, KEY_USER_USERID + "=" + userId, null) > 0;
-  }
-
-  /**
-   * Update a user's information given the userId
-   * 
-   * @param userId
-   * @param username
-   * @param password
-   * @return successfully updated or not.
-   */
-  public boolean updateUser(long userId, String username, String password) {
-    ContentValues updatedInfo = new ContentValues();
-    updatedInfo.put(KEY_USER_USERNAME, username);
-    updatedInfo.put(KEY_USER_PASSWORD, password);
-
-    return mDb.update(TABLE_USER, updatedInfo, KEY_USER_USERID + "=" + userId,
-        null) > 0;
-  }
-
-  /**
-   * Get the schema, i.e, names of all columns in the user table.
-   * 
-   * @return array of string containing all the attributes in the user table.
-   */
-  public String[] getUserSchema() {
-    return new String[] { KEY_USER_USERID, KEY_USER_USERNAME, KEY_USER_PASSWORD };
-  }
-
-  // *******************END METHODS FOR USER********************
-
   // *******************METHODS FOR TASKLIST********************
 
   /**
@@ -302,6 +206,7 @@ public class TaskDbAdapter {
 
     return newId;
   }
+
   /**
    * Fetch info of taskList given the ID
    */
@@ -324,18 +229,20 @@ public class TaskDbAdapter {
     }
     return mCursor;
   }
+
   /**
    * Convert a cursor to a single item
    */
-  public TaskListItem taskListObjFromCursor(Cursor cursor){
+  public TaskListItem taskListObjFromCursor(Cursor cursor) {
     return new TaskListItem(cursor.getLong(cursor
-          .getColumnIndex(KEY_TASKLIST_TLID)), cursor.getString(cursor
-          .getColumnIndex(KEY_TASKLIST_TLNAME)), cursor.getLong(cursor
-          .getColumnIndex(KEY_TASKLIST_TLSEQUENCE)));
+        .getColumnIndex(KEY_TASKLIST_TLID)), cursor.getString(cursor
+        .getColumnIndex(KEY_TASKLIST_TLNAME)), cursor.getLong(cursor
+        .getColumnIndex(KEY_TASKLIST_TLSEQUENCE)));
   }
 
   /**
-   * @param dataCursor a cursor pointng to the task table
+   * @param dataCursor
+   *          a cursor pointng to the task table
    * 
    * @return arraly list containing all the tasklists pointing by the cursor
    */
@@ -591,19 +498,19 @@ public class TaskDbAdapter {
   }
 
   /**
-   * Construct a taskItem given a cursor. 
+   * Construct a taskItem given a cursor.
+   * 
    * @param cursor
    * @return
    */
   public TaskItem taskObjFromCursor(Cursor cursor) {
-    return new TaskItem(
-          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)), 
-          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TLID)),
-          cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)),
-          cursor.getString(cursor.getColumnIndex(KEY_TASK_TYPE)), 
-          cursor.getInt(cursor.getColumnIndex(KEY_TASK_STATUS)), 
-          cursor.getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)), 
-          cursor.getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE)));
+    return new TaskItem(cursor.getLong(cursor.getColumnIndex(KEY_TASK_TID)),
+        cursor.getLong(cursor.getColumnIndex(KEY_TASK_TLID)),
+        cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)),
+        cursor.getString(cursor.getColumnIndex(KEY_TASK_TYPE)),
+        cursor.getInt(cursor.getColumnIndex(KEY_TASK_STATUS)),
+        cursor.getString(cursor.getColumnIndex(KEY_TASK_DUEDATE)),
+        cursor.getLong(cursor.getColumnIndex(KEY_TASK_TSEQUENCE)));
   }
 
   /**
@@ -619,8 +526,9 @@ public class TaskDbAdapter {
   }
 
   /**
-   * given a taskId, return task as an object. 
-   * if taskId not exists, return a default TaskItem object. 
+   * given a taskId, return task as an object. if taskId not exists, return a
+   * default TaskItem object.
+   * 
    * @param taskId
    * @return
    * @throws SQLException
@@ -628,147 +536,159 @@ public class TaskDbAdapter {
   public TaskItem fetchTaskObj(long taskId) throws SQLException {
     Cursor cursor = fetchTask(taskId);
     Log.d("inside fetchTaskObj, taskId = ", String.valueOf(taskId));
-    //Log.d("inside fetchTaskObj: ", cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
-    if(cursor.moveToFirst()){
+    // Log.d("inside fetchTaskObj: ",
+    // cursor.getString(cursor.getColumnIndex(KEY_TASK_NAME)));
+    if (cursor.moveToFirst()) {
       TaskItem item = taskObjFromCursor(cursor);
       cursor.close();
       return item;
-    }
-    else{
+    } else {
       TaskItem item = new TaskItem();
       cursor.close();
       return item;
     }
   }
 
-  
   /**
-   * fetch tasks with the specified status. 
-   * return as cursor. 
+   * fetch tasks with the specified status. return as cursor.
+   * 
    * @param status
    * @return
    */
-  public Cursor fetchAllTasksByStatus(int status,boolean bySequence){
-    if(bySequence){
-      return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status, null, null, null, null, KEY_TASK_TSEQUENCE);
+  public Cursor fetchAllTasksByStatus(int status, boolean bySequence) {
+    if (bySequence) {
+      return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status,
+          null, null, null, null, KEY_TASK_TSEQUENCE);
     } else {
-      return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status, null, null, null, null, null);
+      return mDb.query(true, TABLE_TASK, null, KEY_TASK_STATUS + "=" + status,
+          null, null, null, null, null);
     }
 
   }
+
   public Cursor fetchAllTasksByStatus(int status) {
     return fetchAllTasksByStatus(status, true);
   }
-  
+
   /**
-   * return tasks specified by status as ArrayList of TaskItems. 
+   * return tasks specified by status as ArrayList of TaskItems.
+   * 
    * @param status
    * @return
    */
-  public ArrayList<TaskItem> fetchAllTasksObjsByStatus(int status){
+  public ArrayList<TaskItem> fetchAllTasksObjsByStatus(int status) {
     Cursor cursor = fetchAllTasksByStatus(status);
-    if(cursor.moveToFirst()){
+    if (cursor.moveToFirst()) {
       return taskItemsFromCursor(cursor);
-    }
-    else{
+    } else {
       return new ArrayList<TaskItem>();
     }
   }
-   
-  /**
-   * return not-start tasks as cursor.  
-   * @return
-   * @throws SQLException
-   */
-  public Cursor fetchAllNotStartTasks() throws SQLException{
-    return fetchAllTasksByStatus(TASKSTATUS_NOT_START);
-  }
-  
-  /**
-   * return not-start tasks as arraylist of objects. 
-   * @return
-   * @throws SQLException
-   */
-  public ArrayList<TaskItem> fetchAllNotStartTasksObj() throws SQLException{
-    return fetchAllTasksObjsByStatus(TASKSTATUS_NOT_START);
-  }
-  
-  /**
-  * return in-progress tasks as cursor.  
-  * @return
-  * @throws SQLException
-  */
-  public Cursor fetchAllInProgressTasks() throws SQLException{
-    return fetchAllTasksByStatus(TASKSTATUS_IN_PROGRESS);
-  }
-  
-  /**
-   * return in-progress tasks as arraylist of objects. 
-   * @return
-   * @throws SQLException
-   */
-  public ArrayList<TaskItem> fetchAllInProgressTasksObj() throws SQLException{
-    return fetchAllTasksObjsByStatus(TASKSTATUS_IN_PROGRESS);
-  }
- 
-  /**
-   * return paused tasks as cursor.  
-   * @return
-   * @throws SQLException
-   */
-  public Cursor fetchAllPauseTasks() throws SQLException{
-    return fetchAllTasksByStatus(TASKSTATUS_PAUSE);
-  }
-  
-  /**
-   * return paused tasks as arraylist of objects. 
-   * @return
-   * @throws SQLException
-   */
-  public ArrayList<TaskItem> fetchAllPauseTasksObj() throws SQLException{
-    return fetchAllTasksObjsByStatus(TASKSTATUS_PAUSE);
-  }
-   
-  /**
-   * return finished tasks as cursor.  
-   * @return
-   * @throws SQLException
-   */
-  public Cursor fetchAllFinishedTasks() throws SQLException{
-    return fetchAllTasksByStatus(TASKSTATUS_DONE);
-  }
-  
-  /**
-   * return finished tasks as arraylist of objects. 
-   * @return
-   * @throws SQLException
-   */
-  public ArrayList<TaskItem> fetchAllFinishedTasksObj() throws SQLException{
-    return fetchAllTasksObjsByStatus(TASKSTATUS_DONE);
-  }
-  
-   /**
-   * return unfinished tasks as cursor.  
-   * @return
-   * @throws SQLException
-   */
-  public Cursor fetchAllUnfinishedTasks() throws SQLException{
-    return mDb.query(TABLE_TASK, null, KEY_TASK_STATUS + "!=" + TASKSTATUS_DONE, null, null, null, null);
-  }
-  
-  /**
-   * return unfinished tasks as arraylist of objects. 
-   * @return
-   * @throws SQLException
-   */
-  public ArrayList<TaskItem> fetchAllUnfinishedTasksObj() throws SQLException{
-    return taskItemsFromCursor(fetchAllUnfinishedTasks());
-  }
-  
-  
 
   /**
-   * return a list of TaskItem given a cursor. 
+   * return not-start tasks as cursor.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllNotStartTasks() throws SQLException {
+    return fetchAllTasksByStatus(TASKSTATUS_NOT_START);
+  }
+
+  /**
+   * return not-start tasks as arraylist of objects.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllNotStartTasksObj() throws SQLException {
+    return fetchAllTasksObjsByStatus(TASKSTATUS_NOT_START);
+  }
+
+  /**
+   * return in-progress tasks as cursor.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllInProgressTasks() throws SQLException {
+    return fetchAllTasksByStatus(TASKSTATUS_IN_PROGRESS);
+  }
+
+  /**
+   * return in-progress tasks as arraylist of objects.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllInProgressTasksObj() throws SQLException {
+    return fetchAllTasksObjsByStatus(TASKSTATUS_IN_PROGRESS);
+  }
+
+  /**
+   * return paused tasks as cursor.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllPauseTasks() throws SQLException {
+    return fetchAllTasksByStatus(TASKSTATUS_PAUSE);
+  }
+
+  /**
+   * return paused tasks as arraylist of objects.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllPauseTasksObj() throws SQLException {
+    return fetchAllTasksObjsByStatus(TASKSTATUS_PAUSE);
+  }
+
+  /**
+   * return finished tasks as cursor.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllFinishedTasks() throws SQLException {
+    return fetchAllTasksByStatus(TASKSTATUS_DONE);
+  }
+
+  /**
+   * return finished tasks as arraylist of objects.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllFinishedTasksObj() throws SQLException {
+    return fetchAllTasksObjsByStatus(TASKSTATUS_DONE);
+  }
+
+  /**
+   * return unfinished tasks as cursor.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public Cursor fetchAllUnfinishedTasks() throws SQLException {
+    return mDb.query(TABLE_TASK, null,
+        KEY_TASK_STATUS + "!=" + TASKSTATUS_DONE, null, null, null, null);
+  }
+
+  /**
+   * return unfinished tasks as arraylist of objects.
+   * 
+   * @return
+   * @throws SQLException
+   */
+  public ArrayList<TaskItem> fetchAllUnfinishedTasksObj() throws SQLException {
+    return taskItemsFromCursor(fetchAllUnfinishedTasks());
+  }
+
+  /**
+   * return a list of TaskItem given a cursor.
+   * 
    * @param cursor
    * @return
    */
@@ -783,6 +703,7 @@ public class TaskDbAdapter {
 
   /**
    * Fetch all tasks info, containing in a array list
+   * 
    * @param bySequence
    * @return
    */
@@ -821,26 +742,28 @@ public class TaskDbAdapter {
    * @param taskListId
    * @return the Cursor pointing to all the records in the specified taskList.
    */
-  public Cursor fetchAllTasksInList(long taskListId,boolean orderBySequence) {
-    if(orderBySequence) {
-      return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
-        null, null, KEY_TASK_TSEQUENCE);
+  public Cursor fetchAllTasksInList(long taskListId, boolean orderBySequence) {
+    if (orderBySequence) {
+      return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId,
+          null, null, null, KEY_TASK_TSEQUENCE);
     } else {
-      return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId, null,
-        null, null, null);
+      return mDb.query(TABLE_TASK, null, KEY_TASK_TLID + "=" + taskListId,
+          null, null, null, null);
     }
   }
 
   /**
-   * fetch all tasks by a cursor. 
+   * fetch all tasks by a cursor.
+   * 
    * @param taskListId
    * @return
    * @throws SQLException
    */
-  public ArrayList<TaskItem> fetchTasksObjInList(long taskListId,boolean orderBySequence)
+  public ArrayList<TaskItem> fetchTasksObjInList(long taskListId,
+      boolean orderBySequence)
 
-      throws SQLException {
-    Cursor cur = fetchAllTasksInList(taskListId,orderBySequence);
+  throws SQLException {
+    Cursor cur = fetchAllTasksInList(taskListId, orderBySequence);
     ArrayList<TaskItem> items = taskItemsFromCursor(cur);
     cur.close();
     return items;
@@ -866,12 +789,13 @@ public class TaskDbAdapter {
    * @return successfully updated or not.
    */
   public boolean updateTask(long taskId, String taskType, String taskName,
-      int status, String dueDate) {
+      int status, String dueDate, long taskListId) {
     ContentValues updatedInfo = new ContentValues();
     updatedInfo.put(KEY_TASK_TYPE, taskType);
     updatedInfo.put(KEY_TASK_NAME, taskName);
     updatedInfo.put(KEY_TASK_STATUS, status);
     updatedInfo.put(KEY_TASK_DUEDATE, dueDate);
+    updatedInfo.put(KEY_TASKLIST_TLID, taskListId);
 
     return mDb.update(TABLE_TASK, updatedInfo, KEY_TASK_TID + "=" + taskId,
         null) > 0;
@@ -1114,7 +1038,7 @@ public class TaskDbAdapter {
       long taskId) {
     ContentValues initialValues = new ContentValues();
     initialValues.put(KEY_TIME_STARTTIME, startTime.toString());
-    if(endTime!=null) {
+    if (endTime != null) {
       initialValues.put(KEY_TIME_ENDTIME, endTime.toString());
     }
     initialValues.put(KEY_TIME_STATUS, status);
@@ -1162,22 +1086,18 @@ public class TaskDbAdapter {
     }
     return mCursor;
   }
+
   /*
-  public TimeItem fetchTimeObj(long timeId) throws SQLException {
-    Cursor cur = timeObjFromCursor(timeId);
-    TimeItem item = timeObjFromCursor(cur);
-    cur.close();
-    return item;
-  }
-  public TimeItem timeObjFromCursor(Cursor cursor) {
-    return new TimeItem(
-        cursor.getLong(cursor.getColumnIndex(KEY_TIME_TIMEID)),
-        cursor.getString(cursor.getColumnIndex(KEY_TIME_STARTTIME)),
-        cursor.getString(cursor.getColumnIndex(KEY_TIME_ENDTIME)),
-        cursor.getLong(cursor.getColumnIndex(KEY_TASK_STATUS)),
-        cursor.getLong(cursor.getColumnIndex(KEY_TIME_TID)));
-  }
-  */
+   * public TimeItem fetchTimeObj(long timeId) throws SQLException { Cursor cur
+   * = timeObjFromCursor(timeId); TimeItem item = timeObjFromCursor(cur);
+   * cur.close(); return item; } public TimeItem timeObjFromCursor(Cursor
+   * cursor) { return new TimeItem(
+   * cursor.getLong(cursor.getColumnIndex(KEY_TIME_TIMEID)),
+   * cursor.getString(cursor.getColumnIndex(KEY_TIME_STARTTIME)),
+   * cursor.getString(cursor.getColumnIndex(KEY_TIME_ENDTIME)),
+   * cursor.getLong(cursor.getColumnIndex(KEY_TASK_STATUS)),
+   * cursor.getLong(cursor.getColumnIndex(KEY_TIME_TID))); }
+   */
 
   /**
    * return all the time records.
@@ -1194,7 +1114,7 @@ public class TaskDbAdapter {
    * @param taskId
    * @return
    */
-  public Cursor fetchAllTimesOfTask(long taskId) {
+  public Cursor fetchAllTimesByTaskId(long taskId) {
     return mDb.query(TABLE_TIME, null, KEY_TIME_TID + "=" + taskId, null, null,
         null, null);
   }
@@ -1280,7 +1200,7 @@ public class TaskDbAdapter {
             .getColumnIndex(KEY_TIME_ENDTIME));
         DateTime startTime = DateTime.parse(startTimeStr);
         DateTime endTime = DateTime.parse(endTimeStr);
-        duration.plus(new Duration(startTime, endTime));
+        duration = duration.plus(new Duration(startTime, endTime));
 
         mCursor.close();
         return duration;
@@ -1290,7 +1210,7 @@ public class TaskDbAdapter {
             .getColumnIndex(KEY_TIME_STARTTIME));
         DateTime startTime = DateTime.parse(startTimeStr);
         DateTime endTime = new DateTime();
-        duration.plus(new Duration(startTime, endTime));
+        duration = duration.plus(new Duration(startTime, endTime));
 
         mCursor.close();
         return duration;
@@ -1302,48 +1222,129 @@ public class TaskDbAdapter {
   }
 
   /**
-   * given a starttime and taskid, return the time spent on the specific task.
+   * return the time spent on the specified task before the specified time.
+   * criteria: the endtime of the task is before the specified date.
    * 
    * @return
    */
-  public Duration timeSpentOnTaskFromSpecifiedDate(long taskId,
-      DateTime startTime) {
-    Cursor mCursor = this.fetchAllTimes();
+  public Duration timeSpentOnTaskBeforeSpecifiedDate(long taskId,
+      DateTime breakpoint) {
+    Cursor mCursor = this.fetchAllTimesByTaskId(taskId);
     // Initialize an empty duration.
     Duration duration = new Duration(0);
     for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-      if (mCursor.getLong(mCursor.getColumnIndexOrThrow(KEY_TIME_TID)) == taskId) {
-        // this is the task we want.
-        String startStr = mCursor.getString(mCursor
-            .getColumnIndexOrThrow(KEY_TIME_STARTTIME));
-        String endStr = mCursor.getString(mCursor
-            .getColumnIndexOrThrow(KEY_TIME_ENDTIME));
+      // get data from database.
+      String startStr = mCursor.getString(mCursor
+          .getColumnIndexOrThrow(KEY_TIME_STARTTIME));
+      String endStr = mCursor.getString(mCursor
+          .getColumnIndexOrThrow(KEY_TIME_ENDTIME));
 
-        DateTime start = DateTime.parse(startStr);
-        DateTime end;
-        if (endStr != null) {
-          // the task is not running.
-          end = DateTime.parse(endStr);
-        } else {
-          // the task is still running, so the endTime is null.
-          // take the current time as the temporary endtime.
-          end = new DateTime();
-        }
+      // initialize datetime for the data from database.
+      DateTime start = DateTime.parse(startStr);
+      DateTime end;
+      if (endStr != null) {
+        // the task is not running.
+        end = DateTime.parse(endStr);
+      } else {
+        // the task is still running, so the endTime is null.
+        // take the current time as the temporary endtime.
+        end = new DateTime();
+      }
 
+      // if the record is inside the duration, add it. else do nothing.
+      if (end.isBefore(breakpoint)) {
         duration = duration.plus(new Duration(start, end));
       }
     }
     mCursor.close();
     return duration;
   }
-  
+
+  /**
+   * return the time spent on the specific task after the breakpoint until now.
+   * 
+   * @return
+   */
+  public Duration timeSpentOnTaskAfterSpecifiedDate(long taskId,
+      DateTime breakpoint) {
+    Cursor mCursor = this.fetchAllTimesByTaskId(taskId);
+    // Initialize an empty duration.
+    Duration duration = new Duration(0);
+    for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+      String startStr = mCursor.getString(mCursor
+          .getColumnIndexOrThrow(KEY_TIME_STARTTIME));
+      String endStr = mCursor.getString(mCursor
+          .getColumnIndexOrThrow(KEY_TIME_ENDTIME));
+
+      // initialize datetime for the data from database.
+      DateTime start = DateTime.parse(startStr);
+      DateTime end;
+      if (endStr != null) {
+        // the task is not running.
+        end = DateTime.parse(endStr);
+      } else {
+        // the task is still running, so the endTime is null.
+        // take the current time as the temporary endtime.
+        end = new DateTime();
+      }
+
+      if (start.isAfter(breakpoint)) {
+        duration = duration.plus(new Duration(start, end));
+      }
+    }
+    mCursor.close();
+    return duration;
+  }
+
+  /**
+   * given a starttime and endtime, return the time spent on the specified task
+   * in this duration. return 0 if starttime is later than endtime. criteria:
+   * both starttime and endtime is inside the duration.
+   * 
+   * @return
+   */
+  public Duration timeSpentOnTaskInBetween(long taskId, DateTime startTime,
+      DateTime endTime) {
+    Cursor mCursor = this.fetchAllTimesByTaskId(taskId);
+    // Initialize an empty duration.
+    Duration duration = new Duration(0);
+    for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+      // get data from database.
+      String startStr = mCursor.getString(mCursor
+          .getColumnIndexOrThrow(KEY_TIME_STARTTIME));
+      String endStr = mCursor.getString(mCursor
+          .getColumnIndexOrThrow(KEY_TIME_ENDTIME));
+
+      // initialize datetime for the data from database.
+      DateTime start = DateTime.parse(startStr);
+      DateTime end;
+      if (endStr != null) {
+        // the task is not running.
+        end = DateTime.parse(endStr);
+      } else {
+        // the task is still running, so the endTime is null.
+        // take the current time as the temporary endtime.
+        end = new DateTime();
+      }
+
+      // if the record is inside the duration, add it. else do nothing.
+      if (start.isAfter(startTime) && end.isBefore(endTime)) {
+        duration = duration.plus(new Duration(start, end));
+      }
+    }
+    mCursor.close();
+    return duration;
+  }
+
   /**
    * all time spent on a specified task
+   * 
    * @param taskId
    * @return
    */
-  public Duration timeSpentOnTask(long taskId){
-    return timeSpentOnTaskFromSpecifiedDate(taskId, new DateTime(1970, 1, 1, 1, 1, 1, 1));
+  public Duration timeSpentOnTask(long taskId) {
+    return timeSpentOnTaskAfterSpecifiedDate(taskId, new DateTime(1970, 1, 1, 1,
+        1, 1, 1));
   }
 
   /**
@@ -1413,7 +1414,6 @@ public class TaskDbAdapter {
   }
 
   // all helper functions.
-
   private long max(long a, long b) {
     if (a > b) {
       return a;

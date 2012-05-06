@@ -17,6 +17,7 @@
       android:orientation="vertical"
       android:padding = "10dip">
       <LinearLayout
+        android:id="@+id/title_controls"
         style="@style/EditRow"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -27,22 +28,7 @@
         android:paddingBottom="5dip"
         android:paddingLeft="6dip"
         android:paddingRight="6dip">
-        <EditText
-          android:id="@+id/title"
-          android:layout_width = "fill_parent"
-          android:layout_height="wrap_content"
-          android:autoText="true"
-          android:background="@drawable/edit_title_background"
-          android:capitalize="sentences"
-          android:freezesText="true"
-          android:hint="@string/TE_title_hint"
-          android:inputType="textMultiLine"
-          android:paddingLeft="5dip"
-          android:scrollbars="vertical"
-          android:text=""
-          android:textColor="@android:color/black"/>
       </LinearLayout>
-      <!--space -->
       <LinearLayout
         android:id="@+id/basic_controls"
         style="@style/EditRow"
@@ -55,5 +41,3 @@
     </LinearLayout>
   </hkust.comp3111h.focus.ui.NestableScrollView>
 </LinearLayout>
-    
- 
