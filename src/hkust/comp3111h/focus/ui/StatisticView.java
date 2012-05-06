@@ -1,7 +1,6 @@
 package hkust.comp3111h.focus.ui;
 
 import hkust.comp3111h.focus.R;
-import hkust.comp3111h.focus.Activity.MainActivity;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 
 import java.util.Random;
@@ -11,6 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -19,10 +19,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StatisticView extends View {
   private final int WIDTHOFDARKSTROKE = 5; 
@@ -40,8 +40,9 @@ public class StatisticView extends View {
   private TaskDbAdapter db;
   private Duration sum_of_durations;
   private float start_angle;
-  float last_x = 0;
-  float last_y = 0;
+  private float last_x;
+  private float last_y;
+  private boolean is_here;
   
   private class InformationPair {
 	public int color;
@@ -88,6 +89,9 @@ public class StatisticView extends View {
     random = new Random();
     information_pairs = new Vector<InformationPair>();
     start_angle = 0;
+    last_x = 0;
+    last_y = 0;
+    is_here = false;
     initInformation();
   }
   
@@ -107,6 +111,9 @@ public class StatisticView extends View {
     random = new Random();
     information_pairs = new Vector<InformationPair>();
     start_angle = 0;
+    last_x = 0;
+    last_y = 0;
+    is_here = false;
     initInformation();
   }
   
@@ -126,6 +133,9 @@ public class StatisticView extends View {
     random = new Random();
     information_pairs = new Vector<InformationPair>();
     start_angle = 0;
+    last_x = 0;
+    last_y = 0;
+    is_here = false;
     initInformation();
   }
   
@@ -147,6 +157,10 @@ public class StatisticView extends View {
 	}
   }
   
+  public void arrive() {
+	is_here = true;
+  }
+  
   @Override
   public void onDraw(Canvas canvas) {
 	super.onDraw(canvas);
@@ -154,7 +168,7 @@ public class StatisticView extends View {
     update_status();
   }
   
-  private void initInformation() {
+  public void initInformation() {
 	information_pairs = new Vector<InformationPair>();
 	sum_of_durations = Duration.ZERO;
 	if (cursor_is_all) {
@@ -199,53 +213,61 @@ public class StatisticView extends View {
 		information_pairs.add(new_pair);
 	  }
 	} 
+	Log.d("Stat", "Size of pairs" + information_pairs.size());
+	boolean need_warn = false;
+	for (int angle_i = 0; angle_i < information_pairs.size(); angle_i++) {
+	  if (360 * information_pairs.get(angle_i).duration.getMillis() / sum_of_durations.getMillis() < 10) {
+		need_warn = true;
+		break;
+	  }
+	}
+	if (need_warn && is_here) {
+	  Toast.makeText(getContext(), "Some targets may occupy too little proportion of time" +
+	  				 " to show properly in Statistic Page.", Toast.LENGTH_LONG).show();
+	  is_here = false;
+	}
   }
   
   private void drawPie(Canvas canvas) {
-    int window_width = this.getWidth();
-    int window_height = this.getHeight();
-    int radius = (window_width > window_height)? window_height * 48 / 100 : window_width * 48 / 100;
-    mPaint.setAntiAlias(true);
-    mPaint.setStyle(Paint.Style.FILL);
-    RectF rect = new RectF(window_width / 2 - radius, window_height / 2 - radius,
-                 window_width / 2 + radius, window_height / 2 + radius);
-    strokePaint.setColor(Color.BLACK);
-    strokePaint.setAntiAlias(true);
-    strokePaint.setStyle(Paint.Style.STROKE);
-    strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
-    long sum_milliseconds = sum_of_durations.getMillis();
-    if (sum_milliseconds == 0) {
-      canvas.drawArc(rect, 0, 360, true, strokePaint);
-      return;
-    }
-    boolean warn_angle = false;
-    float moving_angle = start_angle;
-    for (int draw_i = 0; draw_i < information_pairs.size(); draw_i++) {
-      InformationPair current_pair = information_pairs.get(draw_i);
-      mPaint.setColor(current_pair.color);
-      float sweep_angle = 360 * current_pair.duration.getMillis() / sum_milliseconds;
-      if (sweep_angle < WARNINGANGLE) {
-      warn_angle = true;
-      }
-      if (draw_i == information_pairs.size() - 1) {
-      sweep_angle = start_angle - moving_angle;
-      if (sweep_angle <= 0) {
-        sweep_angle += 360;
-      }
-      }
-        canvas.drawArc(rect, moving_angle, sweep_angle, true, mPaint);
-      canvas.drawArc(rect, moving_angle, sweep_angle, true, strokePaint);
-      current_pair.set_angles(moving_angle, moving_angle + sweep_angle);
-      moving_angle += sweep_angle;
-      if (moving_angle >= 360) {
-      moving_angle %= 360;
-      }
-    }
-    if (warn_angle) {
-      // To do
-    }
+	int window_width = this.getWidth();
+	int window_height = this.getHeight();
+	int radius = (window_width > window_height)? window_height * 48 / 100 : window_width * 48 / 100;
+	mPaint.setAntiAlias(true);
+	mPaint.setStyle(Paint.Style.FILL);
+	RectF rect = new RectF(window_width / 2 - radius, window_height / 2 - radius,
+						   window_width / 2 + radius, window_height / 2 + radius);
+	strokePaint.setColor(Color.BLACK);
+	strokePaint.setAntiAlias(true);
+	strokePaint.setStyle(Paint.Style.STROKE);
+	strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
+	long sum_milliseconds = sum_of_durations.getMillis();
+	if (sum_milliseconds == 0) {
+	  canvas.drawArc(rect, 0, 360, true, strokePaint);
+	  return;
+	}
+	float moving_angle = start_angle;
+	for (int draw_i = 0; draw_i < information_pairs.size(); draw_i++) {
+	  InformationPair current_pair = information_pairs.get(draw_i);
+	  mPaint.setColor(current_pair.color);
+	  float sweep_angle = 360 * current_pair.duration.getMillis() / sum_milliseconds;
+	  if (sweep_angle < WARNINGANGLE) {
+	  }
+	  if (draw_i == information_pairs.size() - 1) {
+		sweep_angle = start_angle - moving_angle;
+		if (sweep_angle <= 0) {
+		  sweep_angle += 360;
+		}
+	  }
+      canvas.drawArc(rect, moving_angle, sweep_angle, true, mPaint);
+	  canvas.drawArc(rect, moving_angle, sweep_angle, true, strokePaint);
+	  current_pair.set_angles(moving_angle, moving_angle + sweep_angle);
+	  moving_angle += sweep_angle;
+	  if (moving_angle >= 360) {
+		moving_angle %= 360;
+	  }
+	}
   }
-
+  
   @Override
   public boolean onTouchEvent(MotionEvent event) {
     //int point = event.getPointerCount();
@@ -345,6 +367,15 @@ public class StatisticView extends View {
   }
   
   private void update_status() {
+	if (information_pairs.size() == 0) {
+	  TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
+	  TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
+	  TaskColorIndicatorView indicator = (TaskColorIndicatorView)((Activity)getContext())
+																  .findViewById(R.id.taskcolorindicator);
+	  indicator.setColor(0xffffff);
+	  name_view.setText("Nothing here!");
+	  time_view.setText("Time: 0d 0h 0m 0s");
+	}
     for (int find_id = 0; find_id < information_pairs.size(); find_id++) {
       InformationPair current_pair = information_pairs.get(find_id);
       if ((current_pair.start_angle <= 270 && current_pair.end_angle >= 270) ||
