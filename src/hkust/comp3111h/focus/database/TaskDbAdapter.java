@@ -1414,7 +1414,6 @@ public class TaskDbAdapter {
   }
 
   // all helper functions.
-
   private long max(long a, long b) {
     if (a > b) {
       return a;
