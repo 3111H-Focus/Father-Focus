@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Father-Focus</string>
+  <string name="about">Father-Focus helps you focus on what really matters by restricting you from using your phone when you shouldn\'t. It also provides you with beautiful statistics chart that help you manage your progress. </string>
+  <string name="dev">Developed by: Gary Zhang, Gary Li, Kevin Chen, Yiufung Cheong</string>
+  <string name="github">Fork us at: github.com/3111H-Focus/Father-Focus</string>
   <string name="tab1_name">Tasks</string>
   <string name="tab2_name">Timer</string>
   <string name="tab3_name">Statistics</string>

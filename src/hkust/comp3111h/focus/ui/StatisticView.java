@@ -281,6 +281,7 @@ public class StatisticView extends View {
 	  int radius = (window_width > window_height)? window_height * 48 / 100 : window_width * 48 / 100;
       switch (action) {
         case MotionEvent.ACTION_DOWN:
+           this.getParent().requestDisallowInterceptTouchEvent(true);
       	  if (Math.sqrt((pressed_x - window_width / 2) * (pressed_x - window_width / 2) + 
 					    (pressed_y - window_height/ 2) * (pressed_y - window_height / 2)) > radius) {
       		return false;
@@ -290,20 +291,21 @@ public class StatisticView extends View {
           last_y = pressed_y;
           break;
         case MotionEvent.ACTION_MOVE:
-    	  double OtoLast = Math.sqrt((last_x - window_width / 2) * (last_x - window_width / 2) + 
-    		  			 		     (last_y - window_height/ 2) * (last_y - window_height / 2));
-    	  double OtoPressed = Math.sqrt((pressed_x - window_width / 2) * (pressed_x - window_width / 2) + 
-		 		   					    (pressed_y - window_height/ 2) * (pressed_y - window_height / 2));
-    	  double PresstoLast = Math.sqrt((last_x - pressed_x) * (last_x - pressed_x) + 
-	   		      	                     (last_y - pressed_y) * (last_y - pressed_y));
+          this.getParent().requestDisallowInterceptTouchEvent(true);
+          double OtoLast = Math.sqrt((last_x - window_width / 2) * (last_x - window_width / 2) + 
+                           (last_y - window_height/ 2) * (last_y - window_height / 2));
+          double OtoPressed = Math.sqrt((pressed_x - window_width / 2) * (pressed_x - window_width / 2) + 
+                          (pressed_y - window_height/ 2) * (pressed_y - window_height / 2));
+          double PresstoLast = Math.sqrt((last_x - pressed_x) * (last_x - pressed_x) + 
+                                       (last_y - pressed_y) * (last_y - pressed_y));
     	  if (OtoPressed == 0 || OtoLast == 0 || PresstoLast == 0) {
     	    break;
     	  }
-    	  double cosPressLast = (OtoLast * OtoLast + OtoPressed * OtoPressed - PresstoLast * PresstoLast) /
-    				   (2 * OtoLast * OtoPressed);
-    	  double cosPressedO = (pressed_x - window_width) / OtoPressed;
-    	  double cosLastO = (last_x - window_width) / OtoLast;
-    	  double angle_changed = Math.acos(cosPressLast) * 180 / Math.PI;
+          double cosPressLast = (OtoLast * OtoLast + OtoPressed * OtoPressed - PresstoLast * PresstoLast) /
+                 (2 * OtoLast * OtoPressed);
+          double cosPressedO = (pressed_x - window_width) / OtoPressed;
+          double cosLastO = (last_x - window_width) / OtoLast;
+          double angle_changed = Math.acos(cosPressLast) * 180 / Math.PI;
         
     	  if (last_y == window_height / 2 && pressed_y == window_height / 2) {
     	    break;
@@ -360,8 +362,8 @@ public class StatisticView extends View {
   
   @Override 
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-	int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-	this.setMeasuredDimension(parentWidth, parentWidth);
+    int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+    this.setMeasuredDimension(parentWidth, parentWidth);
   }
   
   private void update_status() {
@@ -379,58 +381,58 @@ public class StatisticView extends View {
       if ((current_pair.start_angle <= 270 && current_pair.end_angle >= 270) ||
     	   current_pair.start_angle <= 630 && current_pair.end_angle >= 630) {
         update_status(current_pair);
-    	break;
+        break;
       }
     }
   }
   private void update_status(InformationPair chosen_pair) {
-	long id = chosen_pair.task_id;
-	int color = chosen_pair.color;
-	String name;
-	if (cursor_is_all) {
-	  Cursor c = db.fetchTaskList(id);
-	  c.moveToFirst();
-	  name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME));
-	  name = "Target tasklist: " + name;
-	} else {
+    long id = chosen_pair.task_id;
+    int color = chosen_pair.color;
+    String name;
+    if (cursor_is_all) {
+      Cursor c = db.fetchTaskList(id);
+      c.moveToFirst();
+      name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME));
+      name = "Target tasklist: " + name;
+    } else {
       Cursor c = db.fetchTask(id);
       c.moveToFirst();
       name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME));
       name = "Target task: " + name;
-	}
+    }
 	
-	Duration duration = chosen_pair.duration;
-	long days = duration.getStandardDays();
-	long hours = duration.getStandardHours();
-	long minutes = duration.getStandardMinutes();
-	long seconds = duration.getStandardSeconds();
-	seconds -= minutes * 60;
-	minutes -= hours * 60;
-	hours -= days * 24;
-	
-	TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
-	TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
-	TaskColorIndicatorView indicator = (TaskColorIndicatorView)((Activity)getContext())
-															   .findViewById(R.id.taskcolorindicator);
-	
-	indicator.setColor(color);
-	name_view.setText(name);
-	time_view.setText("Time: " + days + "d " + hours + "h " +
-					  minutes + "m " + seconds + "s");
+    Duration duration = chosen_pair.duration;
+    long days = duration.getStandardDays();
+    long hours = duration.getStandardHours();
+    long minutes = duration.getStandardMinutes();
+    long seconds = duration.getStandardSeconds();
+    seconds -= minutes * 60;
+    minutes -= hours * 60;
+    hours -= days * 24;
+    
+    TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
+    TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
+    TaskColorIndicatorView indicator = (TaskColorIndicatorView)((Activity)getContext())
+                                   .findViewById(R.id.taskcolorindicator);
+    
+    indicator.setColor(color);
+    name_view.setText(name);
+    time_view.setText("Time: " + days + "d " + hours + "h " +
+              minutes + "m " + seconds + "s");
   }
   
   private int random_a_color() {
-	InformationPair query;
-	int color;
-	if (information_pairs.size() >= GoodColor.BRIGHTCOLOR.length) {
-	  Log.i("Color", "Not enough color!");
-	  return 0xffffff;
-	}
-	do {
-	  int color_index = random.nextInt(GoodColor.BRIGHTCOLOR.length);
-	  color = GoodColor.BRIGHTCOLOR[color_index];
-	  query = new InformationPair(color, 0, null);
-	} while (information_pairs.indexOf(query) != -1);
-	return color;
+    InformationPair query;
+    int color;
+    if (information_pairs.size() >= GoodColor.BRIGHTCOLOR.length) {
+      Log.i("Color", "Not enough color!");
+      return 0xffffff;
+    }
+    do {
+      int color_index = random.nextInt(GoodColor.BRIGHTCOLOR.length);
+      color = GoodColor.BRIGHTCOLOR[color_index];
+      query = new InformationPair(color, 0, null);
+    } while (information_pairs.indexOf(query) != -1);
+    return color;
   }
 }
