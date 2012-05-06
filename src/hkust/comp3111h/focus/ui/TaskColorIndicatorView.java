@@ -33,7 +33,7 @@ public class TaskColorIndicatorView extends View {
   }
 	
   public TaskColorIndicatorView(Context context, AttributeSet attrs) {
-    super(context);
+    super(context, attrs);
 	color = 0xffffffff;
     mPaint = new Paint();
     mPaint.setColor(color);
