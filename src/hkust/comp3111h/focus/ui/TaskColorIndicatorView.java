@@ -70,6 +70,10 @@ public class TaskColorIndicatorView extends View {
 	mPaint.setColor(color);
 	canvas.drawCircle(window_width / 2, window_height / 2, radius, mPaint);
 	canvas.drawCircle(window_width / 2, window_height / 2, radius, strokePaint);
+	canvas.drawCircle(0, window_height, radius, mPaint);
+	canvas.drawCircle(0, 0, radius, mPaint);
+	canvas.drawCircle(window_width, 0, radius, mPaint);
+	canvas.drawCircle(window_width, window_height, radius, mPaint);
   } 
 	
   @Override 

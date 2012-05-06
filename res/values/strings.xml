@@ -46,6 +46,6 @@
   <string name="TE_lists_label">Lists</string>
   <string name="TE_lists_label_long">Set List for a Task</string>
   
-  <string name="Stat_Title">Welcome to statistic!</string>
-  <string name="Stat_Desc">Working hard...</string>
+  <string name="Stat_Title"></string>
+  <string name="Stat_Desc"></string>
 </resources>

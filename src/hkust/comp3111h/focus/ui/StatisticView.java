@@ -68,72 +68,72 @@ public class StatisticView extends View {
   private Vector<InformationPair> information_pairs;
   
   public StatisticView(Context context) {
-	super(context);
-	mPaint = new Paint();
-	strokePaint = new Paint();
-	cursor_is_all = true;
-	db = new TaskDbAdapter(this.getContext());
-	db.open();
-	cursor = db.fetchAllTaskLists();
-	first_start_date = new DateTime();
-	last_start_date = new DateTime();
-	first_start_date_set = false;
-	last_start_date_set = false;
-	random = new Random();
-	information_pairs = new Vector<InformationPair>();
-	start_angle = 0;
-	initInformation();
+    super(context);
+    mPaint = new Paint();
+    strokePaint = new Paint();
+    cursor_is_all = true;
+    db = new TaskDbAdapter(this.getContext());
+    db.open();
+    cursor = db.fetchAllTaskLists();
+    first_start_date = new DateTime();
+    last_start_date = new DateTime();
+    first_start_date_set = false;
+    last_start_date_set = false;
+    random = new Random();
+    information_pairs = new Vector<InformationPair>();
+    start_angle = 0;
+    initInformation();
   }
   
   public StatisticView(Context context, AttributeSet attrs) {
     super(context, attrs);
     mPaint = new Paint();
-	strokePaint = new Paint();
-	cursor_is_all = true;
-	db = new TaskDbAdapter(this.getContext());
-	db.open();
-	cursor = db.fetchAllTaskLists();
-	first_start_date = new DateTime();
-	last_start_date = new DateTime();
-	first_start_date_set = false;
-	last_start_date_set = false;
-	random = new Random();
-	information_pairs = new Vector<InformationPair>();
-	start_angle = 0;
-	initInformation();
+    strokePaint = new Paint();
+    cursor_is_all = true;
+    db = new TaskDbAdapter(this.getContext());
+    db.open();
+    cursor = db.fetchAllTaskLists();
+    first_start_date = new DateTime();
+    last_start_date = new DateTime();
+    first_start_date_set = false;
+    last_start_date_set = false;
+    random = new Random();
+    information_pairs = new Vector<InformationPair>();
+    start_angle = 0;
+    initInformation();
   }
   
   public StatisticView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
     mPaint = new Paint();
-	strokePaint = new Paint();
-	cursor_is_all = true;
-	db = new TaskDbAdapter(this.getContext());
-	db.open();
-	cursor = db.fetchAllTaskLists();
-	first_start_date = new DateTime();
-	last_start_date = new DateTime();
-	first_start_date_set = false;
-	last_start_date_set = false;
-	random = new Random();
-	information_pairs = new Vector<InformationPair>();
-	start_angle = 0;
-	initInformation();
+    strokePaint = new Paint();
+    cursor_is_all = true;
+    db = new TaskDbAdapter(this.getContext());
+    db.open();
+    cursor = db.fetchAllTaskLists();
+    first_start_date = new DateTime();
+    last_start_date = new DateTime();
+    first_start_date_set = false;
+    last_start_date_set = false;
+    random = new Random();
+    information_pairs = new Vector<InformationPair>();
+    start_angle = 0;
+    initInformation();
   }
   
   public void setCursor(long id) {
 	if (id == 0) {
 	  cursor = db.fetchAllTaskLists();
 	  information_pairs = new Vector<InformationPair>();
+	  cursor_is_all = true;
 	  initInformation();
 	  start_angle = 0;
-	  cursor_is_all = true;
 	} else {
 	  cursor = db.fetchAllTasksInList(id, false);
       information_pairs = new Vector<InformationPair>();
+	  cursor_is_all = false;
 	  initInformation();
       start_angle = 0;
-	  cursor_is_all = false;
 	}
   }
   
@@ -204,6 +204,7 @@ public class StatisticView extends View {
 	strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
 	long sum_milliseconds = sum_of_durations.getMillis();
 	if (sum_milliseconds == 0) {
+	  canvas.drawArc(rect, 0, 360, true, strokePaint);
 	  return;
 	}
 	boolean warn_angle = false;
@@ -217,7 +218,7 @@ public class StatisticView extends View {
 	  }
 	  if (draw_i == information_pairs.size() - 1) {
 		sweep_angle = start_angle - moving_angle;
-		if (sweep_angle < 0) {
+		if (sweep_angle <= 0) {
 		  sweep_angle += 360;
 		}
 	  }
