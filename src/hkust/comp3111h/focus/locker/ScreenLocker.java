@@ -368,7 +368,7 @@ public class ScreenLocker {
 	LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	popup_view = mLayoutInflater.inflate(R.layout.pop_background, null);
 	popup_window = new PopupWindow(popup_view, LayoutParams.MATCH_PARENT,
-                         LayoutParams.MATCH_PARENT, true);
+                         		   LayoutParams.MATCH_PARENT, true);
 	popup_window.setAnimationStyle(R.style.PopWindowAnimation);
 
 	popup_description = (TextView)popup_view.findViewById(R.id.locker_pop_description_text);
@@ -408,7 +408,6 @@ public class ScreenLocker {
 		    String action = intent.getAction();   
 		    if(Intent.ACTION_USER_PRESENT.equals(action)) {
 		      lock_count_down.start();
-		      Log.d("Locker", "AUP_Called");
 		  	  popup_sequence.setText(generateSeq());
 		  	  popup_window.update();
 		  	  if (auto_cancel_duration != null) {
