@@ -7,6 +7,7 @@ import hkust.comp3111h.focus.ui.DropListener;
 import hkust.comp3111h.focus.ui.RemoveListener;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.Activity.MainActivity;
+import hkust.comp3111h.focus.R;
 
 import java.util.ArrayList;
 import java.util.List;
