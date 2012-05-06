@@ -27,7 +27,7 @@
 
         <!-- ====================  Activities  ============== -->
         <activity
-            android:name="hkust.comp3111h.focus.test.MainTestActivity"
+            android:name="hkust.comp3111h.focus.Activity.MainActivity"
             android:label="@string/app_name" 
             android:screenOrientation="portrait">
             <intent-filter>
