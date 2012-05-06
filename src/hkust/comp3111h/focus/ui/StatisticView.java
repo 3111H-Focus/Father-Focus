@@ -127,11 +127,13 @@ public class StatisticView extends View {
 	  information_pairs = new Vector<InformationPair>();
 	  initInformation();
 	  start_angle = 0;
+	  cursor_is_all = true;
 	} else {
 	  cursor = db.fetchAllTasksInList(id, false);
       information_pairs = new Vector<InformationPair>();
 	  initInformation();
       start_angle = 0;
+	  cursor_is_all = false;
 	}
   }
   
