@@ -45,4 +45,7 @@
   <string name="TE_when_label">Due Date</string>
   <string name="TE_lists_label">Lists</string>
   <string name="TE_lists_label_long">Set List for a Task</string>
+  
+  <string name="Stat_Name">Welcome to statistic!</string>
+  <string name="Stat_Time">To see how much you have done...</string>
 </resources>
