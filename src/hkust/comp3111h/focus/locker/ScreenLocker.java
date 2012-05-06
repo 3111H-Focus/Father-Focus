@@ -4,6 +4,9 @@ import hkust.comp3111h.focus.R;
 
 import java.util.Random;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -38,6 +41,8 @@ import android.widget.TextView;
  *    all-random generation and make the candidate strings null
  * 7. User has to activate the manager, using aciveManager(), to use the lock() function,
  *    or the lock() function will return without doing anything.
+ * 8. Use setDuration() to set the duration larger that which the lock will automatically unlock.
+ *    Null means that the function is not needed.
  */
 
 public class ScreenLocker {
@@ -63,6 +68,8 @@ public class ScreenLocker {
   private String[] candidate_strings;
   private int retype_length;
   private BroadcastReceiver mBatInfoReceiver;
+  private DateTime start_time;
+  private Duration auto_cancel_duration;
 	
   /**
    * The basic constructor
@@ -79,6 +86,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   /**
@@ -98,6 +106,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   /**
@@ -116,6 +125,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   /**
@@ -137,6 +147,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   /**
@@ -159,6 +170,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   /**
@@ -182,6 +194,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   /**
@@ -202,6 +215,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
 
   /**
@@ -227,6 +241,7 @@ public class ScreenLocker {
    	popup_init();
    	timers_init();
    	listeners_init();
+   	auto_cancel_duration = null;
   }
   
   public boolean checkPolicy() {
@@ -242,17 +257,26 @@ public class ScreenLocker {
 	if (!active) {
 		return;
 	}
+	start_time = new DateTime();
+	popup_sequence.setText(generateSeq());
+	popup_input.setText("");
+	popup_window.update();
 	popup();
 	setReceiver();
 	lock_count_down.start();
   }
 
+  public void setDuration(Duration duration) {
+	this.auto_cancel_duration = duration;
+  }
+  
   public void cancel_lock() {
 	wait_for_input.cancel();
 	lock_count_down.cancel();
 	popup_relock.setText("Or it will be locked soon!");
 	popup_window.dismiss();
 	activity.unregisterReceiver(mBatInfoReceiver);
+	start_time = null;
   }
   
   public void set_popup_description(String description) {
@@ -276,7 +300,6 @@ public class ScreenLocker {
 	  public void onTick(long millisUntilFinished) {
 		popup_relock.setText("Or it will be locked in "+ Long.toString(millisUntilFinished / 1000) +
 					           " seconds!");
-		Log.d("Locker", this.toString() + "@@@Tick" + millisUntilFinished);
 		popup_window.update();
 	  }
 	  @Override
@@ -368,10 +391,7 @@ public class ScreenLocker {
 	String et_string = popup_input.getText().toString();
 	String tv_string = popup_sequence.getText().toString(); 
 	if (et_string.equals(tv_string)) {
-	  wait_for_input.cancel();
-	  lock_count_down.cancel();
-	  popup_window.dismiss();
-	  activity.unregisterReceiver(mBatInfoReceiver);
+	  cancel_lock();
 	} else {
 	  popup_sequence.setText(generateSeq());
 	  popup_input.setText("");
@@ -391,6 +411,13 @@ public class ScreenLocker {
 		      Log.d("Locker", "AUP_Called");
 		  	  popup_sequence.setText(generateSeq());
 		  	  popup_window.update();
+		  	  if (auto_cancel_duration != null) {
+		  		DateTime end_time = new DateTime();
+		  		Duration duration_passed = new Duration(start_time, end_time);
+		  		if (duration_passed.isLongerThan(auto_cancel_duration)) {
+		  		  cancel_lock();
+		  		}
+		  	  }
 		    }
 	      }
 		};
