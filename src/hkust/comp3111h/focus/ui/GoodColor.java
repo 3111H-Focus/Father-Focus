@@ -10,7 +10,7 @@ public class GoodColor {
   public static final int ZAOHONG = 0xffbe002f;
   public static final int FEISE = 0xffed5736;
   
-  public static final int[] COLOR = {
+  public static final int[] BRIGHTCOLOR = {
 	ZAOHONG,
 	FEISE
   };

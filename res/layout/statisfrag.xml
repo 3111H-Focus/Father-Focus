@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
- xmlns:android="http://schemas.android.com/apk/res/android"
- android:orientation="vertical"
- android:layout_width = "fill_parent"
- android:layout_height = "wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ android:gravity="center" 
+ android:orientation="vertical" 
+ android:layout_width="fill_parent"
+ android:layout_height="fill_parent"
+ android:layout_gravity="center">
  <LinearLayout 
   android:gravity="center"
   android:orientation="horizontal"
@@ -11,17 +12,31 @@
   android:layout_height="wrap_content" 
   android:layout_gravity="center"
   android:layout_weight="1">
-  <ImageView
-   android:layout_width="90dip"
-   android:layout_height="62dip"
-   android:src="@drawable/chick_gary"
-   android:scaleType="centerInside"/>
-   <TextView
-    android:text="@string/locker_pop_title"
-    android:textSize="12pt"
-    android:textColor="#FFFFFFCE"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+  <hkust.comp3111h.focus.ui.TaskColorIndicatorView
+   android:id="@+id/taskcolorindicator"
+   android:layout_width="100dip"
+   android:layout_height="100dip"/>
+   <LinearLayout 
+  	android:gravity="center"
+  	android:orientation="vertical"
+  	android:layout_width="fill_parent" 
+  	android:layout_height="wrap_content" 
+ 	android:layout_gravity="center"
+  	android:layout_weight="1">
+    <TextView
+     android:text="@string/Stat_Name"
+     android:textSize="10pt"
+     android:textColor="#FFFFFFCE"
+     android:textStyle="bold"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"/>
+    <TextView
+     android:text="@string/Stat_Time"
+     android:textSize="8pt"
+     android:textColor="#FFFFFFCE"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"/>
+   </LinearLayout>
  </LinearLayout>
  <hkust.comp3111h.focus.ui.StatisticView
   android:id="@+id/statisview"

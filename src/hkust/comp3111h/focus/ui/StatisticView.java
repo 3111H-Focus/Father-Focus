@@ -8,9 +8,7 @@ import java.util.Vector;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -153,17 +151,17 @@ public class StatisticView extends View {
 		Cursor task_cursor = db.fetchAllTasksInList(id, false);
 		Duration duration = Duration.ZERO;
 		for (task_cursor.moveToFirst(); !task_cursor.isAfterLast(); task_cursor.moveToNext()) {
+		  Duration duration_of_a_task = Duration.ZERO;
 	      if (first_start_date_set && !last_start_date_set) {
-		    Duration duration_of_a_task = db.timeSpentOnTaskFromSpecifiedDate(id, first_start_date);
-		    duration = duration.plus(duration_of_a_task);
+		    duration_of_a_task = db.timeSpentOnTaskAfterSpecifiedDate(id, first_start_date);
 	      } else if (first_start_date_set && last_start_date_set){
-	    	
+			duration_of_a_task = db.timeSpentOnTaskInBetween(id, first_start_date, last_start_date);
 	      } else if (!first_start_date_set && last_start_date_set) {
-	    	  
+			duration_of_a_task = db.timeSpentOnTaskBeforeSpecifiedDate(id, last_start_date);
 	      } else {
-	    	Duration duration_of_a_task = db.timeSpentOnTask(id);
-			duration = duration.plus(duration_of_a_task);
+	    	duration_of_a_task = db.timeSpentOnTask(id);
 	      }
+		  duration = duration.plus(duration_of_a_task);
 	    }
 		sum_of_durations = sum_of_durations.plus(duration);
 		InformationPair new_pair = new InformationPair(color, id, duration);
@@ -172,10 +170,19 @@ public class StatisticView extends View {
 	} else {
 	  for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {	
 		long id = cursor.getLong(cursor.getColumnIndex(TaskDbAdapter.KEY_TASK_TID));
-		int color = random_a_color();
-		Duration duration = db.timeSpentOnTaskFromSpecifiedDate(id, first_start_date);
-		sum_of_durations = sum_of_durations.plus(duration);
-		InformationPair new_pair = new InformationPair(color, id, duration);
+		int color = random_a_color();		  
+		Duration duration_of_a_task = Duration.ZERO;
+	    if (first_start_date_set && !last_start_date_set) {
+		  duration_of_a_task = db.timeSpentOnTaskAfterSpecifiedDate(id, first_start_date);
+	    } else if (first_start_date_set && last_start_date_set){
+	      duration_of_a_task = db.timeSpentOnTaskInBetween(id, first_start_date, last_start_date);
+	    } else if (!first_start_date_set && last_start_date_set) {
+		  duration_of_a_task = db.timeSpentOnTaskBeforeSpecifiedDate(id, last_start_date);
+	    } else {
+	      duration_of_a_task = db.timeSpentOnTask(id);
+	    }
+		sum_of_durations = sum_of_durations.plus(duration_of_a_task);
+		InformationPair new_pair = new InformationPair(color, id, duration_of_a_task);
 		information_pairs.add(new_pair);
 	  }
 	} 
@@ -326,9 +333,8 @@ public class StatisticView extends View {
   
   @Override 
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-	  int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-	  int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-	  this.setMeasuredDimension(parentWidth, parentWidth);
+	int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+	this.setMeasuredDimension(parentWidth, parentWidth);
   }
   
   private void update_status(InformationPair chosen_pair) {
@@ -338,13 +344,13 @@ public class StatisticView extends View {
   private int random_a_color() {
 	InformationPair query;
 	int color;
-	if (information_pairs.size() >= GoodColor.COLOR.length) {
+	if (information_pairs.size() >= GoodColor.BRIGHTCOLOR.length) {
 	  Log.i("Color", "Not enough color!");
 	  return 0xffffff;
 	}
 	do {
-	  int color_index = random.nextInt(GoodColor.COLOR.length);
-	  color = GoodColor.COLOR[color_index];
+	  int color_index = random.nextInt(GoodColor.BRIGHTCOLOR.length);
+	  color = GoodColor.BRIGHTCOLOR[color_index];
 	  query = new InformationPair(color, 0, null);
 	} while (information_pairs.indexOf(query) != -1);
 	return color;
