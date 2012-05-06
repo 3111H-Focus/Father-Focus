@@ -17,6 +17,7 @@ import hkust.comp3111h.focus.ui.StatisticsFragment;
 import hkust.comp3111h.focus.ui.TaskManageFragment;
 import hkust.comp3111h.focus.ui.TimerFragment;
 import hkust.comp3111h.focus.ui.TitlePageIndicator;
+import hkust.comp3111h.focus.ui.StatisticView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class MainActivity extends FocusBaseActivity {
 
   private ListView sidebarTaskLists;
   private TextView addListButton;
+  private StatisticView statisticView;
 
   private MainMenuPopover mainMenuPopover;
 
@@ -156,10 +158,14 @@ public class MainActivity extends FocusBaseActivity {
     sidebarLayout = (LinearLayout) findViewById(R.id.sidebar);
     sidebarTaskLists = (ListView) findViewById(R.id.task_lists);
     updateSidebarData();
+    Log.d("MainActivity", ""+statisticView);
     sidebarTaskLists.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position,
           long id) {
+        if(mPagerAdapter.getItem(2)!=null && mPagerAdapter.getItem(2).getView()!=null&&statisticView==null) {
+          statisticView = (StatisticView)mPagerAdapter.getItem(2).getView().findViewById(R.id.statisview);
+        }
         TaskListSidebarAdapter.ViewHolder holder = (TaskListSidebarAdapter.ViewHolder) view
             .getTag();
         if (position == 0) {
@@ -168,12 +174,22 @@ public class MainActivity extends FocusBaseActivity {
         if (position == 1) {
           listTitle.setText("All");
           ((TaskManageFragment) (fragments.get(0))).setActiveTaskList(null);
+          if(statisticView!=null) {
+            Log.d("MainActivity",""+statisticView);
+            statisticView.setCursor(0);
+            statisticView.invalidate();
+          }
         }
         if (position >= 2) {
           listTitle.setText(holder.item.taskListName());
           ((TaskManageFragment) (fragments.get(0)))
               .setActiveTaskList(holder.item);
           Log.d("MainActivity", "Clicked item is " + holder.item.toString());
+          if(statisticView!=null) {
+            statisticView.setCursor(holder.item.taskListId());
+            statisticView.invalidate();
+            Log.d("MainActivity",""+statisticView);
+          }
         }
         ((TaskManageFragment) fragments.get(0)).updateList();
       }
