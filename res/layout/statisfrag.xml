@@ -6,7 +6,7 @@
  android:layout_height="fill_parent"
  android:layout_gravity="center">
  <LinearLayout 
-  android:gravity="center"
+  android:gravity="left"
   android:orientation="horizontal"
   android:layout_width="wrap_content" 
   android:layout_height="wrap_content" 
@@ -17,12 +17,14 @@
    android:layout_width="66dip"
    android:layout_height="66dip"/>
   <LinearLayout 
+   android:paddingTop="3dip"
    android:gravity="left"
    android:orientation="vertical"
    android:layout_width="wrap_content" 
    android:layout_height="wrap_content" 
    android:layout_gravity="left">
    <TextView
+    android:id="@+id/stat_task_name"
     android:text="@string/Stat_Title"
     android:textSize="10pt"
     android:textColor="#FF000000"
@@ -30,6 +32,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
    <TextView
+    android:id="@+id/stat_task_time"
     android:text="@string/Stat_Desc"
     android:textSize="10pt"
     android:textColor="#FF000000"

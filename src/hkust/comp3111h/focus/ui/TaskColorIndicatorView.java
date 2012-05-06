@@ -20,7 +20,7 @@ public class TaskColorIndicatorView extends View {
 	  
   public TaskColorIndicatorView(Context context) {
 	super(context);
-    color = 0xff000000;
+    color = 0xffffffff;
 	mPaint = new Paint();
 	mPaint.setColor(color);
 	mPaint.setAntiAlias(true);
@@ -33,8 +33,8 @@ public class TaskColorIndicatorView extends View {
   }
 	
   public TaskColorIndicatorView(Context context, AttributeSet attrs) {
-    super(context);
-	color = GoodColor.BRIGHTCOLOR[0];
+    super(context, attrs);
+	color = 0xffffffff;
     mPaint = new Paint();
     mPaint.setColor(color);
 	mPaint.setAntiAlias(true);
@@ -61,6 +61,11 @@ public class TaskColorIndicatorView extends View {
 	strokePaint.setStrokeWidth(WIDTHOFDARKSTROKE);
   }
 	
+  public void setColor(int color) {
+	this.color = color;
+	invalidate();
+  }
+  
   @Override
   public void onDraw(Canvas canvas) {
 	super.onDraw(canvas);
@@ -70,10 +75,6 @@ public class TaskColorIndicatorView extends View {
 	mPaint.setColor(color);
 	canvas.drawCircle(window_width / 2, window_height / 2, radius, mPaint);
 	canvas.drawCircle(window_width / 2, window_height / 2, radius, strokePaint);
-	canvas.drawCircle(0, window_height, radius, mPaint);
-	canvas.drawCircle(0, 0, radius, mPaint);
-	canvas.drawCircle(window_width, 0, radius, mPaint);
-	canvas.drawCircle(window_width, window_height, radius, mPaint);
   } 
 	
   @Override 
