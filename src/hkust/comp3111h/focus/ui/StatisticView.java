@@ -1,5 +1,7 @@
 package hkust.comp3111h.focus.ui;
 
+import hkust.comp3111h.focus.R;
+import hkust.comp3111h.focus.Activity.MainActivity;
 import hkust.comp3111h.focus.database.TaskDbAdapter;
 
 import java.util.Random;
@@ -8,6 +10,7 @@ import java.util.Vector;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -18,6 +21,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 public class StatisticView extends View {
   private final int WIDTHOFDARKSTROKE = 5; 
@@ -75,6 +79,7 @@ public class StatisticView extends View {
     db = new TaskDbAdapter(this.getContext());
     db.open();
     cursor = db.fetchAllTaskLists();
+    cursor.moveToFirst();
     first_start_date = new DateTime();
     last_start_date = new DateTime();
     first_start_date_set = false;
@@ -93,6 +98,7 @@ public class StatisticView extends View {
     db = new TaskDbAdapter(this.getContext());
     db.open();
     cursor = db.fetchAllTaskLists();
+    cursor.moveToFirst();
     first_start_date = new DateTime();
     last_start_date = new DateTime();
     first_start_date_set = false;
@@ -111,6 +117,7 @@ public class StatisticView extends View {
     db = new TaskDbAdapter(this.getContext());
     db.open();
     cursor = db.fetchAllTaskLists();
+    cursor.moveToFirst();
     first_start_date = new DateTime();
     last_start_date = new DateTime();
     first_start_date_set = false;
@@ -124,12 +131,14 @@ public class StatisticView extends View {
   public void setCursor(long id) {
 	if (id == 0) {
 	  cursor = db.fetchAllTaskLists();
+	  cursor.moveToFirst();
 	  information_pairs = new Vector<InformationPair>();
 	  cursor_is_all = true;
 	  initInformation();
 	  start_angle = 0;
 	} else {
 	  cursor = db.fetchAllTasksInList(id, false);
+	  cursor.moveToFirst();
       information_pairs = new Vector<InformationPair>();
 	  cursor_is_all = false;
 	  initInformation();
@@ -341,7 +350,40 @@ public class StatisticView extends View {
   }
   
   private void update_status(InformationPair chosen_pair) {
-	  
+	long id = chosen_pair.task_id;
+	int color = chosen_pair.color;
+	String name;
+	if (cursor_is_all) {
+	  Cursor c = db.fetchTaskList(id);
+	  c.moveToFirst();
+	  name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASKLIST_TLNAME));
+	  name = "Target tasklist: " + name;
+	} else {
+      Cursor c = db.fetchTask(id);
+      c.moveToFirst();
+      name = c.getString(c.getColumnIndex(TaskDbAdapter.KEY_TASK_NAME));
+      name = "Target task: " + name;
+	}
+	
+	Duration duration = chosen_pair.duration;
+	long days = duration.getStandardDays();
+	long hours = duration.getStandardHours();
+	long minutes = duration.getStandardMinutes();
+	long seconds = duration.getStandardSeconds();
+	seconds -= minutes * 60;
+	minutes -= hours * 60;
+	hours -= days * 24;
+	
+	TextView name_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_name);
+	TextView time_view = (TextView)((Activity)getContext()).findViewById(R.id.stat_task_time);
+	TaskColorIndicatorView indicator = (TaskColorIndicatorView)((MainActivity)getContext())
+																.getPagerAdapter().getItem(2).getView()
+																.findViewById(R.id.taskcolorindicator);
+	Log.d("StatisticView",""+indicator);
+	//indicator.setColor(color);
+	name_view.setText(name);
+	time_view.setText("Time: " + days + "d " + hours + "h " +
+					  minutes + "m " + seconds + "s");
   }
   
   private int random_a_color() {

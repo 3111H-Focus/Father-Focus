@@ -79,6 +79,9 @@ public class MainActivity extends FocusBaseActivity {
   public List<Fragment> getFragments() {
     return fragments;
   }
+  public MainPagerAdapter getPagerAdapter() {
+	return mPagerAdapter;
+  }
 
   /**
    * Called when the activity is first created Initialize Environment
